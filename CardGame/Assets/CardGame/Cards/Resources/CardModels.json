@@ -1,0 +1,38 @@
+﻿{
+  "Items": [
+    {
+      "ModelId": "0",
+      "TypeName" : "CardController"
+    },
+
+    {
+      "ModelId": "1",
+      "TypeName" : "CardController"
+    },
+
+    {
+      "ModelId": "2",
+      "TypeName" : "CardController"
+    },
+
+    {
+      "ModelId": "3",
+      "TypeName" : "CardController"
+    },
+
+    {
+      "ModelId": "4",
+      "TypeName" : "CardController"
+    },
+
+    {
+      "ModelId": "5",
+      "TypeName" : "CardController"
+    },
+
+    {
+      "ModelId": "6",
+      "TypeName" : "CardController"
+    }
+  ]
+}

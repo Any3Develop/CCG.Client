@@ -1,0 +1,171 @@
+﻿{
+  "Items": [
+    {
+      "ModelId": "0",
+      "Stats": [
+        {
+          "StatID": "stat_health",
+          "StatType": "StatVital",
+          "BaseValue": 2,
+          "InitValue": 2
+        },
+        {
+          "StatID": "stat_manna",
+          "StatType": "StatVital",
+          "BaseValue": 6,
+          "InitValue": 0
+        },
+        {
+          "StatID": "stat_attack",
+          "StatType": "StatVital",
+          "BaseValue": 10,
+          "InitValue": 0
+        }
+      ]
+    },
+
+    {
+      "ModelId": "1",
+      "Stats": [
+        {
+          "StatID": "stat_health",
+          "StatType": "StatVital",
+          "BaseValue": 5,
+          "InitValue": 5
+        },
+        {
+          "StatID": "stat_manna",
+          "StatType": "StatVital",
+          "BaseValue": 3,
+          "InitValue": 0
+        },
+        {
+          "StatID": "stat_attack",
+          "StatType": "StatVital",
+          "BaseValue": 2,
+          "InitValue": 0
+        }
+      ]
+    },
+
+    {
+      "ModelId": "2",
+      "Stats": [
+        {
+          "StatID": "stat_health",
+          "StatType": "StatVital",
+          "BaseValue": 3,
+          "InitValue": 3
+        },
+        {
+          "StatID": "stat_manna",
+          "StatType": "StatVital",
+          "BaseValue": 3,
+          "InitValue": 0
+        },
+        {
+          "StatID": "stat_attack",
+          "StatType": "StatVital",
+          "BaseValue": 1,
+          "InitValue": 0
+        }
+      ]
+    },
+
+    {
+      "ModelId": "3",
+      "Stats": [
+        {
+          "StatID": "stat_health",
+          "StatType": "StatVital",
+          "BaseValue": 8,
+          "InitValue": 8
+        },
+        {
+          "StatID": "stat_manna",
+          "StatType": "StatVital",
+          "BaseValue": 7,
+          "InitValue": 0
+        },
+        {
+          "StatID": "stat_attack",
+          "StatType": "StatVital",
+          "BaseValue": 9,
+          "InitValue": 0
+        }
+      ]
+    },
+
+    {
+      "ModelId": "4",
+      "Stats": [
+        {
+          "StatID": "stat_health",
+          "StatType": "StatVital",
+          "BaseValue": 6,
+          "InitValue": 6
+        },
+        {
+          "StatID": "stat_manna",
+          "StatType": "StatVital",
+          "BaseValue": 1,
+          "InitValue": 0
+        },
+        {
+          "StatID": "stat_attack",
+          "StatType": "StatVital",
+          "BaseValue": 4,
+          "InitValue": 0
+        }
+      ]
+    },
+
+    {
+      "ModelId": "5",
+      "Stats": [
+        {
+          "StatID": "stat_health",
+          "StatType": "StatVital",
+          "BaseValue": 9,
+          "InitValue": 9
+        },
+        {
+          "StatID": "stat_manna",
+          "StatType": "StatVital",
+          "BaseValue": 1,
+          "InitValue": 0
+        },
+        {
+          "StatID": "stat_attack",
+          "StatType": "StatVital",
+          "BaseValue": 0,
+          "InitValue": 0
+        }
+      ]
+    },
+
+    {
+      "ModelId": "6",
+      "Stats": [
+        {
+          "StatID": "stat_health",
+          "StatType": "StatVital",
+          "BaseValue": 2,
+          "InitValue": 2
+        },
+        {
+          "StatID": "stat_manna",
+          "StatType": "StatVital",
+          "BaseValue": 4,
+          "InitValue": 0
+        },
+        {
+          "StatID": "stat_attack",
+          "StatType": "StatVital",
+          "BaseValue": 5,
+          "InitValue": 0
+        }
+      ]
+    }
+  ]
+}
