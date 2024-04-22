@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using CardGame.Services.UIService;
+using Zenject;
 
-namespace CardGame.Services.UIService
+namespace Infrastructure
 {
     public class UIServiceInstaller : Installer<UIServiceInstaller>
     {

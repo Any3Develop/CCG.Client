@@ -1,6 +1,7 @@
+using CardGame.Services.MonoPoolService;
 using Zenject;
 
-namespace CardGame.Services.MonoPoolService
+namespace Infrastructure
 {
     public class MonoPoolInstaller :Installer<MonoPoolInstaller>
     {

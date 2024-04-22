@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using CardGame.Services.InputService;
+using Zenject;
 
-namespace CardGame.Services.InputService
+namespace Infrastructure
 {
     public class InputSystemInstaller : Installer<InputSystemInstaller>
     {

@@ -1,6 +1,7 @@
+using CardGame.Services.StateMachine;
 using Zenject;
 
-namespace CardGame.Services.StateMachine
+namespace Infrastructure
 {
     public class StateMachineInstaller : Installer<StateMachineInstaller>
     {

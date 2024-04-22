@@ -1,7 +1,7 @@
-﻿using Core.Network.ArtRepository;
+﻿using Core.ArtRepository;
 using Zenject;
 
-namespace Core.Network.Infrastructure
+namespace Infrastructure
 {
     public class ArtRepositoryInstaller : Installer<ArtRepositoryInstaller>
     {
@@ -9,7 +9,7 @@ namespace Core.Network.Infrastructure
         {
             Container
                 .Bind<IArtRepository>()
-                .To<ArtRepository.ArtRepository>()
+                .To<ArtRepository>()
                 .AsSingle();
         }
     }

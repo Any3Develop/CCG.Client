@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using CardGame.Cards;
+using Zenject;
 
-namespace CardGame.Cards
+namespace Infrastructure
 {
     public class CardsInstaller : Installer<CardsInstaller>
     {

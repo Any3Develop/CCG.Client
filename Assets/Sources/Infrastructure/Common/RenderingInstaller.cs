@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Zenject;
 
-namespace CardGame.Cameras
+namespace Infrastructure
 {
     public class RenderingInstaller : Installer<RenderingInstaller>
     {

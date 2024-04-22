@@ -1,13 +1,7 @@
-using CardGame.Cameras;
-using CardGame.Cards;
-using CardGame.ImageRepository;
-using CardGame.Services.SceneEntity;
-using CardGame.Session;
-using Core.Network.Infrastructure;
 using Startup;
 using Zenject;
 
-namespace CardGame.App
+namespace Infrastructure
 {
     public class StartupInstaller : MonoInstaller
     {

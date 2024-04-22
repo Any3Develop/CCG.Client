@@ -1,6 +1,7 @@
+using CardGame.Services.TypeRegistryService;
 using Zenject;
 
-namespace CardGame.Services.TypeRegistryService
+namespace Infrastructure
 {
     public class TypeRegistryInstaller : Installer<TypeRegistryInstaller>
     {

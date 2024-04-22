@@ -1,6 +1,7 @@
+using CardGame.Services.SceneEntity;
 using Zenject;
 
-namespace CardGame.Services.SceneEntity
+namespace Infrastructure
 {
     public class SceneEntityInstaller : Installer<SceneEntityInstaller>
     {

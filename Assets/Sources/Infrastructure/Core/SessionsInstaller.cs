@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using CardGame.Session;
+using Zenject;
 
-namespace CardGame.Session
+namespace Infrastructure
 {
     public class SessionsInstaller : Installer<SessionsInstaller>
 

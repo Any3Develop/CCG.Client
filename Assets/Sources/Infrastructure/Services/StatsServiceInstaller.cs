@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using CardGame.Services.StatsService;
+using Zenject;
 
-namespace CardGame.Services.StatsService
+namespace Infrastructure
 {
     public class StatsServiceInstaller : Installer<StatsServiceInstaller>
     {

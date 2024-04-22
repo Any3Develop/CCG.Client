@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using Core.PictureStorage;
+using Zenject;
 
-namespace CardGame.ImageRepository
+namespace Infrastructure
 {
     public class PictureStorageInstaller : Installer<PictureStorageInstaller>
     {

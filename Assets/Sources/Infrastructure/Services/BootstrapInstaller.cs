@@ -1,6 +1,7 @@
-﻿using Zenject;
+﻿using CardGame.Services.BootstrapService;
+using Zenject;
 
-namespace CardGame.Services.BootstrapService
+namespace Infrastructure
 {
     public class BootstrapInstaller : Installer<BootstrapInstaller>
     {

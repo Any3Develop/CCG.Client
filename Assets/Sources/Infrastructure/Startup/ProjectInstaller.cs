@@ -1,14 +1,6 @@
-using CardGame.Services.BootstrapService;
-using CardGame.Services.InputService;
-using CardGame.Services.MonoPoolService;
-using CardGame.Services.StateMachine;
-using CardGame.Services.StatsService;
-using CardGame.Services.TypeRegistryService;
-using CardGame.Services.UIService;
-using Core.Network.Infrastructure;
 using Zenject;
 
-namespace CardGame.App
+namespace Infrastructure
 {
     public class ProjectInstaller : MonoInstaller
     {

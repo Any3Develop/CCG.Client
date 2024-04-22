@@ -1,7 +1,7 @@
 ﻿using Core.Network.HttpClient;
 using Zenject;
 
-namespace Core.Network.Infrastructure
+namespace Infrastructure
 {
     public class HttpClientInstaller : Installer<HttpClientInstaller>
     {
