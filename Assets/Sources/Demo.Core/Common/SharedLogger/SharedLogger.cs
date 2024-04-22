@@ -3,7 +3,7 @@ using Demo.Core.Abstractions.Common.SharedLogger;
 
 namespace Demo.Core.Common.SharedLogger
 {
-    public static class DefaultSharedLogger
+    public class SharedLogger
     {
         private static ISharedLogger logger;
 

@@ -66,7 +66,7 @@ namespace Demo.Core.Common.EventSource
                 }
                 catch (Exception e)
                 {
-                    DefaultSharedLogger.Error($"[{GetType().Name}] Some exception caused when {nameof(Publish)} event method : {subscriber.Callback?.Method.Name}, with registered type : {typeof(T).FullName}. Full exception: {e}");
+                    SharedLogger.SharedLogger.Error($"[{GetType().Name}] Some exception caused when {nameof(Publish)} event method : {subscriber.Callback?.Method.Name}, with registered type : {typeof(T).FullName}. Full exception: {e}");
                 }
             }
         }

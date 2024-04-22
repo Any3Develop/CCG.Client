@@ -25,6 +25,7 @@ namespace Demo.Core.Abstractions.Game.Collections
         int RemoveRange(IEnumerable<int> ids);
         
         TRuntime Get(int id);
+        bool TryGet(int id, out TRuntime result);
         TRuntime GetFirst(Predicate<TRuntime> predicate);
         TRuntime GetLast(Predicate<TRuntime> predicate);
 

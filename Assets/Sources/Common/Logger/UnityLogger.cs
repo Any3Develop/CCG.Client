@@ -9,7 +9,7 @@ namespace Common.Logger
     {
         public UnityLogger()
         {
-            DefaultSharedLogger.Initialize(this);
+            SharedLogger.Initialize(this);
         }
 
         public void Log(string message)

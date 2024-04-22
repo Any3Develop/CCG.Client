@@ -70,7 +70,7 @@ namespace Demo.Core.Game.Collections
 
         public virtual bool Remove(T value)
         {
-            return value != null && Collection.Remove(value);
+            return value?.RuntimeData != null && Remove(value.RuntimeData.Id);
         }
 
         public virtual int RemoveRange(IEnumerable<T> values)
@@ -80,12 +80,18 @@ namespace Demo.Core.Game.Collections
 
         public virtual int RemoveRange(IEnumerable<int> ids)
         {
-            return ids == null ? 0 : Collection.RemoveAll(x => ids.Contains(x.RuntimeData.Id));
+            return ids?.Count(Remove) ?? 0;
         }
 
         public virtual T Get(int id)
         {
             return Collection.Find(x => x.RuntimeData.Id == id);
+        }
+
+        public bool TryGet(int id, out T result)
+        {
+            result = Get(id);
+            return result != null;
         }
 
         public virtual T GetFirst(Predicate<T> predicate)
