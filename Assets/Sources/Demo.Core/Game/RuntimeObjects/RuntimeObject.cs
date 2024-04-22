@@ -3,22 +3,23 @@ using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Abstractions.Game.RuntimeObjects;
+using Demo.Core.Game.Data;
 
 namespace Demo.Core.Game.RuntimeObjects
 {
     public abstract class RuntimeObject : IRuntimeObject
     {
-        public IDatabase Data { get; }
-        public IRuntimeObjectData RuntimeData { get; }
-        public IRuntimeStatsCollection StatsCollection { get; }
-        public IRuntimeEffectCollection EffectsCollection { get; }
-        public IEventsSource EventsSource { get; }
+        public ObjectData Data { get; private set; }
+        public IRuntimeObjectData RuntimeData { get; private set; }
+        public IStatsCollection StatsCollection { get; private set; }
+        public IEffectsCollection EffectsCollection { get; private set; }
+        public IEventsSource EventsSource { get; private set; }
 
-        protected RuntimeObject(
-            IDatabase data, 
+        public IRuntimeObject Init(
+            ObjectData data,
             IRuntimeObjectData runtimeData,
-            IRuntimeStatsCollection statsCollection, 
-            IRuntimeEffectCollection effectCollection,
+            IStatsCollection statsCollection,
+            IEffectsCollection effectCollection,
             IEventsSource eventsSource)
         {
             Data = data;
@@ -26,6 +27,7 @@ namespace Demo.Core.Game.RuntimeObjects
             StatsCollection = statsCollection;
             EffectsCollection = effectCollection;
             EventsSource = eventsSource;
+            return this;
         }
 
         public virtual void Dispose()
@@ -34,5 +36,10 @@ namespace Demo.Core.Game.RuntimeObjects
             StatsCollection?.Clear();
             EffectsCollection?.Clear();
         }
+
+        #region IRuntimeBase
+        IRuntimeData IRuntimeBase.RuntimeData => RuntimeData;
+        IData IRuntimeBase.Data => Data;
+        #endregion
     }
 }

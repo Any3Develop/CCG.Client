@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Context;
@@ -16,71 +15,66 @@ namespace Demo.Core.Game.Factories
 {
     public class RuntimeObjectFactory : IRuntimeFactory<IRuntimeObject>
     {
-        private readonly IDatabaseCollection databaseCollection;
+        private readonly IDatabase database;
         private readonly IRuntimeIdGenerator runtimeIdGenerator;
+        private readonly IContextFactory contextFactory;
 
         public RuntimeObjectFactory(
-            IDatabaseCollection databaseCollection,
-            IRuntimeIdGenerator runtimeIdGenerator)
+            IDatabase database,
+            IRuntimeIdGenerator runtimeIdGenerator,
+            IContextFactory contextFactory)
         {
-            this.databaseCollection = databaseCollection;
+            this.database = database;
             this.runtimeIdGenerator = runtimeIdGenerator;
+            this.contextFactory = contextFactory;
         }
 
-        public IRuntimeObject Create(string ownerId, IDatabase data)
+        public IRuntimeObject Create(string ownerId, IData data)
         {
-            return Create(CreateRuntimeData(ownerId, data));
-        }
+            if (data is not ObjectData objectData)
+                throw new NotImplementedException();
 
-        public IRuntimeObject Create(IRuntimeData runtimeData)
-        {
-            return Create(runtimeData, databaseCollection.GetFirst(runtimeData.DataId));
-        }
-
-        public IRuntimeObject Create(IRuntimeObjectData runtimeData, IDatabase data)
-        {
-            return runtimeData switch
-            {
-                IRuntimeCardData => CreateCardObject(runtimeData, data),
-                _ => throw new NotImplementedException()
-            };
-        }
-
-        private IRuntimeObject CreateCardObject(IRuntimeObjectData runtimeData, IDatabase data)
-        {
-            if (data is not ICardData cardData)
-                throw new InvalidOperationException($"Can't create card if data not for cards : {data}");
-
-            return cardData.Type switch
-            {
-                // TODO: later will separated controllers
-                ObjectType.Creature or ObjectType.Spell => new RuntimeCard(data, runtimeData, null, null, null),
-                _ => throw new NotImplementedException()
-            };
-        }
-
-        private IRuntimeObjectData CreateRuntimeData(string ownerId, IDatabase data)
-        {
             var runtimeId = runtimeIdGenerator.Next();
-            return data switch
+            var runtimeData = objectData.Type switch
             {
-                ICardData cardData => new RuntimeCardData
+                ObjectType.Creature or ObjectType.Spell => new RuntimeCardData
                 {
                     DataId = data.Id,
                     Id = runtimeId,
                     OwnerId = ownerId,
-                    Stats = cardData.Stats.Select(o => Create(o, runtimeId)).ToList(),
+                    Stats = objectData.Stats.Select(o => CreateRuntimeStatData(runtimeId, ownerId, o)).ToList()
                 },
+                _ => throw new NotImplementedException()
+            };
+
+            return Create(runtimeData);
+        }
+
+        public IRuntimeObject Create(IRuntimeData runtimeData)
+        {
+            if (runtimeData is not IRuntimeObjectData runtimeObjectData)
+                throw new NotImplementedException();
+
+            var objectData = database.Objects.Get(runtimeData.DataId);
+            var eventSource = contextFactory.CreateEventsSource();
+            var statsCollection = contextFactory.CreateStatsCollection(eventSource);
+            var effectsCollection = contextFactory.CreateEffectsCollection(eventSource);
+
+            return objectData.Type switch
+            {
+                ObjectType.Creature or ObjectType.Spell
+                    => new RuntimeCard().Init(objectData, runtimeObjectData, statsCollection, effectsCollection, eventSource),
                 _ => throw new NotImplementedException()
             };
         }
 
-        private IRuntimeStatData Create(StatData statData, int runtimeId)
+        private IRuntimeStatData CreateRuntimeStatData(int runtimeId, string ownerId, StatData statData)
         {
             return new RuntimeStatData
             {
                 Id = runtimeId,
                 DataId = statData.Id,
+                OwnerId = ownerId,
                 Base = statData.Base,
                 Max = statData.Max,
                 Value = statData.Value,

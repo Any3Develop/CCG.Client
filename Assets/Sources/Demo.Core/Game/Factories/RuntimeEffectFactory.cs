@@ -7,7 +7,7 @@ namespace Demo.Core.Game.Factories
 {
     public class RuntimeEffectFactory : IRuntimeFactory<IRuntimeEffect>
     {
-        public IRuntimeEffect Create(string ownerId, IDatabase data)
+        public IRuntimeEffect Create(string ownerId, IData data)
         {
             throw new System.NotImplementedException();
         }

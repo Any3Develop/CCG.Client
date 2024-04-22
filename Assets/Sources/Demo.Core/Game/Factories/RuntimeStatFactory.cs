@@ -7,7 +7,7 @@ namespace Demo.Core.Game.Factories
 {
     public class RuntimeStatFactory : IRuntimeFactory<IRuntimeStat>
     {
-        public IRuntimeStat Create(string ownerId, IDatabase data)
+        public IRuntimeStat Create(string ownerId, IData data)
         {
             throw new System.NotImplementedException();
         }

@@ -6,6 +6,7 @@ namespace Demo.Core.Game.RuntimeData
     {
         public int Id { get; set; }
         public string DataId { get; set; }
+        public string OwnerId { get; set; }
         public int Value { get; set; }
         public int Lifetime { get; set; }
     }

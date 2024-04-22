@@ -2,17 +2,18 @@
 using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Abstractions.Game.RuntimeObjects;
+using Demo.Core.Game.Data;
 
 namespace Demo.Core.Game.RuntimeObjects
 {
     public abstract class RuntimeEffect : IRuntimeEffect
     {
-        public IDatabase Data { get; private set; }
+        public EffectData Data { get; private set; }
         public IRuntimeEffectData RuntimeData { get; private set; }
         public IEventsSource EventsSource { get; private set; }
 
-        protected RuntimeEffect(
-            IDatabase data, 
+        public void Init(
+            EffectData data, 
             IRuntimeEffectData runtimeData, 
             IEventsSource eventsSource)
         {
@@ -20,10 +21,17 @@ namespace Demo.Core.Game.RuntimeObjects
             RuntimeData = runtimeData;
             EventsSource = eventsSource;
         }
-
+        
         public void Dispose()
         {
-            EventsSource?.Dispose();
+            throw new System.NotImplementedException();
         }
+        
+        #region IRuntimeBase
+
+        IRuntimeData IRuntimeBase.RuntimeData => RuntimeData;
+        IData IRuntimeBase.Data => Data;
+
+        #endregion
     }
 }

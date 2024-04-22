@@ -4,5 +4,6 @@
     {
         int Id { get; }
         string DataId { get; }
+        string OwnerId { get; }
     }
 }

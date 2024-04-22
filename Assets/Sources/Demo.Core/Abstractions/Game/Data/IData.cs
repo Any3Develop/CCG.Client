@@ -1,6 +1,6 @@
 ﻿namespace Demo.Core.Abstractions.Game.Data
 {
-    public interface IDatabase
+    public interface IData
     {
         string Id { get; }
     }
