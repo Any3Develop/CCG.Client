@@ -2,9 +2,11 @@
 using System.Linq;
 using Demo.Core.Abstractions.Common.EventSource;
 using Demo.Core.Abstractions.Game.Collections;
+using Demo.Core.Abstractions.Game.Context;
 using Demo.Core.Abstractions.Game.Factories;
 using Demo.Core.Common.EventSource;
 using Demo.Core.Game.Collections;
+using Demo.Core.Game.Context;
 using Demo.Core.Game.Data;
 
 namespace Demo.Core.Game.Factories
@@ -38,6 +40,11 @@ namespace Demo.Core.Game.Factories
         public IEventsSource CreateEventsSource(params object[] args)
         {
             return new EventSource();
+        }
+
+        public IRuntimeIdProvider CreateRuntimeIdProvider(params object[] args)
+        {
+            return new RuntimeIdProvider();
         }
 
         private T GetRequiredArgument<T>(params object[] args)

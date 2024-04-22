@@ -16,16 +16,16 @@ namespace Demo.Core.Game.Factories
     public class RuntimeObjectFactory : IRuntimeFactory<IRuntimeObject>
     {
         private readonly IDatabase database;
-        private readonly IRuntimeIdGenerator runtimeIdGenerator;
+        private readonly IRuntimeIdProvider runtimeIdProvider;
         private readonly IContextFactory contextFactory;
 
         public RuntimeObjectFactory(
             IDatabase database,
-            IRuntimeIdGenerator runtimeIdGenerator,
+            IRuntimeIdProvider runtimeIdProvider,
             IContextFactory contextFactory)
         {
             this.database = database;
-            this.runtimeIdGenerator = runtimeIdGenerator;
+            this.runtimeIdProvider = runtimeIdProvider;
             this.contextFactory = contextFactory;
         }
 
@@ -34,7 +34,7 @@ namespace Demo.Core.Game.Factories
             if (data is not ObjectData objectData)
                 throw new NotImplementedException();
 
-            var runtimeId = runtimeIdGenerator.Next();
+            var runtimeId = runtimeIdProvider.Next();
             var runtimeData = objectData.Type switch
             {
                 ObjectType.Creature or ObjectType.Spell => new RuntimeCardData
