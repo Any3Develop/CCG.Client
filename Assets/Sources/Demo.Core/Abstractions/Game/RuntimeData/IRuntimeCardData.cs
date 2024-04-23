@@ -2,6 +2,6 @@ namespace Demo.Core.Abstractions.Game.RuntimeData
 {
     public interface IRuntimeCardData : IRuntimeObjectData
     {
-        int Position { get; }
+        int? Position { get; set; }
     }
 }

@@ -4,6 +4,6 @@ namespace Demo.Core.Game.RuntimeData
 {
     public class RuntimeCardData : RuntimeObjectData, IRuntimeCardData
     {
-        public int Position { get; set; } = -1;
+        public int? Position { get; set; }
     }
 }

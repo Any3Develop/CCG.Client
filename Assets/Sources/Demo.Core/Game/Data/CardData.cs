@@ -2,6 +2,6 @@
 {
     public class CardData : ObjectData
     {
-        
+        //TODO: Some special data
     }
 }
