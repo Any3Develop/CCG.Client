@@ -2,32 +2,34 @@
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.RuntimeObjects;
 using Demo.Core.Game.Events.Effects;
+using Demo.Core.Game.Utils;
 
 namespace Demo.Core.Game.Collections
 {
     public class EffectsCollection : RuntimeCollectionBase<IRuntimeEffect>, IEffectsCollection
     {
         private readonly IEventsSource eventsSource;
+
         public EffectsCollection(IEventsSource eventsSource)
         {
             this.eventsSource = eventsSource;
         }
-        
-        public override bool Add(IRuntimeEffect value)
+
+        public override bool Add(IRuntimeEffect value, bool notify = true)
         {
-            var added = base.Add(value);
-            eventsSource.Publish(new EffectAddedEvent(value));
-            return added;
+            var result = base.Add(value, notify);
+            eventsSource.Publish<EffectAddedEvent>(notify && result, value);
+            return result;
         }
 
-        public override bool Remove(int id)
+        public override bool Remove(int id, bool notify = true)
         {
-            if (!TryGet(id, out var stat))
+            if (!TryGet(id, out var value))
                 return false;
-            
-            var removed = base.Remove(stat);
-            eventsSource.Publish(new EffectDeletedEvent(stat));
-            return removed;
+
+            var result = base.Remove(value, notify);
+            eventsSource.Publish<EffectDeletedEvent>(notify && result, value);
+            return result;
         }
     }
 }

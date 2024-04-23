@@ -2,11 +2,11 @@
 
 namespace Demo.Core.Game.Events.Objects
 {
-    public readonly struct CardPositionEvent
+    public readonly struct CardPositionChangedEvent
     {
         public IRuntimeCard RuntimeCard { get; }
 
-        public CardPositionEvent(IRuntimeCard runtimeCard)
+        public CardPositionChangedEvent(IRuntimeCard runtimeCard)
         {
             RuntimeCard = runtimeCard;
         }

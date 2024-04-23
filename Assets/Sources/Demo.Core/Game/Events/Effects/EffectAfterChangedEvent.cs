@@ -2,11 +2,11 @@
 
 namespace Demo.Core.Game.Events.Effects
 {
-    public readonly struct EffectDeletedEvent
+    public readonly struct EffectAfterChangedEvent
     {
         public IRuntimeEffect Effect { get; }
 
-        public EffectDeletedEvent(IRuntimeEffect effect)
+        public EffectAfterChangedEvent(IRuntimeEffect effect)
         {
             Effect = effect;
         }

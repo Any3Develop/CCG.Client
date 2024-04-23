@@ -3,7 +3,7 @@ using Demo.Core.Game.Data;
 
 namespace Demo.Core.Abstractions.Game.RuntimeObjects
 {
-    public interface IRuntimeStat : IRuntimeBase
+    public interface IRuntimeStat : IRuntimeObjectBase
     {
         new StatData Data { get; }
         new IRuntimeStatData RuntimeData { get; }

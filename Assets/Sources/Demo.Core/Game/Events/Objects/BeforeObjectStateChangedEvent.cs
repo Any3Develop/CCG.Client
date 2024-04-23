@@ -2,11 +2,11 @@
 
 namespace Demo.Core.Game.Events.Objects
 {
-    public readonly struct ObjectStateChangedEvent
+    public readonly struct BeforeObjectStateChangedEvent
     {
         public IRuntimeObject RuntimeObject { get; }
 
-        public ObjectStateChangedEvent(IRuntimeObject runtimeObject)
+        public BeforeObjectStateChangedEvent(IRuntimeObject runtimeObject)
         {
             RuntimeObject = runtimeObject;
         }

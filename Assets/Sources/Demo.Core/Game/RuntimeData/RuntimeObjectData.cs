@@ -9,6 +9,8 @@ namespace Demo.Core.Game.RuntimeData
         public int Id { get; set; } = -1;
         public string DataId { get; set; }
         public string OwnerId { get; set; }
+        public List<string> EffectIds { get; set; } = new();
+        public List<IRuntimeEffectData> Applied { get; set; } = new();
         public List<IRuntimeStatData> Stats { get; set; } = new();
         public RuntimeState State { get; set; } = 0;
         public RuntimeState PreviousState { get; set; } = 0;

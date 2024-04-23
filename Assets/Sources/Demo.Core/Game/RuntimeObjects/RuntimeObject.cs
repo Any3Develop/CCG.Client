@@ -4,6 +4,9 @@ using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Abstractions.Game.RuntimeObjects;
 using Demo.Core.Game.Data;
+using Demo.Core.Game.Enums;
+using Demo.Core.Game.Events.Objects;
+using Demo.Core.Game.Utils;
 
 namespace Demo.Core.Game.RuntimeObjects
 {
@@ -15,7 +18,9 @@ namespace Demo.Core.Game.RuntimeObjects
         public IEffectsCollection EffectsCollection { get; private set; }
         public IEventsSource EventsSource { get; private set; }
 
-        public IRuntimeObject Init(
+        protected bool Initialized { get; private set; }
+
+        public void Init(
             ObjectData data,
             IRuntimeObjectData runtimeData,
             IStatsCollection statsCollection,
@@ -27,19 +32,48 @@ namespace Demo.Core.Game.RuntimeObjects
             StatsCollection = statsCollection;
             EffectsCollection = effectCollection;
             EventsSource = eventsSource;
-            return this;
+            Initialized = true;
         }
 
         public virtual void Dispose()
         {
+            if (!Initialized)
+                return;
+
+            Initialized = false;
             EventsSource?.Dispose();
             StatsCollection?.Clear();
             EffectsCollection?.Clear();
+            Data = null;
+            RuntimeData = null;
+            EventsSource = null;
+            StatsCollection = null;
+            EffectsCollection = null;
         }
 
-        #region IRuntimeBase
-        IRuntimeData IRuntimeBase.RuntimeData => RuntimeData;
-        IData IRuntimeBase.Data => Data;
+        public void SetState(RuntimeState value, bool notify = true)
+        {
+            OnBeforeStateChanged(notify);
+            RuntimeData.PreviousState = RuntimeData.State;
+            RuntimeData.State = value;
+            OnAfterStateChanged(notify);
+        }
+
+        #region Callbacks
+
+        protected virtual void OnBeforeStateChanged(bool notify = true) =>
+            EventsSource.Publish<BeforeObjectStateChangedEvent>(Initialized && notify, this);
+
+        protected virtual void OnAfterStateChanged(bool notify = true) =>
+            EventsSource.Publish<AfterObjectStateChangedEvent>(Initialized && notify, this);
+
+        #endregion
+
+        #region IRuntimeObjectBase
+
+        IRuntimeData IRuntimeObjectBase.RuntimeData => RuntimeData;
+        IData IRuntimeObjectBase.Data => Data;
+
         #endregion
     }
 }

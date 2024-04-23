@@ -1,4 +1,5 @@
 ﻿using Demo.Core.Abstractions.Game.Data;
+using Demo.Core.Game.Enums;
 
 namespace Demo.Core.Game.Data
 {
@@ -7,5 +8,6 @@ namespace Demo.Core.Game.Data
         public string Id { get; set; }
         public int Value { get; set; }
         public int Lifetime { get; set; }
+        public Keyword Keyword { get; set; }
     }
 }

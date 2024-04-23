@@ -17,6 +17,18 @@ namespace Demo.Core.Game.Collections
             return (T) Get(id);
         }
 
+        public bool TryGet(string id, out TData result)
+        {
+            result = Get(id);
+            return result != null;
+        }
+
+        public bool TryGet<T>(string id, out T result) where T : TData
+        {
+            result = Get<T>(id);
+            return result != null;
+        }
+
         public IEnumerable<TData> GetRange(IEnumerable<string> ids)
         {
             return ids.Select(Get);

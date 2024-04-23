@@ -2,15 +2,18 @@
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Game.Data;
+using Demo.Core.Game.Enums;
 
 namespace Demo.Core.Abstractions.Game.RuntimeObjects
 {
-    public interface IRuntimeObject : IRuntimeBase
+    public interface IRuntimeObject : IRuntimeObjectBase
     {
         new ObjectData Data { get; }
         new IRuntimeObjectData RuntimeData { get; }
         IStatsCollection StatsCollection { get; }
         IEffectsCollection EffectsCollection { get; }
         IEventsSource EventsSource { get; }
+
+        void SetState(RuntimeState value, bool notify = true);
     }
 }

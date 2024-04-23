@@ -2,11 +2,11 @@
 
 namespace Demo.Core.Game.Events.Stats
 {
-    public readonly struct StatChangedEvent
+    public readonly struct AfterStatChangedEvent
     {
         public IRuntimeStat RuntimeStat { get; }
 
-        public StatChangedEvent(IRuntimeStat runtimeStat)
+        public AfterStatChangedEvent(IRuntimeStat runtimeStat)
         {
             RuntimeStat = runtimeStat;
         }

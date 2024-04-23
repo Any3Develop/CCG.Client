@@ -1,6 +1,7 @@
-﻿using Demo.Core.Game.Data;
+﻿using Demo.Core.Abstractions.Game.Collections;
+using Demo.Core.Game.Data;
 
-namespace Demo.Core.Abstractions.Game.Collections
+namespace Demo.Core.Abstractions.Game.Context
 {
     public interface IDatabase
     {

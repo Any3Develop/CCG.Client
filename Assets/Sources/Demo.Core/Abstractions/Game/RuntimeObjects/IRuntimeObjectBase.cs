@@ -4,7 +4,7 @@ using Demo.Core.Abstractions.Game.RuntimeData;
 
 namespace Demo.Core.Abstractions.Game.RuntimeObjects
 {
-    public interface IRuntimeBase : IDisposable
+    public interface IRuntimeObjectBase : IDisposable
     {
         IRuntimeData RuntimeData { get; }
         IData Data { get; }

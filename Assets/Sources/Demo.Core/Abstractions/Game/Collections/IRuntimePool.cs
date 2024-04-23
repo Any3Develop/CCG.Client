@@ -2,5 +2,5 @@
 
 namespace Demo.Core.Abstractions.Game.Collections
 {
-    public interface IRuntimePool : IRuntimeCollection<IRuntimeBase> {}
+    public interface IRuntimePool : IRuntimeCollection<IRuntimeObjectBase> {}
 }

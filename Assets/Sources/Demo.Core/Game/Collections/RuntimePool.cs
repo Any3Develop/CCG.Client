@@ -3,5 +3,5 @@ using Demo.Core.Abstractions.Game.RuntimeObjects;
 
 namespace Demo.Core.Game.Collections
 {
-    public class RuntimePool : RuntimeCollectionBase<IRuntimeBase>, IRuntimePool {}
+    public class RuntimePool : RuntimeCollectionBase<IRuntimeObjectBase>, IRuntimePool {}
 }
