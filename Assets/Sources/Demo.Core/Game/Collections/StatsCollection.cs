@@ -1,6 +1,6 @@
 ﻿using Demo.Core.Abstractions.Common.EventSource;
 using Demo.Core.Abstractions.Game.Collections;
-using Demo.Core.Abstractions.Game.RuntimeObjects;
+using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Game.Events.Stats;
 using Demo.Core.Game.Utils;
 

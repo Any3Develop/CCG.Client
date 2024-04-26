@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Demo.Core.Abstractions.Game.Collections;
-using Demo.Core.Abstractions.Game.RuntimeObjects;
+using Demo.Core.Abstractions.Game.Runtime.Common;
 
 namespace Demo.Core.Game.Collections
 {

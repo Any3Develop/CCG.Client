@@ -1,8 +1,8 @@
 ﻿using System;
 using Demo.Core.Abstractions.Common.EventSource;
 using Demo.Core.Abstractions.Game.Data;
-using Demo.Core.Abstractions.Game.RuntimeData;
-using Demo.Core.Abstractions.Game.RuntimeObjects;
+using Demo.Core.Abstractions.Game.Runtime.Common;
+using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Stats;
 using Demo.Core.Game.Utils;

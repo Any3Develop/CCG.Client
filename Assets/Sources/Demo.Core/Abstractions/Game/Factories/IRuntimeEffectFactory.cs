@@ -1,5 +1,5 @@
-﻿using Demo.Core.Abstractions.Game.RuntimeData;
-using Demo.Core.Abstractions.Game.RuntimeObjects;
+﻿using Demo.Core.Abstractions.Game.Runtime.Data;
+using Demo.Core.Abstractions.Game.Runtime.Effects;
 
 namespace Demo.Core.Abstractions.Game.Factories
 {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Demo.Core.Game.Enums;
 
-namespace Demo.Core.Abstractions.Game.RuntimeData
+namespace Demo.Core.Abstractions.Game.Runtime.Data
 {
     public interface IRuntimeObjectData : IRuntimeDataBase
     {

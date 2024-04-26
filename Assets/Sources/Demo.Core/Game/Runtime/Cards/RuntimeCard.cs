@@ -1,5 +1,5 @@
-﻿using Demo.Core.Abstractions.Game.RuntimeData;
-using Demo.Core.Abstractions.Game.RuntimeObjects;
+﻿using Demo.Core.Abstractions.Game.Runtime.Cards;
+using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Objects;
 using Demo.Core.Game.Runtime.Common;

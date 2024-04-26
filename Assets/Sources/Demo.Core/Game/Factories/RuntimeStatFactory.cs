@@ -2,8 +2,8 @@
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Context;
 using Demo.Core.Abstractions.Game.Factories;
-using Demo.Core.Abstractions.Game.RuntimeData;
-using Demo.Core.Abstractions.Game.RuntimeObjects;
+using Demo.Core.Abstractions.Game.Runtime.Common;
+using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Runtime.Common;
 using Demo.Core.Game.Runtime.Data;

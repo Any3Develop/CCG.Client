@@ -1,8 +1,9 @@
 ﻿using Demo.Core.Abstractions.Common.EventSource;
-using Demo.Core.Abstractions.Game.RuntimeData;
+using Demo.Core.Abstractions.Game.Runtime.Common;
+using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
 
-namespace Demo.Core.Abstractions.Game.RuntimeObjects
+namespace Demo.Core.Abstractions.Game.Runtime.Effects
 {
     public interface IRuntimeEffect : IRuntimeObjectBase
     {

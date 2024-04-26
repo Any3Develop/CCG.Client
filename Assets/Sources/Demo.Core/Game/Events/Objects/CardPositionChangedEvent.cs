@@ -1,4 +1,4 @@
-﻿using Demo.Core.Abstractions.Game.RuntimeObjects;
+﻿using Demo.Core.Abstractions.Game.Runtime.Cards;
 
 namespace Demo.Core.Game.Events.Objects
 {

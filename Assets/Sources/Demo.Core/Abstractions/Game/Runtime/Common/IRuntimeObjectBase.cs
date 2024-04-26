@@ -1,8 +1,8 @@
 ﻿using System;
 using Demo.Core.Abstractions.Game.Data;
-using Demo.Core.Abstractions.Game.RuntimeData;
+using Demo.Core.Abstractions.Game.Runtime.Data;
 
-namespace Demo.Core.Abstractions.Game.RuntimeObjects
+namespace Demo.Core.Abstractions.Game.Runtime.Common
 {
     public interface IRuntimeObjectBase : IDisposable
     {

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Demo.Core.Abstractions.Game.RuntimeData;
+using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Enums;
 
 namespace Demo.Core.Game.Runtime.Data

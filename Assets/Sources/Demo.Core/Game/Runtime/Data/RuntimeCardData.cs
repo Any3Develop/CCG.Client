@@ -1,4 +1,4 @@
-using Demo.Core.Abstractions.Game.RuntimeData;
+using Demo.Core.Abstractions.Game.Runtime.Data;
 
 namespace Demo.Core.Game.Runtime.Data
 {

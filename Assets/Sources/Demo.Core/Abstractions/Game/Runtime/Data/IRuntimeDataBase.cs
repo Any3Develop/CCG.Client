@@ -1,4 +1,4 @@
-﻿namespace Demo.Core.Abstractions.Game.RuntimeData
+﻿namespace Demo.Core.Abstractions.Game.Runtime.Data
 {
     public interface IRuntimeDataBase
     {
