@@ -28,6 +28,7 @@ namespace Demo.Core.Abstractions.Game.Collections
         T Get<T>(int id) where T : TRuntime;
         bool TryGet(int id, out TRuntime result);
         bool TryGet<T>(int id, out T result) where T : TRuntime;
+        bool TryGet(Predicate<TRuntime> predicate, out TRuntime result);
         T GetFirst<T>(Predicate<T> predicate) where T : TRuntime;
         T GetLast<T>(Predicate<T> predicate) where T : TRuntime;
 

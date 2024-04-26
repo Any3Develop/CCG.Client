@@ -3,7 +3,7 @@ using Demo.Core.Game.Enums;
 
 namespace Demo.Core.Abstractions.Game.RuntimeData
 {
-    public interface IRuntimeObjectData : IRuntimeData
+    public interface IRuntimeObjectData : IRuntimeDataBase
     {
         List<string> EffectIds { get; }
         List<IRuntimeEffectData> Applied { get; }

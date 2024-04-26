@@ -7,10 +7,9 @@ namespace Demo.Core.Abstractions.Game.RuntimeObjects
     {
         new StatData Data { get; }
         new IRuntimeStatData RuntimeData { get; }
-        void Set(int value, bool notify = true);
-        void SetBase(int value, bool notify = true);
+        IRuntimeStat Sync(IRuntimeStatData runtimeData);
+        void SetValue(int value, bool notify = true);
         void SetMax(int value, bool notify = true);
-        void SetName(string value, bool notify = true);
         void Reset(bool notify = true);
     }
 }

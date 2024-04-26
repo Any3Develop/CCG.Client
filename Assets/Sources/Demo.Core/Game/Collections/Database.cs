@@ -8,5 +8,6 @@ namespace Demo.Core.Game.Collections
     {
         public IDataCollection<ObjectData> Objects { get; set; }
         public IDataCollection<EffectData> Effects { get; set; }
+        public IDataCollection<StatData> Stats{ get; set; }
     }
 }

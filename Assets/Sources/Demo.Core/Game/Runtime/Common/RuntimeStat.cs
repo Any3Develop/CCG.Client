@@ -1,4 +1,5 @@
-﻿using Demo.Core.Abstractions.Common.EventSource;
+﻿using System;
+using Demo.Core.Abstractions.Common.EventSource;
 using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Abstractions.Game.RuntimeObjects;
@@ -6,7 +7,7 @@ using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Stats;
 using Demo.Core.Game.Utils;
 
-namespace Demo.Core.Game.RuntimeObjects
+namespace Demo.Core.Game.Runtime.Common
 {
     public class RuntimeStat : IRuntimeStat
     {
@@ -39,23 +40,22 @@ namespace Demo.Core.Game.RuntimeObjects
             EventsSource = null;
         }
 
-        public virtual void Set(int value, bool notify = true)
+        public IRuntimeStat Sync(IRuntimeStatData runtimeData)
         {
             if (!Initialized)
-                return;
+                return this;
 
-            OnBeforeChanged(notify);
-            RuntimeData.Value = value;
-            OnAfterChanged(notify);
+            RuntimeData = runtimeData;
+            return this;
         }
 
-        public virtual void SetBase(int value, bool notify = true)
+        public virtual void SetValue(int value, bool notify = true)
         {
             if (!Initialized)
                 return;
 
             OnBeforeChanged(notify);
-            RuntimeData.Base = value;
+            RuntimeData.Value = Math.Min(value, RuntimeData.Max);
             OnAfterChanged(notify);
         }
 
@@ -66,16 +66,7 @@ namespace Demo.Core.Game.RuntimeObjects
 
             OnBeforeChanged(notify);
             RuntimeData.Max = value;
-            OnAfterChanged(notify);
-        }
-
-        public virtual void SetName(string value, bool notify = true)
-        {
-            if (!Initialized)
-                return;
-
-            OnBeforeChanged(notify);
-            RuntimeData.Name = value;
+            SetValue(RuntimeData.Value, false);
             OnAfterChanged(notify);
         }
 
@@ -85,10 +76,8 @@ namespace Demo.Core.Game.RuntimeObjects
                 return;
 
             OnBeforeChanged(notify);
-            RuntimeData.Base = Data.Base;
             RuntimeData.Max = Data.Max;
             RuntimeData.Value = Data.Value;
-            RuntimeData.Name = Data.Name;
             OnAfterChanged(notify);
         }
 
@@ -104,7 +93,7 @@ namespace Demo.Core.Game.RuntimeObjects
 
         #region IRuntimeObjectBase
 
-        IRuntimeData IRuntimeObjectBase.RuntimeData => RuntimeData;
+        IRuntimeDataBase IRuntimeObjectBase.RuntimeData => RuntimeData;
         IData IRuntimeObjectBase.Data => Data;
 
         #endregion

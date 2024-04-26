@@ -8,7 +8,7 @@ using Demo.Core.Game.Enums;
 using Demo.Core.Game.Events.Objects;
 using Demo.Core.Game.Utils;
 
-namespace Demo.Core.Game.RuntimeObjects
+namespace Demo.Core.Game.Runtime.Common
 {
     public abstract class RuntimeObject : IRuntimeObject
     {
@@ -20,7 +20,7 @@ namespace Demo.Core.Game.RuntimeObjects
 
         protected bool Initialized { get; private set; }
 
-        public void Init(
+        public IRuntimeObject Init(
             ObjectData data,
             IRuntimeObjectData runtimeData,
             IStatsCollection statsCollection,
@@ -33,8 +33,9 @@ namespace Demo.Core.Game.RuntimeObjects
             EffectsCollection = effectCollection;
             EventsSource = eventsSource;
             Initialized = true;
+            return this;
         }
-
+        
         public virtual void Dispose()
         {
             if (!Initialized)
@@ -51,8 +52,20 @@ namespace Demo.Core.Game.RuntimeObjects
             EffectsCollection = null;
         }
 
+        public IRuntimeObject Sync(IRuntimeObjectData runtimeData)
+        {
+            if (!Initialized)
+                return this;
+            
+            RuntimeData = runtimeData;
+            return this;
+        }
+
         public void SetState(RuntimeState value, bool notify = true)
         {
+            if (!Initialized)
+                return;
+            
             OnBeforeStateChanged(notify);
             RuntimeData.PreviousState = RuntimeData.State;
             RuntimeData.State = value;
@@ -71,7 +84,7 @@ namespace Demo.Core.Game.RuntimeObjects
 
         #region IRuntimeObjectBase
 
-        IRuntimeData IRuntimeObjectBase.RuntimeData => RuntimeData;
+        IRuntimeDataBase IRuntimeObjectBase.RuntimeData => RuntimeData;
         IData IRuntimeObjectBase.Data => Data;
 
         #endregion

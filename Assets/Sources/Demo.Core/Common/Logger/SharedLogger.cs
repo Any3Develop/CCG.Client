@@ -1,7 +1,7 @@
 ﻿using System;
 using Demo.Core.Abstractions.Common.SharedLogger;
 
-namespace Demo.Core.Common.SharedLogger
+namespace Demo.Core.Common.Logger
 {
     public class SharedLogger
     {

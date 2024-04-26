@@ -1,6 +1,6 @@
 using System;
 using Demo.Core.Abstractions.Common.SharedLogger;
-using Demo.Core.Common.SharedLogger;
+using Demo.Core.Common.Logger;
 using UnityEngine;
 
 namespace Common.Logger

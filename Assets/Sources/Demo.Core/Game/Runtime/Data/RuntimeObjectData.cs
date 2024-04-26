@@ -2,7 +2,7 @@
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Game.Enums;
 
-namespace Demo.Core.Game.RuntimeData
+namespace Demo.Core.Game.Runtime.Data
 {
     public abstract class RuntimeObjectData : IRuntimeObjectData
     {

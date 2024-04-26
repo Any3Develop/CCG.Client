@@ -7,5 +7,6 @@ namespace Demo.Core.Abstractions.Game.Context
     {
         IDataCollection<ObjectData> Objects { get; }
         IDataCollection<EffectData> Effects { get; }
+        IDataCollection<StatData> Stats { get; }
     }
 }

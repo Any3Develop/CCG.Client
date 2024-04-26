@@ -1,9 +1,8 @@
 ﻿namespace Demo.Core.Abstractions.Game.RuntimeData
 {
-    public interface IRuntimeStatData : IRuntimeData
+    public interface IRuntimeStatData : IRuntimeDataBase
     {
-        string Name { get; set; }
-        int Base { get; set; }
+        int RuntimeOwnerId { get; set; }
         int Max { get; set; }
         int Value { get; set; }
     }

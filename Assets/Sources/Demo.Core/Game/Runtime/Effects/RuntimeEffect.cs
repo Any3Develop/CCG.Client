@@ -6,7 +6,7 @@ using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Effects;
 using Demo.Core.Game.Utils;
 
-namespace Demo.Core.Game.RuntimeObjects
+namespace Demo.Core.Game.Runtime.Effects
 {
     public abstract class RuntimeEffect : IRuntimeEffect
     {
@@ -16,7 +16,7 @@ namespace Demo.Core.Game.RuntimeObjects
 
         protected bool Initialized { get; private set; }
 
-        public void Init(
+        public IRuntimeEffect Init(
             EffectData data,
             IRuntimeEffectData runtimeData,
             IEventsSource eventsSource)
@@ -25,6 +25,7 @@ namespace Demo.Core.Game.RuntimeObjects
             RuntimeData = runtimeData;
             EventsSource = eventsSource;
             Initialized = true;
+            return this;
         }
 
         public void Dispose()
@@ -38,23 +39,31 @@ namespace Demo.Core.Game.RuntimeObjects
             EventsSource = null;
         }
 
-        public void Sync(IRuntimeEffectData runtimeData, bool notify = true)
+        public IRuntimeEffect Sync(IRuntimeEffectData runtimeData)
         {
-            OnBeforeChanged(notify);
+            if (!Initialized)
+                return this;
+            
             RuntimeData = runtimeData;
-            OnAfterChanged(notify);
+            return this;
         }
 
         public bool IsExecuteAllowed() => true;
 
         public void Execute()
         {
+            if (!Initialized)
+                return;
+            
             OnBeforeExecute();
             OnAfterExecute();
         }
 
         public void Expire()
         {
+            if (!Initialized)
+                return;
+            
             OnBeforeExpire();
             OnAfterExpire();
         }
@@ -83,7 +92,7 @@ namespace Demo.Core.Game.RuntimeObjects
 
         #region IRuntimeObjectBase
 
-        IRuntimeData IRuntimeObjectBase.RuntimeData => RuntimeData;
+        IRuntimeDataBase IRuntimeObjectBase.RuntimeData => RuntimeData;
         IData IRuntimeObjectBase.Data => Data;
 
         #endregion

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Demo.Core.Abstractions.Common.EventSource;
-using Demo.Core.Common.SharedLogger;
+using Demo.Core.Common.Logger;
 
 namespace Demo.Core.Common.EventSource
 {
@@ -66,7 +66,7 @@ namespace Demo.Core.Common.EventSource
                 }
                 catch (Exception e)
                 {
-                    SharedLogger.SharedLogger.Error($"[{GetType().Name}] Some exception caused when {nameof(Publish)} event method : {subscriber.Callback?.Method.Name}, with registered type : {typeof(T).FullName}. Full exception: {e}");
+                    SharedLogger.Error($"[{GetType().Name}] Some exception caused when {nameof(Publish)} event method : {subscriber.Callback?.Method.Name}, with registered type : {typeof(T).FullName}. Full exception: {e}");
                 }
             }
         }

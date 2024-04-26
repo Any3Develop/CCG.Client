@@ -14,6 +14,7 @@ namespace Demo.Core.Abstractions.Game.RuntimeObjects
         IEffectsCollection EffectsCollection { get; }
         IEventsSource EventsSource { get; }
 
+        IRuntimeObject Sync(IRuntimeObjectData runtimeData);
         void SetState(RuntimeState value, bool notify = true);
     }
 }

@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Linq;
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Context;
-using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.Factories;
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Abstractions.Game.RuntimeObjects;
 using Demo.Core.Game.Data;
-using Demo.Core.Game.RuntimeData;
-using Demo.Core.Game.RuntimeObjects;
+using Demo.Core.Game.Runtime.Common;
+using Demo.Core.Game.Runtime.Data;
 
 namespace Demo.Core.Game.Factories
 {
-    public class RuntimeStatFactory : IRuntimeFactory<IRuntimeStat>
+    public class RuntimeStatFactory : IRuntimeStatFactory
     {
         private readonly IDatabase database;
         private readonly IRuntimePool runtimePool;
@@ -28,39 +26,43 @@ namespace Demo.Core.Game.Factories
             this.runtimeIdProvider = runtimeIdProvider;
         }
 
-        public IRuntimeStat Create(int? runtimeId, string ownerId, IData data, bool notify = true)
+        public IRuntimeStatData Create(int? runtimeOwnerId, string ownerId, string dataId, bool notify = true)
         {
-            if (data is not StatData statData)
-                throw new InvalidCastException($"To create {nameof(IRuntimeStat)} you should inject {nameof(StatData)} instead {data?.GetType().Name ?? "Type.Undefined"}");
+            if (!runtimeOwnerId.HasValue)
+                throw new NullReferenceException($"To create {nameof(IRuntimeStat)} you should inject {nameof(runtimeOwnerId)}");
             
-            runtimeId ??= runtimeIdProvider.Next();
-            var runtimeData = new RuntimeStatData
+            if (!runtimePool.TryGet(runtimeOwnerId.Value, out IRuntimeObject runtimeObject))
+                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeOwnerId.Value}, not found in {nameof(IRuntimePool)}");
+
+            if (runtimeObject.StatsCollection.TryGet(x => x.RuntimeData.DataId == dataId, out var runtimeStat))
+                return runtimeStat.RuntimeData;
+            
+            if (!database.Stats.TryGet(dataId, out var data))
+                throw new NullReferenceException($"{nameof(StatData)} with id {dataId}, not found in {nameof(IDataCollection<StatData>)}");
+            
+            return new RuntimeStatData
             {
-                Id = runtimeId.Value,
-                DataId = statData.Id,
+                Id = runtimeIdProvider.Next(),
+                DataId = dataId,
                 OwnerId = ownerId,
-                Base = statData.Base,
-                Max = statData.Max,
-                Value = statData.Value,
-                Name = statData.Name
+                RuntimeOwnerId = runtimeOwnerId.Value,
+                Max = data.Max,
+                Value = data.Value,
             };
-            
-            return Create(runtimeData, notify);
         }
 
-        public IRuntimeStat Create(IRuntimeData runtimeData, bool notify = true)
+        public IRuntimeStat Create(IRuntimeStatData runtimeData, bool notify = true)
         {
-            if (runtimeData is not IRuntimeStatData runtimeStatData)
-                throw new InvalidCastException($"To create {nameof(IRuntimeStat)} you should inject {nameof(IRuntimeStatData)} instead {runtimeData?.GetType().Name ?? "Type.Undefined"}");
-
-            if (!runtimePool.TryGet(runtimeData.Id, out IRuntimeObject runtimeObject))
+            if (!runtimePool.TryGet(runtimeData.RuntimeOwnerId, out IRuntimeObject runtimeObject))
                 throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.Id}, not found in {nameof(IRuntimePool)}");
 
-            if (!database.Objects.TryGet(runtimeData.DataId, out var objectData))
-                throw new NullReferenceException($"{nameof(ObjectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<ObjectData>)}");
+            if (!database.Stats.TryGet(runtimeData.DataId, out var statData))
+                throw new NullReferenceException($"{nameof(StatData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<StatData>)}");
 
-            var statData = objectData.Stats.FirstOrDefault(x => x.Id == runtimeStatData.DataId);
-            var runtimeStat = new RuntimeStat().Init(statData, runtimeStatData, runtimeObject.EventsSource);
+            if (runtimeObject.StatsCollection.TryGet(runtimeData.Id, out var runtimeStat))
+                return runtimeStat.Sync(runtimeData);
+            
+            runtimeStat = new RuntimeStat().Init(statData, runtimeData, runtimeObject.EventsSource);
             runtimeObject.StatsCollection.Add(runtimeStat, notify);
             
             return runtimeStat;

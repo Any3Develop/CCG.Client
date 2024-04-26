@@ -18,7 +18,8 @@ namespace Demo.Core.Game.Factories
             return new Database
             {
                 Objects = new DataCollection<ObjectData>(),
-                Effects = new DataCollection<EffectData>()
+                Effects = new DataCollection<EffectData>(),
+                Stats = new DataCollection<StatData>()
             };
         }
 

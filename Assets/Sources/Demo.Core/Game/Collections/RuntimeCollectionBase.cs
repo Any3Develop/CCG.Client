@@ -105,6 +105,12 @@ namespace Demo.Core.Game.Collections
             return result != null;
         }
 
+        public bool TryGet(Predicate<TRuntime> predicate, out TRuntime result)
+        {
+            result = GetFirst(predicate);
+            return result != null;
+        }
+
         public T GetFirst<T>(Predicate<T> predicate) where T : TRuntime
         {
             return Collection.OfType<T>().FirstOrDefault(predicate.Invoke);

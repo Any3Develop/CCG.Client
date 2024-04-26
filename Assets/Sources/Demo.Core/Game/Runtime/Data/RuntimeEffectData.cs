@@ -1,6 +1,6 @@
 ﻿using Demo.Core.Abstractions.Game.RuntimeData;
 
-namespace Demo.Core.Game.RuntimeData
+namespace Demo.Core.Game.Runtime.Data
 {
     public class RuntimeEffectData : IRuntimeEffectData
     {

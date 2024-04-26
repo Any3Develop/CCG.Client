@@ -1,75 +1,79 @@
 ﻿using System;
+using Demo.Core.Abstractions.Common.Collections;
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Context;
-using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.Factories;
 using Demo.Core.Abstractions.Game.RuntimeData;
 using Demo.Core.Abstractions.Game.RuntimeObjects;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Enums;
-using Demo.Core.Game.RuntimeData;
-using Demo.Core.Game.RuntimeObjects.Effects;
+using Demo.Core.Game.Runtime.Data;
+using Demo.Core.Game.Runtime.Effects;
 
 namespace Demo.Core.Game.Factories
 {
-    public class RuntimeEffectFactory : IRuntimeFactory<IRuntimeEffect>
+    public class RuntimeEffectFactory : IRuntimeEffectFactory
     {
         private readonly IDatabase database;
         private readonly IRuntimePool runtimePool;
         private readonly IRuntimeIdProvider runtimeIdProvider;
+        private readonly ITypeCollection<Keyword> keywordTypeCollection;
 
         public RuntimeEffectFactory(
             IDatabase database, 
             IRuntimePool runtimePool,
-            IRuntimeIdProvider runtimeIdProvider)
+            IRuntimeIdProvider runtimeIdProvider,
+            ITypeCollection<Keyword> keywordTypeCollection)
         {
             this.database = database;
             this.runtimePool = runtimePool;
             this.runtimeIdProvider = runtimeIdProvider;
+            this.keywordTypeCollection = keywordTypeCollection;
         }
 
-        public IRuntimeEffect Create(int? runtimeId, string ownerId, IData data, bool notify = true)
-        {
-            if (data is not EffectData effectData)
-                throw new InvalidCastException($"To create {nameof(IRuntimeEffect)} you should inject {nameof(EffectData)} instead {data?.GetType().Name ?? "Type.Undefined"}");
-
-            runtimeId ??= runtimeIdProvider.Next();
-            var runtimeData = effectData.Keyword switch // TODO: switch is for example, but instead switch it's going to be trough reflection & attribute with keyword
+        public IRuntimeEffectData Create(int? runtimeId, string ownerId, string dataId, bool notify = true)
+        {           
+            if (!database.Effects.TryGet(dataId, out var data))
+                throw new NullReferenceException($"{nameof(EffectData)} with id {dataId}, not found in {nameof(IDataCollection<EffectData>)}");
+            
+            return new RuntimeEffectData // TODO: use keyword to create specified runtime data
             {
-                Keyword.None => new RuntimeEffectData
-                {
-                    DataId = effectData.Id,
-                    Id = runtimeId.Value,
-                    OwnerId = ownerId,
-                    Lifetime = effectData.Lifetime,
-                    Value = effectData.Value
-                },
-                _ => throw new NotImplementedException($"Unknown {nameof(Keyword)}: {effectData.Keyword}")
+                DataId = data.Id,
+                Id = runtimeId ?? runtimeIdProvider.Next(),
+                OwnerId = ownerId,
+                Lifetime = data.Lifetime,
+                Value = data.Value
             };
-
-            return Create(runtimeData, notify);
         }
 
-        public IRuntimeEffect Create(IRuntimeData runtimeData, bool notify = true)
+        public IRuntimeEffect Create(IRuntimeEffectData runtimeData, bool notify = true)
         {
-            if (runtimeData is not IRuntimeEffectData runtimeEffectData)
-                throw new InvalidCastException($"To create {nameof(IRuntimeEffect)} you should inject {nameof(IRuntimeEffectData)} instead {runtimeData?.GetType().Name ?? "Type.Undefined"}");
-            
-            if (!runtimePool.TryGet(runtimeEffectData.EffectOwnerId, out IRuntimeObject runtimeEffectOwnerObject))
-                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeEffectData.EffectOwnerId}, not found in {nameof(IRuntimePool)}");
+            if (!runtimePool.TryGet(runtimeData.EffectOwnerId, out IRuntimeObject runtimeEffectOwnerObject))
+                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.EffectOwnerId}, not found in {nameof(IRuntimePool)}");
 
-            if (!database.Effects.TryGet(runtimeEffectData.DataId, out var effectData))
-                throw new NullReferenceException($"{nameof(EffectData)} with id {runtimeEffectData.DataId}, not found in {nameof(IDataCollection<EffectData>)}");
+            if (runtimeEffectOwnerObject.EffectsCollection.TryGet(runtimeData.Id, out var runtimeEffect))
+                return runtimeEffect.Sync(runtimeData);
             
-            var runtimeEffect = effectData.Keyword switch // TODO: switch is for example, but instead switch it's going to be trough reflection & attribute with keyword
-            {
-                Keyword.None => new RuntimeMockEffect(),
-                _ => throw new NotImplementedException($"Unknown {nameof(Keyword)}: {effectData.Keyword}")
-            };
+            if (!database.Effects.TryGet(runtimeData.DataId, out var data))
+                throw new NullReferenceException($"{nameof(EffectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<EffectData>)}");
             
-            runtimePool.Add(runtimeEffect, notify);
-            runtimeEffect.Init(effectData, runtimeEffectData, runtimeEffectOwnerObject.EventsSource);
+            runtimeEffect = CreateEffectInstance(data.Keyword).Init(data, runtimeData, runtimeEffectOwnerObject.EventsSource);
+            runtimeEffectOwnerObject.EffectsCollection.Add(runtimeEffect);
+            
             return runtimeEffect;
+        }
+
+        private RuntimeEffect CreateEffectInstance(Keyword keyword)
+        {
+            if (!keywordTypeCollection.TryGet(keyword, out var effectType))
+                throw new NullReferenceException($"{nameof(Type)} with {nameof(Keyword)} {keyword}, not found in {nameof(ITypeCollection<Keyword>)}");
+            
+            var constructorInfo = effectType.GetConstructor(Type.EmptyTypes);
+
+            if (constructorInfo == null)
+                throw new NullReferenceException($"{effectType.Name} with {nameof(Keyword)} {keyword}, default constructor not found.");
+          
+            return (RuntimeEffect)constructorInfo.Invoke(Array.Empty<object>());
         }
     }
 }

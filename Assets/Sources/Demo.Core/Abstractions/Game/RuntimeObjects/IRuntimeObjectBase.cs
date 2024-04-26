@@ -6,7 +6,7 @@ namespace Demo.Core.Abstractions.Game.RuntimeObjects
 {
     public interface IRuntimeObjectBase : IDisposable
     {
-        IRuntimeData RuntimeData { get; }
+        IRuntimeDataBase RuntimeData { get; }
         IData Data { get; }
     }
 }

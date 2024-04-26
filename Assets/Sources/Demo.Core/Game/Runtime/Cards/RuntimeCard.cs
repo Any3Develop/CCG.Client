@@ -2,9 +2,10 @@
 using Demo.Core.Abstractions.Game.RuntimeObjects;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Objects;
+using Demo.Core.Game.Runtime.Common;
 using Demo.Core.Game.Utils;
 
-namespace Demo.Core.Game.RuntimeObjects
+namespace Demo.Core.Game.Runtime.Cards
 {
     public class RuntimeCard : RuntimeObject, IRuntimeCard
     {
