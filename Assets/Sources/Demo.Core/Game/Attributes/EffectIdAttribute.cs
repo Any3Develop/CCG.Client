@@ -1,5 +1,5 @@
 ﻿using System;
-using Demo.Core.Game.Enums;
+using Demo.Core.Game.Data.Enums;
 
 namespace Demo.Core.Game.Attributes
 {

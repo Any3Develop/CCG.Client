@@ -4,7 +4,7 @@ using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
-using Demo.Core.Game.Enums;
+using Demo.Core.Game.Data.Enums;
 using Demo.Core.Game.Events.Objects;
 using Demo.Core.Game.Utils;
 
@@ -61,7 +61,7 @@ namespace Demo.Core.Game.Runtime.Common
             return this;
         }
 
-        public void SetState(RuntimeState value, bool notify = true)
+        public void SetState(ObjectState value, bool notify = true)
         {
             if (!Initialized)
                 return;

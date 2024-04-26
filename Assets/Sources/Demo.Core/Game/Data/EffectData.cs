@@ -1,5 +1,5 @@
 ﻿using Demo.Core.Abstractions.Game.Data;
-using Demo.Core.Game.Enums;
+using Demo.Core.Game.Data.Enums;
 
 namespace Demo.Core.Game.Data
 {

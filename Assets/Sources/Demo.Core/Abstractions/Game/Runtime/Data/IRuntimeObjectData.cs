@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Demo.Core.Game.Enums;
+using Demo.Core.Game.Data.Enums;
 
 namespace Demo.Core.Abstractions.Game.Runtime.Data
 {
@@ -8,7 +8,7 @@ namespace Demo.Core.Abstractions.Game.Runtime.Data
         List<string> EffectIds { get; }
         List<IRuntimeEffectData> Applied { get; }
         List<IRuntimeStatData> Stats { get; }
-        RuntimeState PreviousState { get; set; }
-        RuntimeState State { get; set; }
+        ObjectState PreviousState { get; set; }
+        ObjectState State { get; set; }
     }
 }

@@ -2,7 +2,7 @@
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
-using Demo.Core.Game.Enums;
+using Demo.Core.Game.Data.Enums;
 
 namespace Demo.Core.Abstractions.Game.Runtime.Common
 {
@@ -15,6 +15,6 @@ namespace Demo.Core.Abstractions.Game.Runtime.Common
         IEventsSource EventsSource { get; }
 
         IRuntimeObject Sync(IRuntimeObjectData runtimeData);
-        void SetState(RuntimeState value, bool notify = true);
+        void SetState(ObjectState value, bool notify = true);
     }
 }

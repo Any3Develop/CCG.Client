@@ -1,6 +1,6 @@
-﻿namespace Demo.Core.Game.Enums
+﻿namespace Demo.Core.Game.Data.Enums
 {
-    public enum RuntimeState
+    public enum ObjectState
     {
         Created = 0,
         InDeck,

@@ -1,4 +1,4 @@
-﻿namespace Demo.Core.Game.Enums
+﻿namespace Demo.Core.Game.Data.Enums
 {
     public enum Keyword
     {

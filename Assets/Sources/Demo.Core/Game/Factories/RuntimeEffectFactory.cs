@@ -7,7 +7,7 @@ using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Abstractions.Game.Runtime.Effects;
 using Demo.Core.Game.Data;
-using Demo.Core.Game.Enums;
+using Demo.Core.Game.Data.Enums;
 using Demo.Core.Game.Runtime.Data;
 using Demo.Core.Game.Runtime.Effects;
 
