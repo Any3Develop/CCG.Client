@@ -2,7 +2,7 @@
 using Demo.Core.Abstractions.Game.Context;
 using Demo.Core.Game.Data;
 
-namespace Demo.Core.Game.Collections
+namespace Demo.Core.Game.Context
 {
     public class Database : IDatabase
     {

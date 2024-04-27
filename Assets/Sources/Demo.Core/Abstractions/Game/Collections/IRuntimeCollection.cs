@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Demo.Core.Abstractions.Game.Runtime.Common;
+using Demo.Core.Abstractions.Game.Runtime.Objects;
 
 namespace Demo.Core.Abstractions.Game.Collections
 {

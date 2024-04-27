@@ -4,11 +4,11 @@ using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Data.Enums;
 
-namespace Demo.Core.Abstractions.Game.Runtime.Common
+namespace Demo.Core.Abstractions.Game.Runtime.Objects
 {
     public interface IRuntimeObject : IRuntimeObjectBase
     {
-        new ObjectData Data { get; }
+        ObjectData Data { get; }
         new IRuntimeObjectData RuntimeData { get; }
         IStatsCollection StatsCollection { get; }
         IEffectsCollection EffectsCollection { get; }

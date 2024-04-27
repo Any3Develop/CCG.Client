@@ -10,49 +10,48 @@ namespace Demo.Core.Common.EventSource
 {
     public class EventSource : IEventsSource
     {
-        private readonly Dictionary<Type, List<Subscriber>> subscribers = new();
-        private bool sortRequested;
-
+        private readonly Dictionary<Type, SubscriberCollection> subscribers = new();
         public IDisposable Subscribe<T>(Action<T> callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalRegisterSubscriber<T>(callback, true, order, token);
+            return InternalSubscribe<T>(callback, true, order, token);
         }
 
         public IDisposable Subscribe<T>(Action callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalRegisterSubscriber<T>(callback, false, order, token);
+            return InternalSubscribe<T>(callback, false, order, token);
         }
 
         public IDisposable Subscribe<T>(Func<Task> callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalRegisterSubscriber<T>(callback, false, order, token);
+            return InternalSubscribe<T>(callback, false, order, token);
         }
 
         public IDisposable Subscribe<T>(Func<T, Task> callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalRegisterSubscriber<T>(callback, true, order, token);
+            return InternalSubscribe<T>(callback, true, order, token);
         }
 
         public void Dispose()
         {
-            foreach (var listeners in subscribers.Values.ToArray())
-                listeners.ToList().ForEach(x => x?.Dispose());
-
+            var disposables = subscribers.Values.OfType<IDisposable>().ToArray();
             subscribers.Clear();
+            
+            foreach (var disposable in disposables)
+                disposable?.Dispose();
         }
 
         public void Publish<T>(T value)
         {
-            if (!subscribers.TryGetValue(typeof(T), out var listOfListeners))
+            if (!subscribers.TryGetValue(typeof(T), out var subscriberCollection))
                 return;
 
-            if (sortRequested)
+            if (subscriberCollection.UnSorted)
             {
-                listOfListeners.Sort();
-                sortRequested = false;
+                subscriberCollection.Sort();
+                subscriberCollection.UnSorted = false;
             }
 
-            foreach (var subscriber in listOfListeners.ToArray())
+            foreach (var subscriber in subscriberCollection.ToArray())
             {
                 try
                 {
@@ -71,12 +70,13 @@ namespace Demo.Core.Common.EventSource
             }
         }
 
-        private IDisposable InternalRegisterSubscriber<T>(Delegate callback, bool hasParameters, int? order, CancellationToken? token)
+        private IDisposable InternalSubscribe<T>(Delegate callback, bool hasParameters, int? order, CancellationToken? token)
         {
             var registerType = typeof(T);
             if (!subscribers.TryGetValue(registerType, out var registered))
-                subscribers[registerType] = registered = new List<Subscriber>();
+                subscribers[registerType] = registered = new SubscriberCollection();
 
+            registered.UnSorted |= order.HasValue;
             var subscriber = new Subscriber
             {
                 Callback = callback,
@@ -88,8 +88,7 @@ namespace Demo.Core.Common.EventSource
 
             subscriber.OnDisposeAction += () =>
             {
-                if (cancellationTokenRegistration is
-                    {Token: {IsCancellationRequested: false}})
+                if (cancellationTokenRegistration is {Token: {IsCancellationRequested: false}})
                     cancellationTokenRegistration.Value.Dispose();
 
                 if (!subscribers.TryGetValue(registerType, out var result))
@@ -101,7 +100,6 @@ namespace Demo.Core.Common.EventSource
             };
 
             registered.Add(subscriber);
-            sortRequested = true;
             return subscriber;
         }
     }

@@ -2,27 +2,28 @@
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Context;
 using Demo.Core.Abstractions.Game.Factories;
-using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Abstractions.Game.Runtime.Data;
+using Demo.Core.Abstractions.Game.Runtime.Objects;
+using Demo.Core.Abstractions.Game.Runtime.Stats;
 using Demo.Core.Game.Data;
-using Demo.Core.Game.Runtime.Common;
 using Demo.Core.Game.Runtime.Data;
+using Demo.Core.Game.Runtime.Objects;
 
 namespace Demo.Core.Game.Factories
 {
     public class RuntimeStatFactory : IRuntimeStatFactory
     {
         private readonly IDatabase database;
-        private readonly IRuntimePool runtimePool;
+        private readonly IObjectsCollection objectsCollection;
         private readonly IRuntimeIdProvider runtimeIdProvider;
 
         public RuntimeStatFactory(
             IDatabase database,
-            IRuntimePool runtimePool,
+            IObjectsCollection objectsCollection,
             IRuntimeIdProvider runtimeIdProvider)
         {
             this.database = database;
-            this.runtimePool = runtimePool;
+            this.objectsCollection = objectsCollection;
             this.runtimeIdProvider = runtimeIdProvider;
         }
 
@@ -31,8 +32,8 @@ namespace Demo.Core.Game.Factories
             if (!runtimeOwnerId.HasValue)
                 throw new NullReferenceException($"To create {nameof(IRuntimeStat)} you should inject {nameof(runtimeOwnerId)}");
             
-            if (!runtimePool.TryGet(runtimeOwnerId.Value, out IRuntimeObject runtimeObject))
-                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeOwnerId.Value}, not found in {nameof(IRuntimePool)}");
+            if (!objectsCollection.TryGet(runtimeOwnerId.Value, out var runtimeObject))
+                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeOwnerId.Value}, not found in {nameof(IObjectsCollection)}");
 
             if (runtimeObject.StatsCollection.TryGet(x => x.RuntimeData.DataId == dataId, out var runtimeStat))
                 return runtimeStat.RuntimeData;
@@ -53,8 +54,8 @@ namespace Demo.Core.Game.Factories
 
         public IRuntimeStat Create(IRuntimeStatData runtimeData, bool notify = true)
         {
-            if (!runtimePool.TryGet(runtimeData.RuntimeOwnerId, out IRuntimeObject runtimeObject))
-                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.Id}, not found in {nameof(IRuntimePool)}");
+            if (!objectsCollection.TryGet(runtimeData.RuntimeOwnerId, out var runtimeObject))
+                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.Id}, not found in {nameof(IObjectsCollection)}");
 
             if (!database.Stats.TryGet(runtimeData.DataId, out var statData))
                 throw new NullReferenceException($"{nameof(StatData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<StatData>)}");

@@ -1,13 +1,13 @@
 ﻿using System;
 using Demo.Core.Abstractions.Common.EventSource;
-using Demo.Core.Abstractions.Game.Data;
-using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Abstractions.Game.Runtime.Data;
+using Demo.Core.Abstractions.Game.Runtime.Objects;
+using Demo.Core.Abstractions.Game.Runtime.Stats;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Stats;
 using Demo.Core.Game.Utils;
 
-namespace Demo.Core.Game.Runtime.Common
+namespace Demo.Core.Game.Runtime.Objects
 {
     public class RuntimeStat : IRuntimeStat
     {
@@ -94,7 +94,6 @@ namespace Demo.Core.Game.Runtime.Common
         #region IRuntimeObjectBase
 
         IRuntimeDataBase IRuntimeObjectBase.RuntimeData => RuntimeData;
-        IData IRuntimeObjectBase.Data => Data;
 
         #endregion
     }

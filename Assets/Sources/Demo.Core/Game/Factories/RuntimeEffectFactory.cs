@@ -3,9 +3,9 @@ using Demo.Core.Abstractions.Common.Collections;
 using Demo.Core.Abstractions.Game.Collections;
 using Demo.Core.Abstractions.Game.Context;
 using Demo.Core.Abstractions.Game.Factories;
-using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Abstractions.Game.Runtime.Effects;
+using Demo.Core.Abstractions.Game.Runtime.Objects;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Data.Enums;
 using Demo.Core.Game.Runtime.Data;
@@ -16,18 +16,18 @@ namespace Demo.Core.Game.Factories
     public class RuntimeEffectFactory : IRuntimeEffectFactory
     {
         private readonly IDatabase database;
-        private readonly IRuntimePool runtimePool;
+        private readonly IObjectsCollection objectsCollection;
         private readonly IRuntimeIdProvider runtimeIdProvider;
         private readonly ITypeCollection<Keyword> keywordTypeCollection;
 
         public RuntimeEffectFactory(
             IDatabase database, 
-            IRuntimePool runtimePool,
+            IObjectsCollection objectsCollection,
             IRuntimeIdProvider runtimeIdProvider,
             ITypeCollection<Keyword> keywordTypeCollection)
         {
             this.database = database;
-            this.runtimePool = runtimePool;
+            this.objectsCollection = objectsCollection;
             this.runtimeIdProvider = runtimeIdProvider;
             this.keywordTypeCollection = keywordTypeCollection;
         }
@@ -49,8 +49,8 @@ namespace Demo.Core.Game.Factories
 
         public IRuntimeEffect Create(IRuntimeEffectData runtimeData, bool notify = true)
         {
-            if (!runtimePool.TryGet(runtimeData.EffectOwnerId, out IRuntimeObject runtimeEffectOwnerObject))
-                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.EffectOwnerId}, not found in {nameof(IRuntimePool)}");
+            if (!objectsCollection.TryGet(runtimeData.EffectOwnerId, out var runtimeEffectOwnerObject))
+                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.EffectOwnerId}, not found in {nameof(IObjectsCollection)}");
 
             if (runtimeEffectOwnerObject.EffectsCollection.TryGet(runtimeData.Id, out var runtimeEffect))
                 return runtimeEffect.Sync(runtimeData);

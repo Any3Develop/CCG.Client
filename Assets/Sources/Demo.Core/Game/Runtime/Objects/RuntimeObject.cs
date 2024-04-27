@@ -1,14 +1,13 @@
 ﻿using Demo.Core.Abstractions.Common.EventSource;
 using Demo.Core.Abstractions.Game.Collections;
-using Demo.Core.Abstractions.Game.Data;
-using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Abstractions.Game.Runtime.Data;
+using Demo.Core.Abstractions.Game.Runtime.Objects;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Data.Enums;
 using Demo.Core.Game.Events.Objects;
 using Demo.Core.Game.Utils;
 
-namespace Demo.Core.Game.Runtime.Common
+namespace Demo.Core.Game.Runtime.Objects
 {
     public abstract class RuntimeObject : IRuntimeObject
     {
@@ -85,7 +84,6 @@ namespace Demo.Core.Game.Runtime.Common
         #region IRuntimeObjectBase
 
         IRuntimeDataBase IRuntimeObjectBase.RuntimeData => RuntimeData;
-        IData IRuntimeObjectBase.Data => Data;
 
         #endregion
     }

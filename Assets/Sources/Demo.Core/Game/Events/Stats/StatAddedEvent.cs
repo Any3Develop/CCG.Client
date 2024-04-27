@@ -1,4 +1,4 @@
-﻿using Demo.Core.Abstractions.Game.Runtime.Common;
+﻿using Demo.Core.Abstractions.Game.Runtime.Stats;
 
 namespace Demo.Core.Game.Events.Stats
 {

@@ -23,9 +23,9 @@ namespace Demo.Core.Game.Factories
             };
         }
 
-        public IRuntimePool CreateRuntimePool(params object[] args)
+        public IObjectsCollection CreateObjectsCollection(params object[] args)
         {
-            return new RuntimePool();
+            return new ObjectsCollection();
         }
 
         public IEffectsCollection CreateEffectsCollection(params object[] args)
@@ -36,6 +36,11 @@ namespace Demo.Core.Game.Factories
         public IStatsCollection CreateStatsCollection(params object[] args)
         {
             return new StatsCollection(GetRequiredArgument<IEventsSource>(args));
+        }
+
+        public IPlayersCollection CreatePlayersCollection(params object[] args)
+        {
+            return new PlayersCollection();
         }
 
         public IEventsSource CreateEventsSource(params object[] args)

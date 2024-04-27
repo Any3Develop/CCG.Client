@@ -2,12 +2,12 @@
 using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Objects;
-using Demo.Core.Game.Runtime.Common;
+using Demo.Core.Game.Runtime.Objects;
 using Demo.Core.Game.Utils;
 
 namespace Demo.Core.Game.Runtime.Cards
 {
-    public class RuntimeCard : RuntimeObject, IRuntimeCard
+    public abstract class RuntimeCardBase : RuntimeObject, IRuntimeCard
     {
         public new CardData Data => (CardData) base.Data;
         public new IRuntimeCardData RuntimeData => (IRuntimeCardData) base.RuntimeData;

@@ -1,8 +1,8 @@
 ﻿using Demo.Core.Abstractions.Common.EventSource;
 using Demo.Core.Abstractions.Game.Data;
-using Demo.Core.Abstractions.Game.Runtime.Common;
 using Demo.Core.Abstractions.Game.Runtime.Data;
 using Demo.Core.Abstractions.Game.Runtime.Effects;
+using Demo.Core.Abstractions.Game.Runtime.Objects;
 using Demo.Core.Game.Data;
 using Demo.Core.Game.Events.Effects;
 using Demo.Core.Game.Utils;
@@ -94,7 +94,6 @@ namespace Demo.Core.Game.Runtime.Effects
         #region IRuntimeObjectBase
 
         IRuntimeDataBase IRuntimeObjectBase.RuntimeData => RuntimeData;
-        IData IRuntimeObjectBase.Data => Data;
 
         #endregion
     }

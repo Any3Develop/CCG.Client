@@ -20,11 +20,6 @@ namespace Demo.Core.Common.EventSource
             memo?.Invoke();
         }
 
-        public int CompareTo(Subscriber other)
-        {
-            if (ReferenceEquals(this, other)) return 0;
-            if (ReferenceEquals(null, other)) return 1;
-            return Order.CompareTo(other.Order);
-        }
+        public int CompareTo(Subscriber other) => Order.CompareTo(other.Order);
     }
 }

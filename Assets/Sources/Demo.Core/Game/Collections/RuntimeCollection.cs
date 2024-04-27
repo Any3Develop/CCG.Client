@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Demo.Core.Abstractions.Game.Collections;
-using Demo.Core.Abstractions.Game.Runtime.Common;
+using Demo.Core.Abstractions.Game.Runtime.Objects;
 
 namespace Demo.Core.Game.Collections
 {
-    public abstract class RuntimeCollectionBase<TRuntime> : IRuntimeCollection<TRuntime> where TRuntime : IRuntimeObjectBase
+    public class RuntimeCollection<TRuntime> : IRuntimeCollection<TRuntime> where TRuntime : IRuntimeObjectBase
     {
         protected readonly List<TRuntime> Collection = new();
         public virtual int Count => Collection.Count;

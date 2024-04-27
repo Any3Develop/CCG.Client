@@ -6,7 +6,7 @@ using Demo.Core.Game.Utils;
 
 namespace Demo.Core.Game.Collections
 {
-    public class EffectsCollection : RuntimeCollectionBase<IRuntimeEffect>, IEffectsCollection
+    public class EffectsCollection : RuntimeCollection<IRuntimeEffect>, IEffectsCollection
     {
         private readonly IEventsSource eventsSource;
 

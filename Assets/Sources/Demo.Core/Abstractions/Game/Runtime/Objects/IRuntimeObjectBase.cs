@@ -1,12 +1,10 @@
 ﻿using System;
-using Demo.Core.Abstractions.Game.Data;
 using Demo.Core.Abstractions.Game.Runtime.Data;
 
-namespace Demo.Core.Abstractions.Game.Runtime.Common
+namespace Demo.Core.Abstractions.Game.Runtime.Objects
 {
     public interface IRuntimeObjectBase : IDisposable
     {
         IRuntimeDataBase RuntimeData { get; }
-        IData Data { get; }
     }
 }

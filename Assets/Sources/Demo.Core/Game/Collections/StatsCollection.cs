@@ -1,12 +1,12 @@
 ﻿using Demo.Core.Abstractions.Common.EventSource;
 using Demo.Core.Abstractions.Game.Collections;
-using Demo.Core.Abstractions.Game.Runtime.Common;
+using Demo.Core.Abstractions.Game.Runtime.Stats;
 using Demo.Core.Game.Events.Stats;
 using Demo.Core.Game.Utils;
 
 namespace Demo.Core.Game.Collections
 {
-    public class StatsCollection : RuntimeCollectionBase<IRuntimeStat>, IStatsCollection
+    public class StatsCollection : RuntimeCollection<IRuntimeStat>, IStatsCollection
     {
         private readonly IEventsSource eventsSource;
         public StatsCollection(IEventsSource eventsSource)
