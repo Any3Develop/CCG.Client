@@ -1,5 +1,4 @@
-﻿using System;
-using Demo.Core.Abstractions.Common.SharedLogger;
+﻿using Demo.Core.Abstractions.Common.Logger;
 
 namespace Demo.Core.Common.Logger
 {
@@ -12,19 +11,19 @@ namespace Demo.Core.Common.Logger
             logger = instance;
         }
 
-        public static void Log(string message)
+        public static void Log(object message)
         {
             logger.Log(message);
         }
 
-        public static void Error(string message)
+        public static void Warning(object message)
         {
-            logger.Error(message);
+            logger.Warning(message);
         }
 
-        public static void Error(Exception exception)
+        public static void Error(object message)
         {
-            logger.Error(exception);
+            logger.Error(message);
         }
     }
 }

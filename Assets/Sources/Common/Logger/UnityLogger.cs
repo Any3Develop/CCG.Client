@@ -1,5 +1,4 @@
-using System;
-using Demo.Core.Abstractions.Common.SharedLogger;
+using Demo.Core.Abstractions.Common.Logger;
 using Demo.Core.Common.Logger;
 using UnityEngine;
 
@@ -12,19 +11,19 @@ namespace Common.Logger
             SharedLogger.Initialize(this);
         }
 
-        public void Log(string message)
+        public void Log(object message)
         {
             Debug.Log(message);
         }
 
-        public void Error(string message)
+        public void Warning(object message)
         {
-            Debug.LogError(message);
+            Debug.LogWarning(message);
         }
 
-        public void Error(Exception exception)
+        public void Error(object message)
         {
-            Debug.LogException(exception);
+            Debug.LogError(message);
         }
     }
 }
