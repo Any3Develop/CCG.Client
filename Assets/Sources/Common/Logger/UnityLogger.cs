@@ -1,5 +1,5 @@
-using Demo.Core.Abstractions.Common.Logger;
-using Demo.Core.Common.Logger;
+using Shared.Abstractions.Common.Logger;
+using Shared.Common.Logger;
 using UnityEngine;
 
 namespace Common.Logger
