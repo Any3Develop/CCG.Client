@@ -3,6 +3,6 @@
     public interface ISession
     {
         string Id { get; }
-        
+        void Build(params object[] args);
     }
 }

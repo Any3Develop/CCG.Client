@@ -2,5 +2,11 @@
 
 namespace Shared.Abstractions.Game.Collections
 {
-    public interface IPlayersCollection : IRuntimeCollection<IRuntimePlayer> {}
+    public interface IPlayersCollection : IRuntimeCollection<IRuntimePlayer>
+    {
+        IRuntimePlayer Get(string ownerId);
+        IRuntimePlayer GetOpposite(string ownerId);
+        IRuntimePlayer GetOpposite(IRuntimePlayer runtimePlayer);
+        bool TryGet(string ownerId, out IRuntimePlayer result);
+    }
 }

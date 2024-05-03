@@ -2,6 +2,7 @@
 using Shared.Abstractions.Common.Collections;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
+using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Factories;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Effects;
@@ -59,7 +60,7 @@ namespace Shared.Game.Factories
                 throw new NullReferenceException($"{nameof(EffectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<EffectData>)}");
             
             runtimeEffect = CreateEffectInstance(data.Keyword).Init(data, runtimeData, runtimeEffectOwnerObject.EventsSource);
-            runtimeEffectOwnerObject.EffectsCollection.Add(runtimeEffect);
+            runtimeEffectOwnerObject.EffectsCollection.Add(runtimeEffect, notify);
             
             return runtimeEffect;
         }

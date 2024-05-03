@@ -1,6 +1,7 @@
 ﻿using System;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
+using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Factories;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
@@ -32,12 +33,6 @@ namespace Shared.Game.Factories
             if (!runtimeOwnerId.HasValue)
                 throw new NullReferenceException($"To create {nameof(IRuntimeStat)} you should inject {nameof(runtimeOwnerId)}");
             
-            if (!objectsCollection.TryGet(runtimeOwnerId.Value, out var runtimeObject))
-                throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeOwnerId.Value}, not found in {nameof(IObjectsCollection)}");
-
-            if (runtimeObject.StatsCollection.TryGet(x => x.RuntimeData.DataId == dataId, out var runtimeStat))
-                return runtimeStat.RuntimeData;
-            
             if (!database.Stats.TryGet(dataId, out var data))
                 throw new NullReferenceException($"{nameof(StatData)} with id {dataId}, not found in {nameof(IDataCollection<StatData>)}");
             
@@ -57,11 +52,11 @@ namespace Shared.Game.Factories
             if (!objectsCollection.TryGet(runtimeData.RuntimeOwnerId, out var runtimeObject))
                 throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.Id}, not found in {nameof(IObjectsCollection)}");
 
-            if (!database.Stats.TryGet(runtimeData.DataId, out var statData))
-                throw new NullReferenceException($"{nameof(StatData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<StatData>)}");
-
             if (runtimeObject.StatsCollection.TryGet(runtimeData.Id, out var runtimeStat))
                 return runtimeStat.Sync(runtimeData);
+            
+            if (!database.Stats.TryGet(runtimeData.DataId, out var statData))
+                throw new NullReferenceException($"{nameof(StatData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<StatData>)}");
             
             runtimeStat = new RuntimeStat().Init(statData, runtimeData, runtimeObject.EventsSource);
             runtimeObject.StatsCollection.Add(runtimeStat, notify);

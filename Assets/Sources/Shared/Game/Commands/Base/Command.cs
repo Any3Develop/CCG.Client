@@ -10,11 +10,13 @@ namespace Shared.Game.Commands.Base
     
     public abstract class Command : ICommand
     {
+        public string ExecutorId { get; private set; }
         public ICommandModel Model { get; private set; }
         protected IContext Context { get; private set; }
 
-        public void Init(ICommandModel model, IContext context)
+        public void Init(string executorId, ICommandModel model, IContext context)
         {
+            ExecutorId = executorId;
             Model = model;
             Context = context;
         }

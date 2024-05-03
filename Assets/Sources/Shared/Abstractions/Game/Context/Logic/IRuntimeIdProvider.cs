@@ -1,4 +1,4 @@
-﻿namespace Shared.Abstractions.Game.Context
+﻿namespace Shared.Abstractions.Game.Context.Logic
 {
     public interface IRuntimeIdProvider
     {

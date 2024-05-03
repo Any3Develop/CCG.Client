@@ -1,28 +1,22 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Shared.Abstractions.Common.Collections;
 using Shared.Abstractions.Common.EventSource;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
+using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Factories;
 using Shared.Common.EventSource;
 using Shared.Game.Collections;
 using Shared.Game.Context;
+using Shared.Game.Context.Logic;
 using Shared.Game.Data;
 
 namespace Shared.Game.Factories
 {
     public class ContextFactory : IContextFactory
     {
-        public IDatabase CreateDatabase(params object[] args)
-        {
-            return new Database
-            {
-                Objects = new DataCollection<ObjectData>(),
-                Effects = new DataCollection<EffectData>(),
-                Stats = new DataCollection<StatData>()
-            };
-        }
-
+        #region Collections
         public IObjectsCollection CreateObjectsCollection(params object[] args)
         {
             return new ObjectsCollection();
@@ -42,7 +36,9 @@ namespace Shared.Game.Factories
         {
             return new PlayersCollection();
         }
+        #endregion
 
+        #region Logic
         public IEventsSource CreateEventsSource(params object[] args)
         {
             return new EventSource();
@@ -53,6 +49,27 @@ namespace Shared.Game.Factories
             return new RuntimeIdProvider();
         }
 
+        public ICommandProcessor CreateCommandProcessor(params object[] args)
+        {
+            return new CommandProcessor(GetRequiredArgument<IContext>(args),
+                GetRequiredArgument<ITypeCollection<string>>(args));
+        }
+        #endregion
+
+        #region Context
+        public IDatabase CreateDatabase(params object[] args)
+        {
+            return new Database
+            {
+                Objects = new DataCollection<ObjectData>(),
+                Effects = new DataCollection<EffectData>(),
+                Stats = new DataCollection<StatData>()
+            };
+        }
+        #endregion
+
+        #region Common
+
         private T GetRequiredArgument<T>(params object[] args)
         {
             return args.OfType<T>().FirstOrDefault();
@@ -62,5 +79,7 @@ namespace Shared.Game.Factories
         {
             return args.OfType<T>().ToArray();
         }
+
+        #endregion
     }
 }
