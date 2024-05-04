@@ -1,12 +1,12 @@
-﻿using Shared.Abstractions.Common.EventSource;
-using Shared.Abstractions.Game.Collections;
+﻿using Shared.Abstractions.Game.Collections;
+using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Runtime.Effects;
 using Shared.Game.Events.Effects;
 using Shared.Game.Utils;
 
 namespace Shared.Game.Collections
 {
-    public class EffectsCollection : RuntimeCollection<IRuntimeEffect>, IEffectsCollection
+    public class EffectsCollection : RuntimeCollectionBase<IRuntimeEffect>, IEffectsCollection
     {
         private readonly IEventsSource eventsSource;
 
@@ -14,7 +14,10 @@ namespace Shared.Game.Collections
         {
             this.eventsSource = eventsSource;
         }
-
+        
+        protected override int GetId(IRuntimeEffect value) =>
+            value?.RuntimeData?.Id ?? int.MinValue;
+        
         public override bool Add(IRuntimeEffect value, bool notify = true)
         {
             var result = base.Add(value, notify);

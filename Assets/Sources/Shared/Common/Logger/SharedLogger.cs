@@ -2,7 +2,7 @@
 
 namespace Shared.Common.Logger
 {
-    public class SharedLogger
+    public static class SharedLogger
     {
         private static ISharedLogger logger;
 

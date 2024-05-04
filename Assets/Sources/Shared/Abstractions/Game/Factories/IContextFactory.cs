@@ -1,5 +1,4 @@
-﻿using Shared.Abstractions.Common.EventSource;
-using Shared.Abstractions.Game.Collections;
+﻿using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
 using Shared.Abstractions.Game.Context.Logic;
 

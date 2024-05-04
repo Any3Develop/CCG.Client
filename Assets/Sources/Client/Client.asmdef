@@ -6,7 +6,12 @@
         "Unity.TextMeshPro",
         "UniRx",
         "Zenject",
-        "DOTween.Modules"
+        "DOTween.Modules",
+        "UniTask",
+        "UniTask.DOTween",
+        "UniTask.Addressables",
+        "UniTask.TextMeshPro",
+        "UniTask.Linq"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

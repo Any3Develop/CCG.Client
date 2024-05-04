@@ -1,15 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Shared.Abstractions.Common.Collections;
-using Shared.Abstractions.Common.EventSource;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
 using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Factories;
-using Shared.Common.EventSource;
 using Shared.Game.Collections;
 using Shared.Game.Context;
 using Shared.Game.Context.Logic;
+using Shared.Game.Context.Logic.EventSource;
 using Shared.Game.Data;
 
 namespace Shared.Game.Factories

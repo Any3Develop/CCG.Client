@@ -1,0 +1,19 @@
+{
+    "name": "Startup",
+    "rootNamespace": "Startup",
+    "references": [
+        "Shared",
+        "Server",
+        "Client",
+        "Zenject"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

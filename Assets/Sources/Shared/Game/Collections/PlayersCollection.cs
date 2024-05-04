@@ -3,8 +3,11 @@ using Shared.Abstractions.Game.Runtime.Players;
 
 namespace Shared.Game.Collections
 {
-    public class PlayersCollection : RuntimeCollection<IRuntimePlayer>, IPlayersCollection
+    public class PlayersCollection : RuntimeCollectionBase<IRuntimePlayer>, IPlayersCollection
     {
+        protected override int GetId(IRuntimePlayer value) =>
+            value?.RuntimeData?.Id ?? int.MinValue;
+        
         public IRuntimePlayer Get(string ownerId)
         {
             return GetFirst(x => x.RuntimeData.OwnerId == ownerId);

@@ -1,5 +1,5 @@
 ﻿using System;
-using Shared.Abstractions.Common.EventSource;
+using Shared.Abstractions.Game.Context.Logic;
 
 namespace Shared.Game.Utils
 {

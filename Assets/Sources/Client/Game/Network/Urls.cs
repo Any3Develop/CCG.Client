@@ -1,4 +1,4 @@
-﻿namespace Core.Network
+﻿namespace Client.Game.Network
 {
     public static class Urls
     {

@@ -6,8 +6,11 @@ using Shared.Game.Data.Enums;
 
 namespace Shared.Game.Collections
 {
-    public class ObjectsCollection : RuntimeCollection<IRuntimeObject>, IObjectsCollection
+    public class ObjectsCollection : RuntimeCollectionBase<IRuntimeObject>, IObjectsCollection
     {
+        protected override int GetId(IRuntimeObject value) =>
+            value?.RuntimeData?.Id ?? int.MinValue;
+        
         public int GetOccupiedTableSpace(string ownerId) // TODO: move to conditions
         {
             var checkOwner = !string.IsNullOrWhiteSpace(ownerId); 

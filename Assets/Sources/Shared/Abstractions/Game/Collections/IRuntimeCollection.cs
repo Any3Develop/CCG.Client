@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using Shared.Abstractions.Game.Runtime.Objects;
 
 namespace Shared.Abstractions.Game.Collections
 {
-    public interface IRuntimeCollection<TRuntime> : IDisposable, IEnumerable<TRuntime> where TRuntime : IRuntimeObjectBase
+    public interface IRuntimeCollection<TRuntime> : IDisposable, IEnumerable<TRuntime>
     {
         int Count { get; }
         TRuntime this[int index] { get; }

@@ -1,5 +1,5 @@
 ﻿using System;
-using Shared.Abstractions.Common.EventSource;
+using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Abstractions.Game.Runtime.Stats;
