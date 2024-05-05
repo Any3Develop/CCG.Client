@@ -1,6 +1,6 @@
 ﻿using Shared.Game.Data.Enums;
 
-namespace Shared.Game.Events.Context.Logic
+namespace Shared.Game.Events
 {
     public class ChangedObjectState : GameEvent
     {

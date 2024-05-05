@@ -3,7 +3,7 @@ using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Effects;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Game.Data;
-using Shared.Game.Events.Effects;
+using Shared.Game.Events.Context.Effects;
 using Shared.Game.Utils;
 
 namespace Shared.Game.Runtime.Effects

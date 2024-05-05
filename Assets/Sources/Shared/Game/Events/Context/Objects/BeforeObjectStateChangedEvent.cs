@@ -1,6 +1,6 @@
 ﻿using Shared.Abstractions.Game.Runtime.Objects;
 
-namespace Shared.Game.Events.Objects
+namespace Shared.Game.Events.Context.Objects
 {
     public readonly struct BeforeObjectStateChangedEvent
     {

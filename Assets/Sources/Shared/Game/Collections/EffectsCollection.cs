@@ -1,7 +1,7 @@
 ﻿using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Runtime.Effects;
-using Shared.Game.Events.Effects;
+using Shared.Game.Events.Context.Effects;
 using Shared.Game.Utils;
 
 namespace Shared.Game.Collections

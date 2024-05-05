@@ -4,7 +4,7 @@ using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Abstractions.Game.Runtime.Stats;
 using Shared.Game.Data;
-using Shared.Game.Events.Stats;
+using Shared.Game.Events.Context.Stats;
 using Shared.Game.Utils;
 
 namespace Shared.Game.Runtime.Stats

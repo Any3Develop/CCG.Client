@@ -1,7 +1,7 @@
 ﻿using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Runtime.Stats;
-using Shared.Game.Events.Stats;
+using Shared.Game.Events.Context.Stats;
 using Shared.Game.Utils;
 
 namespace Shared.Game.Collections

@@ -8,6 +8,7 @@ namespace Client.Game.Abstractions.Collections
         T this[int index] { get; }
         T Dequeue();
         void Enqueue(T value);
+        void Enqueue(IEnumerable<T> values);
         void Clear();
     }
 }

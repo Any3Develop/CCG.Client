@@ -4,6 +4,6 @@
     {
         int Order { get; }
         string PredictionId { get; }
-        bool Reconciled { get; set; }
+        bool Rollback { get; }
     }
 }

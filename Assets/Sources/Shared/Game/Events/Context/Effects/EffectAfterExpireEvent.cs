@@ -1,12 +1,12 @@
 ﻿using Shared.Abstractions.Game.Runtime.Effects;
 
-namespace Shared.Game.Events.Effects
+namespace Shared.Game.Events.Context.Effects
 {
-    public readonly struct EffectAfterExecuteEvent
+    public readonly struct EffectAfterExpireEvent
     {
         public IRuntimeEffect Effect { get; }
 
-        public EffectAfterExecuteEvent(IRuntimeEffect effect)
+        public EffectAfterExpireEvent(IRuntimeEffect effect)
         {
             Effect = effect;
         }

@@ -3,5 +3,5 @@ using Shared.Abstractions.Game.Events;
 
 namespace Client.Game.Abstractions.Context.Logic.Queue
 {
-    public interface IGameEventQueue : IQueue<IGameEvent> {}
+    public interface IGameEventLocalQueue : IQueue<IGameEvent> {}
 }

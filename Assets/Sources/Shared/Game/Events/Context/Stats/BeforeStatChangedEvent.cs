@@ -1,12 +1,12 @@
 ﻿using Shared.Abstractions.Game.Runtime.Stats;
 
-namespace Shared.Game.Events.Stats
+namespace Shared.Game.Events.Context.Stats
 {
-    public readonly struct StatDeletedEvent
+    public readonly struct BeforeStatChangedEvent
     {
         public IRuntimeStat RuntimeStat { get; }
 
-        public StatDeletedEvent(IRuntimeStat runtimeStat)
+        public BeforeStatChangedEvent(IRuntimeStat runtimeStat)
         {
             RuntimeStat = runtimeStat;
         }

@@ -1,12 +1,12 @@
 ﻿using Shared.Abstractions.Game.Runtime.Objects;
 
-namespace Shared.Game.Events.Objects
+namespace Shared.Game.Events.Context.Objects
 {
-    public readonly struct ObjectHitEvent
+    public readonly struct AfterObjectStateChangedEvent
     {
         public IRuntimeObject RuntimeObject { get; }
 
-        public ObjectHitEvent(IRuntimeObject runtimeObject)
+        public AfterObjectStateChangedEvent(IRuntimeObject runtimeObject)
         {
             RuntimeObject = runtimeObject;
         }

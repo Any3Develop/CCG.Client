@@ -1,6 +1,6 @@
 ﻿using Shared.Abstractions.Game.Runtime.Stats;
 
-namespace Shared.Game.Events.Stats
+namespace Shared.Game.Events.Context.Stats
 {
     public readonly struct AfterStatChangedEvent
     {
