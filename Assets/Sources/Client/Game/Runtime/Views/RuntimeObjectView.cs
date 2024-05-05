@@ -6,11 +6,13 @@ namespace Client.Game.Runtime.Views
 {
     public class RuntimeObjectView : RuntimeView, IRuntimeObjectView
     {
-        public RuntimeTransform Transform { get; private set; } = RuntimeTransform.Default();
+        public TransformModel Previous { get; private set; }
+        public TransformModel Transform { get; private set; } = TransformModel.Default();
         public new IRuntimeObjectModel Model => (IRuntimeObjectModel)base.Model;
         
-        public void SetTransform(RuntimeTransform value)
+        public void SetTransform(TransformModel value)
         {
+            Previous = Transform;
             Transform = value;
             OnTransfromChanged();
         }

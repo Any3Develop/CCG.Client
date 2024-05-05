@@ -1,4 +1,5 @@
-﻿using Client.Game.Abstractions.Factories;
+﻿using Client.Common.Abstractions.DependencyInjection;
+using Client.Game.Abstractions.Factories;
 using Client.Game.Abstractions.Runtime.Models;
 using Client.Game.Runtime.Models;
 using Shared.Abstractions.Game.Runtime.Data;
@@ -8,9 +9,15 @@ namespace Client.Game.Factories
 {
     public class RuntimeStatModelFactory : IRuntimeStatModelFactory
     {
+        private readonly IAbstractFactory abstractFactory;
+        public RuntimeStatModelFactory(IAbstractFactory abstractFactory)
+        {
+            this.abstractFactory = abstractFactory;
+        }
+
         public IRuntimeStatModel Create(IRuntimeStatData runtimeData)
         {
-            return new RuntimeStatModel().Map(runtimeData);
+            return abstractFactory.Instantiate<RuntimeStatModel>().Map(runtimeData);
         }
     }
 }

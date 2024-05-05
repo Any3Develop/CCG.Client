@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Client.Common.Abstractions.DependencyInjection;
 using Client.Game.Abstractions.Factories;
 using Client.Game.Abstractions.Runtime.Models;
 using Client.Game.Runtime.Models;
@@ -14,13 +15,16 @@ namespace Client.Game.Factories
 {
     public class RuntimeObjectModelFactory : IRuntimeObjectModelFactory
     {
+        private readonly IAbstractFactory abstractFactory;
         private readonly IRuntimeStatModelFactory runtimeStatModelFactory;
         private readonly IDatabase database;
 
         public RuntimeObjectModelFactory(
+            IAbstractFactory abstractFactory,
             IRuntimeStatModelFactory runtimeStatModelFactory, 
             IDatabase database)
         {
+            this.abstractFactory = abstractFactory;
             this.runtimeStatModelFactory = runtimeStatModelFactory;
             this.database = database;
         }
@@ -32,13 +36,20 @@ namespace Client.Game.Factories
 
             return data.Type switch
             {
-                ObjectType.Creature or ObjectType.Spell => new RuntimeCardModel
-                {
-                    Data = (CardData)data,
-                    Stats = runtimeData.Stats.Select(runtimeStatModelFactory.Create).ToList()
-                }.Map(runtimeData),
+                ObjectType.Creature or ObjectType.Spell => CreateCardModel(runtimeData),
                 _ => throw new NotImplementedException($"Unknown {nameof(ObjectType)}: {data.Type}")
             };
+        }
+
+        private IRuntimeObjectModel CreateCardModel(IRuntimeObjectData runtimeData)
+        {
+            if (!database.Objects.TryGet<CardData>(runtimeData.DataId, out var data))
+                throw new NullReferenceException($"{nameof(CardData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<ObjectData>)}");
+
+            var model = abstractFactory.Instantiate<RuntimeCardModel>();
+            model.Data = data;
+            model.Stats = runtimeData.Stats.Select(runtimeStatModelFactory.Create).ToList();
+            return model.Map(runtimeData);
         }
     }
 }

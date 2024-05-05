@@ -7,7 +7,7 @@ namespace Client.Game.Runtime.Views
 {
     public abstract class RuntimeView : IRuntimeView
     {
-        public IRuntimeModel Model { get; protected set; }
+        public IRuntimeModel Model { get; private set; }
 
         private CancellationTokenSource setupSource;
 

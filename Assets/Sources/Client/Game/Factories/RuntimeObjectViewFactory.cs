@@ -1,4 +1,5 @@
 ﻿using System;
+using Client.Common.Abstractions.DependencyInjection;
 using Client.Game.Abstractions.Collections;
 using Client.Game.Abstractions.Factories;
 using Client.Game.Abstractions.Runtime.Models;
@@ -10,10 +11,14 @@ namespace Client.Game.Factories
 {
     public class RuntimeObjectViewFactory : IRuntimeObjectViewFactory
     {
+        private readonly IAbstractFactory abstractFactory;
         private readonly IObjectViewCollection objectViewCollection;
 
-        public RuntimeObjectViewFactory(IObjectViewCollection objectViewCollection)
+        public RuntimeObjectViewFactory(
+            IAbstractFactory abstractFactory,
+            IObjectViewCollection objectViewCollection)
         {
+            this.abstractFactory = abstractFactory;
             this.objectViewCollection = objectViewCollection;
         }
 
@@ -27,7 +32,7 @@ namespace Client.Game.Factories
 
             view = runtimeModel.Data.Type switch
             {
-                ObjectType.Creature or ObjectType.Spell => new RuntimeCardView(),
+                ObjectType.Creature or ObjectType.Spell => abstractFactory.Instantiate<RuntimeCardView>(),
                 _ => throw new NotImplementedException($"Unknown {nameof(ObjectType)}: {runtimeModel.Data.Type}")
             };
 

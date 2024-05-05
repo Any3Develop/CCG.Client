@@ -5,8 +5,9 @@ namespace Client.Game.Abstractions.Runtime.Views
 {
     public interface IRuntimeObjectView : IRuntimeView
     {
-        RuntimeTransform Transform { get; }
+        TransformModel Previous { get; }
+        TransformModel Transform { get; }
         new IRuntimeObjectModel Model { get; }
-        void SetTransform(RuntimeTransform value);
+        void SetTransform(TransformModel value);
     }
 }
