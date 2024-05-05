@@ -11,7 +11,8 @@
         "UniTask.DOTween",
         "UniTask.Addressables",
         "UniTask.TextMeshPro",
-        "UniTask.Linq"
+        "UniTask.Linq",
+        ""
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
