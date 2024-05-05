@@ -11,7 +11,7 @@ namespace Shared.Game.Commands
     {
         protected override void OnExecute()
         {
-            if (!Context.PlayersCollection.TryGet(ExecutorId, out var player))
+            if (!Context.PlayersCollection.Contains(ExecutorId))
                 throw new NullReferenceException("Player who executed the command was found.");
             
             if (!Context.ObjectsCollection.TryGet<IRuntimeCard>(Model.Id, out var runtimeCard))

@@ -8,5 +8,6 @@ namespace Shared.Abstractions.Game.Collections
         IRuntimePlayer GetOpposite(string ownerId);
         IRuntimePlayer GetOpposite(IRuntimePlayer runtimePlayer);
         bool TryGet(string ownerId, out IRuntimePlayer result);
+        bool Contains(string ownerId);
     }
 }

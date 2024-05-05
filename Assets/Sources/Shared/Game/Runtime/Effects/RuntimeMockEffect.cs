@@ -3,6 +3,6 @@ using Shared.Game.Data.Enums;
 
 namespace Shared.Game.Runtime.Effects
 {
-    [EffectId(Keyword.None)]
+    [EffectLogic(LogicId.None)]
     public class RuntimeMockEffect : RuntimeEffect {}
 }

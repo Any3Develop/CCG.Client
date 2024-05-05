@@ -18,18 +18,18 @@ namespace Shared.Game.Factories
         private readonly IDatabase database;
         private readonly IObjectsCollection objectsCollection;
         private readonly IRuntimeIdProvider runtimeIdProvider;
-        private readonly ITypeCollection<Keyword> keywordTypeCollection;
+        private readonly ITypeCollection<LogicId> logicTypeCollection;
 
         public RuntimeEffectFactory(
             IDatabase database, 
             IObjectsCollection objectsCollection,
             IRuntimeIdProvider runtimeIdProvider,
-            ITypeCollection<Keyword> keywordTypeCollection)
+            ITypeCollection<LogicId> logicTypeCollection)
         {
             this.database = database;
             this.objectsCollection = objectsCollection;
             this.runtimeIdProvider = runtimeIdProvider;
-            this.keywordTypeCollection = keywordTypeCollection;
+            this.logicTypeCollection = logicTypeCollection;
         }
 
         public IRuntimeEffectData Create(int? runtimeId, string ownerId, string dataId, bool notify = true)
@@ -58,21 +58,21 @@ namespace Shared.Game.Factories
             if (!database.Effects.TryGet(runtimeData.DataId, out var data))
                 throw new NullReferenceException($"{nameof(EffectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<EffectData>)}");
             
-            runtimeEffect = CreateEffectInstance(data.Keyword).Init(data, runtimeData, runtimeEffectOwnerObject.EventsSource);
+            runtimeEffect = CreateEffectInstance(data.LogicId).Init(data, runtimeData, runtimeEffectOwnerObject.EventsSource);
             runtimeEffectOwnerObject.EffectsCollection.Add(runtimeEffect, notify);
             
             return runtimeEffect;
         }
 
-        private RuntimeEffect CreateEffectInstance(Keyword keyword)
+        private RuntimeEffect CreateEffectInstance(LogicId logicId)
         {
-            if (!keywordTypeCollection.TryGet(keyword, out var effectType))
-                throw new NullReferenceException($"{nameof(Type)} with {nameof(Keyword)} {keyword}, not found in {nameof(ITypeCollection<Keyword>)}");
+            if (!logicTypeCollection.TryGet(logicId, out var effectType))
+                throw new NullReferenceException($"{nameof(Type)} with {nameof(LogicId)} {logicId}, not found in {nameof(ITypeCollection<LogicId>)}");
             
             var constructorInfo = effectType.GetConstructor(Type.EmptyTypes);
 
             if (constructorInfo == null)
-                throw new NullReferenceException($"{effectType.Name} with {nameof(Keyword)} {keyword}, default constructor not found.");
+                throw new NullReferenceException($"{effectType.Name} with {nameof(LogicId)} {logicId}, default constructor not found.");
           
             return (RuntimeEffect)constructorInfo.Invoke(Array.Empty<object>());
         }

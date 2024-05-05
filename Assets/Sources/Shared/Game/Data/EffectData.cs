@@ -8,6 +8,7 @@ namespace Shared.Game.Data
         public string Id { get; set; }
         public int Value { get; set; }
         public int Lifetime { get; set; }
-        public Keyword Keyword { get; set; }
+        public LogicId LogicId { get; set; }
+        public VisualId VisualId { get; set; }
     }
 }

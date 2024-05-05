@@ -4,11 +4,11 @@ using Shared.Game.Data.Enums;
 namespace Shared.Game.Attributes
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
-    public class EffectIdAttribute : Attribute
+    public class EffectVisualAttribute : Attribute
     {
-        public Keyword Value;
+        public VisualId Value { get; }
 
-        public EffectIdAttribute(Keyword value)
+        public EffectVisualAttribute(VisualId value)
         {
             Value = value;
         }

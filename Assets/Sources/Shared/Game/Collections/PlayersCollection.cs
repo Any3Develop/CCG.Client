@@ -30,5 +30,10 @@ namespace Shared.Game.Collections
             result = Get(ownerId);
             return result != null;
         }
+
+        public bool Contains(string ownerId)
+        {
+            return Get(ownerId) != null;
+        }
     }
 }
