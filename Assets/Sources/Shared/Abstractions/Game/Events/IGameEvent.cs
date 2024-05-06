@@ -2,7 +2,7 @@
 {
     public interface IGameEvent
     {
-        int Order { get; }
+        int Order { get; set; }
         string PredictionId { get; }
         bool Rollback { get; }
     }

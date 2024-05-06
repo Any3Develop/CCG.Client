@@ -1,6 +1,7 @@
 ﻿using Shared.Abstractions.Game.Runtime.Cards;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Game.Data;
+using Shared.Game.Events.Context.Cards;
 using Shared.Game.Events.Context.Objects;
 using Shared.Game.Runtime.Objects;
 using Shared.Game.Utils;
@@ -17,8 +18,9 @@ namespace Shared.Game.Runtime.Cards
             if (!Initialized)
                 return;
             
+            EventsSource.Publish<BeforeCardPositionChangedEvent>(notify, this);
             RuntimeData.Position = value;
-            EventsSource.Publish<CardPositionChangedEvent>(notify, this);
+            EventsSource.Publish<AfterCardPositionChangedEvent>(notify, this);
         }
     }
 }

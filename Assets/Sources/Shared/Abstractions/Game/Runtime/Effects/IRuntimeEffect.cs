@@ -1,5 +1,4 @@
-﻿using Shared.Abstractions.Game.Context.Logic;
-using Shared.Abstractions.Game.Runtime.Data;
+﻿using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Game.Data;
 
@@ -9,7 +8,6 @@ namespace Shared.Abstractions.Game.Runtime.Effects
     {
         EffectData Data { get; }
         new IRuntimeEffectData RuntimeData { get; }
-        IEventsSource EventsSource { get; }
 
         IRuntimeEffect Sync(IRuntimeEffectData runtimeData);
         bool IsExecuteAllowed();

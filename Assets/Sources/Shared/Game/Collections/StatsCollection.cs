@@ -1,5 +1,5 @@
 ﻿using Shared.Abstractions.Game.Collections;
-using Shared.Abstractions.Game.Context.Logic;
+using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Runtime.Stats;
 using Shared.Game.Events.Context.Stats;
 using Shared.Game.Utils;
@@ -20,7 +20,7 @@ namespace Shared.Game.Collections
         public override bool Add(IRuntimeStat value, bool notify = true)
         {
             var result = base.Add(value, notify);
-            eventsSource.Publish<StatAddedEvent>(notify && result, value);
+            eventsSource.Publish<AddedObjectStatEvent>(notify && result, value);
             return result;
         }
 
@@ -30,7 +30,7 @@ namespace Shared.Game.Collections
                 return false;
             
             var result = base.Remove(value, notify);
-            eventsSource.Publish<StatDeletedEvent>(notify && result, value);
+            eventsSource.Publish<DeletedObjectStatEvent>(notify && result, value);
             return result;
         }
     }

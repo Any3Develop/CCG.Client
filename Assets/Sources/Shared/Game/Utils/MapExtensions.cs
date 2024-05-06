@@ -7,27 +7,30 @@ namespace Shared.Game.Utils
     {
         public static T Map<T>(this T destination, object from)
         {
-            if (from == null || destination == null)
-                throw new NullReferenceException($"FillFrom cannot executed, target or source object is null");
+            if (destination == null)
+                throw new NullReferenceException($"{nameof(Map)} cannot executed, {nameof(destination)} '{typeof(T).Name}' object is null");
 
+            if (from == null)
+                throw new NullReferenceException($"{nameof(Map)} cannot executed, '{nameof(from)}' object is null");
+
+            var fromFields = from.GetType().GetFields().ToDictionary(x => x.Name);
+            var fromProperties = from.GetType().GetProperties().Where(x=> x.CanRead).ToDictionary(x => x.Name);
+            
             var destinationFields = destination.GetType().GetFields();
-            var destinationProperties = destination.GetType().GetProperties();
-            var sourceFields = from.GetType().GetFields().ToDictionary(x => x.Name);
-            var sourceProperties = from.GetType().GetProperties().ToDictionary(x => x.Name);
-
+            var destinationProperties = destination.GetType().GetProperties().Where(x=> x.CanWrite).ToArray();
+            
             foreach (var destinationField in destinationFields)
             {
-                if (sourceFields.TryGetValue(destinationField.Name, out var fieldInfo)
-                    && fieldInfo.FieldType == destinationField.FieldType)
-                    destinationField.SetValue(destination, fieldInfo.GetValue(from));
+                if (fromFields.TryGetValue(destinationField.Name, out var fromFieldInfo)
+                    && destinationField.FieldType == fromFieldInfo.FieldType)
+                    destinationField.SetValue(destination, fromFieldInfo.GetValue(from));
             }
 
             foreach (var destinationProperty in destinationProperties)
             {
-                if (destinationProperty.CanWrite 
-                    && sourceProperties.TryGetValue(destinationProperty.Name, out var propertyInfo)
-                    && propertyInfo.PropertyType == destinationProperty.PropertyType)
-                    destinationProperty.SetValue(destination, propertyInfo.GetValue(from));
+                if (fromProperties.TryGetValue(destinationProperty.Name, out var fromPropertyInfo)
+                    && destinationProperty.PropertyType == fromPropertyInfo.PropertyType)
+                    destinationProperty.SetValue(destination, fromPropertyInfo.GetValue(from));
             }
 
             return destination;

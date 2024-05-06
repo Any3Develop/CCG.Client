@@ -6,5 +6,6 @@ namespace Shared.Game.Commands.Base
     {
         public string CommandId { get; set; }
         public string PredictionId { get; set; }
+        public bool IsNested { get; set; }
     }
 }

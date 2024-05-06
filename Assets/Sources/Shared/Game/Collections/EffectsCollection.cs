@@ -1,5 +1,5 @@
 ﻿using Shared.Abstractions.Game.Collections;
-using Shared.Abstractions.Game.Context.Logic;
+using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Runtime.Effects;
 using Shared.Game.Events.Context.Effects;
 using Shared.Game.Utils;
@@ -21,7 +21,7 @@ namespace Shared.Game.Collections
         public override bool Add(IRuntimeEffect value, bool notify = true)
         {
             var result = base.Add(value, notify);
-            eventsSource.Publish<EffectAddedEvent>(notify && result, value);
+            eventsSource.Publish<AfterEffectAddedEvent>(notify && result, value);
             return result;
         }
 
@@ -31,7 +31,7 @@ namespace Shared.Game.Collections
                 return false;
 
             var result = base.Remove(value, notify);
-            eventsSource.Publish<EffectDeletedEvent>(notify && result, value);
+            eventsSource.Publish<AfterEffectDeletedEvent>(notify && result, value);
             return result;
         }
     }

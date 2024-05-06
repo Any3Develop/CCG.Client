@@ -8,6 +8,7 @@ namespace Shared.Abstractions.Game.Runtime.Stats
     {
         StatData Data { get; }
         new IRuntimeStatData RuntimeData { get; }
+        
         IRuntimeStat Sync(IRuntimeStatData runtimeData);
         void SetValue(int value, bool notify = true);
         void SetMax(int value, bool notify = true);

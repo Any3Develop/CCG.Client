@@ -2,12 +2,15 @@
 using System.Linq;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
-using Shared.Abstractions.Game.Context.Logic;
+using Shared.Abstractions.Game.Context.EventProcessors;
+using Shared.Abstractions.Game.Context.EventSource;
+using Shared.Abstractions.Game.Context.Providers;
 using Shared.Abstractions.Game.Factories;
 using Shared.Game.Collections;
 using Shared.Game.Context;
-using Shared.Game.Context.Logic;
-using Shared.Game.Context.Logic.EventSource;
+using Shared.Game.Context.EventProcessors;
+using Shared.Game.Context.EventSource;
+using Shared.Game.Context.Providers;
 using Shared.Game.Data;
 
 namespace Shared.Game.Factories
@@ -47,11 +50,37 @@ namespace Shared.Game.Factories
             return new RuntimeIdProvider();
         }
 
+        public IRuntimeOrderProvider CreateRuntimeOrderProvider(params object[] args)
+        {
+            return new RuntimeOrderProvider();
+        }
+        
+        public IRuntimeRandomProvider CreateRuntimeRandomProvider(params object[] args)
+        {
+            return new RuntimeRandomProvider();
+        }
+
         public ICommandProcessor CreateCommandProcessor(params object[] args)
         {
             return new CommandProcessor(GetRequiredArgument<IContext>(args),
-                GetRequiredArgument<ITypeCollection<string>>(args));
+                GetRequiredArgument<ICommandFactory>(args));
         }
+
+        public IGameQueueCollector CreateGameQueueCollector(params object[] args)
+        {
+            return new GameQueueCollector(GetRequiredArgument<IContext>(args));
+        }
+
+        public IObjectEventProcessor CreateObjectEventProcessor(params object[] args)
+        {
+            return new ObjectEventProcessor(GetRequiredArgument<IGameQueueCollector>(args));
+        }
+
+        public IContextEventProcessor CreateContextEventProcessor(params object[] args)
+        {
+            return new ContextEventProcessor(GetRequiredArgument<IContext>(args));
+        }
+
         #endregion
 
         #region Context
@@ -63,6 +92,15 @@ namespace Shared.Game.Factories
                 Effects = new DataCollection<EffectData>(),
                 Stats = new DataCollection<StatData>()
             };
+        }
+
+        #endregion
+
+        #region Factories
+        public ICommandFactory CreateCommandFactory(params object[] args)
+        {
+            return new CommandFactory(GetRequiredArgument<IContext>(),
+                GetRequiredArgument<ITypeCollection<string>>());
         }
         #endregion
 

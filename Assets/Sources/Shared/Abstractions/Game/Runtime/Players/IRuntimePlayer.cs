@@ -1,5 +1,4 @@
 ﻿using Shared.Abstractions.Game.Collections;
-using Shared.Abstractions.Game.Context.Logic;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
 
@@ -9,7 +8,6 @@ namespace Shared.Abstractions.Game.Runtime.Players
     {
         new IRuntimePlayerData RuntimeData { get; }
         IStatsCollection StatsCollection { get; }
-        IEventsSource EventsSource { get; }
 
         bool TrySpendMana(int value);
     }

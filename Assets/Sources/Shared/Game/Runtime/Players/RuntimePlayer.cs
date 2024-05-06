@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Shared.Abstractions.Game.Collections;
-using Shared.Abstractions.Game.Context.Logic;
+using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Abstractions.Game.Runtime.Players;

@@ -5,5 +5,6 @@
     {
         string CommandId { get; }
         string PredictionId { get; set; }
+        bool IsNested { get; }
     }
 }

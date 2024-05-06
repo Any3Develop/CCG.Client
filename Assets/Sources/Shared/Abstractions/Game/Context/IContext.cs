@@ -1,5 +1,6 @@
 ﻿using Shared.Abstractions.Game.Collections;
-using Shared.Abstractions.Game.Context.Logic;
+using Shared.Abstractions.Game.Context.EventSource;
+using Shared.Abstractions.Game.Context.Providers;
 
 namespace Shared.Abstractions.Game.Context
 {
@@ -9,6 +10,8 @@ namespace Shared.Abstractions.Game.Context
         IDatabase Database { get; }
         IObjectsCollection ObjectsCollection { get; }
         IPlayersCollection PlayersCollection { get; }
-        IEventsSource SharedEventSource { get; }
+        IRuntimeOrderProvider RuntimeOrderProvider { get; }
+        IRuntimeIdProvider RuntimeIdProvider { get; }
+        IEventsSource EventSource { get; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using Shared.Abstractions.Game.Context.Logic;
+using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Abstractions.Game.Runtime.Stats;
@@ -13,7 +13,7 @@ namespace Shared.Game.Runtime.Stats
     {
         public StatData Data { get; private set; }
         public IRuntimeStatData RuntimeData { get; private set; }
-        protected IEventsSource EventsSource { get; private set; }
+        public IEventsSource EventsSource { get; private set; }
         protected bool Initialized { get; private set; }
 
 
@@ -84,7 +84,7 @@ namespace Shared.Game.Runtime.Stats
         #region Callbacks
 
         protected virtual void OnBeforeChanged(bool notify = true) =>
-            EventsSource.Publish<BeforeStatChangedEvent>(Initialized && notify, this);
+            EventsSource.Publish<BeforeStatChangeEvent>(Initialized && notify, this);
 
         protected virtual void OnAfterChanged(bool notify = true) =>
             EventsSource.Publish<AfterStatChangedEvent>(Initialized && notify, this);

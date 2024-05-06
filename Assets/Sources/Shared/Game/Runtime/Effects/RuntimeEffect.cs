@@ -1,4 +1,4 @@
-﻿using Shared.Abstractions.Game.Context.Logic;
+﻿using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Effects;
 using Shared.Abstractions.Game.Runtime.Objects;
@@ -55,8 +55,10 @@ namespace Shared.Game.Runtime.Effects
             if (!Initialized)
                 return;
             
+            EventsSource.Publish<BeforeEffectExecutedEvent>(Initialized, this);
             OnBeforeExecute();
             OnAfterExecute();
+            EventsSource.Publish<AfterEffectExecutedEvent>(Initialized, this);
         }
 
         public void Expire()
@@ -64,29 +66,24 @@ namespace Shared.Game.Runtime.Effects
             if (!Initialized)
                 return;
             
+            EventsSource.Publish<BeforeEffectExpireEvent>(Initialized, this);
             OnBeforeExpire();
             OnAfterExpire();
+            EventsSource.Publish<AfterEffectExpiredEvent>(Initialized, this);
         }
 
         #region Callbacks
 
         protected virtual void OnBeforeChanged(bool notify = true) =>
-            EventsSource.Publish<EffectBeforeChangedEvent>(Initialized && notify, this);
+            EventsSource.Publish<BeforeEffectChangedEvent>(Initialized && notify, this);
 
         protected virtual void OnAfterChanged(bool notify = true) =>
-            EventsSource.Publish<EffectAfterChangedEvent>(Initialized && notify, this);
+            EventsSource.Publish<AfterEffectChangedEvent>(Initialized && notify, this);
 
-        protected virtual void OnBeforeExecute() =>
-            EventsSource.Publish<EffectBeforeExecuteEvent>(Initialized, this);
-
-        protected virtual void OnAfterExecute() =>
-            EventsSource.Publish<EffectAfterExecuteEvent>(Initialized, this);
-
-        protected virtual void OnBeforeExpire() =>
-            EventsSource.Publish<EffectBeforeExpireEvent>(Initialized, this);
-
-        protected virtual void OnAfterExpire() =>
-            EventsSource.Publish<EffectAfterExpireEvent>(Initialized, this);
+        protected virtual void OnBeforeExecute() {}
+        protected virtual void OnAfterExecute() {}
+        protected virtual void OnBeforeExpire() {}
+        protected virtual void OnAfterExpire() {}
 
         #endregion
 
