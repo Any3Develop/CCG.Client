@@ -1,7 +1,9 @@
-﻿namespace Shared.Game.Events.Output
+﻿using Shared.Abstractions.Game.Runtime.Data;
+
+namespace Shared.Game.Events.Output
 {
     public class SyncRuntimeOrder : GameEvent
     {
-        public int Current { get; set; }
+        public IRuntimeOrderData RuntimeData { get; set; }
     }
 }

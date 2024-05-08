@@ -56,8 +56,7 @@ namespace Shared.Game.Runtime.Effects
                 return;
             
             EventsSource.Publish<BeforeEffectExecutedEvent>(Initialized, this);
-            OnBeforeExecute();
-            OnAfterExecute();
+            OnExecute();
             EventsSource.Publish<AfterEffectExecutedEvent>(Initialized, this);
         }
 
@@ -67,23 +66,16 @@ namespace Shared.Game.Runtime.Effects
                 return;
             
             EventsSource.Publish<BeforeEffectExpireEvent>(Initialized, this);
-            OnBeforeExpire();
-            OnAfterExpire();
+            OnExpire();
             EventsSource.Publish<AfterEffectExpiredEvent>(Initialized, this);
         }
 
         #region Callbacks
-
-        protected virtual void OnBeforeChanged(bool notify = true) =>
-            EventsSource.Publish<BeforeEffectChangedEvent>(Initialized && notify, this);
-
-        protected virtual void OnAfterChanged(bool notify = true) =>
+        protected virtual void OnChanged(bool notify = true) =>
             EventsSource.Publish<AfterEffectChangedEvent>(Initialized && notify, this);
-
-        protected virtual void OnBeforeExecute() {}
-        protected virtual void OnAfterExecute() {}
-        protected virtual void OnBeforeExpire() {}
-        protected virtual void OnAfterExpire() {}
+        
+        protected virtual void OnExecute() {}
+        protected virtual void OnExpire() {}
 
         #endregion
 

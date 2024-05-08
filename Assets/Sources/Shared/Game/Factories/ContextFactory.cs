@@ -20,7 +20,7 @@ namespace Shared.Game.Factories
         #region Collections
         public IObjectsCollection CreateObjectsCollection(params object[] args)
         {
-            return new ObjectsCollection();
+            return new ObjectsCollection(GetRequiredArgument<IEventsSource>(args));
         }
 
         public IEffectsCollection CreateEffectsCollection(params object[] args)

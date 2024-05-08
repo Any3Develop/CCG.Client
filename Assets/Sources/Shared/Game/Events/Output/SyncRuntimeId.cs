@@ -1,7 +1,9 @@
-﻿namespace Shared.Game.Events.Output
+﻿using Shared.Abstractions.Game.Runtime.Data;
+
+namespace Shared.Game.Events.Output
 {
     public class SyncRuntimeId : GameEvent
     {
-        public int Current { get; set; }
+        public IRuntimeIdData RuntimeData { get; set; }
     }
 }

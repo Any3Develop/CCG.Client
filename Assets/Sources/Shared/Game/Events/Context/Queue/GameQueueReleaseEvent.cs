@@ -8,9 +8,9 @@ namespace Shared.Game.Events.Context.Queue
     {
         public List<IGameEvent> Queue { get; }
 
-        public GameQueueReleaseEvent(IEnumerable<IGameEvent> queue)
+        public GameQueueReleaseEvent(List<IGameEvent> queue)
         {
-            Queue = queue.ToList();
+            Queue = queue;
         }
     }
 }

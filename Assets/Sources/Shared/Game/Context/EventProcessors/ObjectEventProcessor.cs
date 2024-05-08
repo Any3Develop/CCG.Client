@@ -30,10 +30,10 @@ namespace Shared.Game.Context.EventProcessors
 
             #region Object
 
-            eventSource.Subscribe<AddedObjectEvent>(data =>
+            eventSource.Subscribe<AfterAddedObjectEvent>(data =>
                 queueCollector.Register(new AddedObject{RuntimeData = data.RuntimeObject.RuntimeData.Clone()}));
 
-            eventSource.Subscribe<DeletedObjectEvent>(data =>
+            eventSource.Subscribe<AfterDeletedObjectEvent>(data =>
                 queueCollector.Register(new DeletedObject{RuntimeData = data.RuntimeObject.RuntimeData.Clone()}));
             
             eventSource.Subscribe<AfterObjectStateChangedEvent>(data =>

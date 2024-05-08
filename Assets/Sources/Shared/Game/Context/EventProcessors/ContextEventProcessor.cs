@@ -29,8 +29,15 @@ namespace Shared.Game.Context.EventProcessors
         {
             context.EventSource.Subscribe<GameQueueReleaseEvent>(data =>
             {
-                data.Queue.Add(new SyncRuntimeOrder().Map(context.RuntimeOrderProvider));
-                data.Queue.Add(new SyncRuntimeId().Map(context.RuntimeIdProvider));
+                var syncOrderEvent = new SyncRuntimeOrder();
+                var syncIdEvent = new SyncRuntimeId();
+                syncOrderEvent.Order = context.RuntimeOrderProvider.Next();
+                syncIdEvent.Order = context.RuntimeOrderProvider.Next();
+                syncOrderEvent.RuntimeData = context.RuntimeOrderProvider.RuntimeData.Clone();
+                syncIdEvent.RuntimeData = context.RuntimeIdProvider.RuntimeData.Clone();
+                
+                data.Queue.Add(syncOrderEvent);
+                data.Queue.Add(syncIdEvent);
             }, order: int.MinValue);
         }
     }
