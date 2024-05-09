@@ -1,6 +1,6 @@
 ﻿using Shared.Abstractions.Game.Commands;
 
-namespace Client.Game.Abstractions.Context.Logic.Prediction
+namespace Client.Game.Abstractions.Context.Prediction
 {
     public interface IPredictionProcessor
     {

@@ -12,5 +12,6 @@ namespace Shared.Abstractions.Game.Context.EventSource
         IDisposable Subscribe<T>(Func<T, Task> callback, CancellationToken? token = null, int? order = null);
 		
         void Publish<T>(T value);
+        Task PublishAsync<T>(T value);
     }
 }

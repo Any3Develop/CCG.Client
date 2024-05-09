@@ -1,4 +1,4 @@
-﻿namespace Client.Game.Abstractions.Context.Logic.Effects
+﻿namespace Client.Game.Abstractions.Context.Effects
 {
     public interface IEffectProcessor
     {

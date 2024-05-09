@@ -10,31 +10,31 @@ namespace Shared.Game.Context.EventSource
 {
     public class EventSource : IEventsSource
     {
-        private readonly Dictionary<Type, SubscriberCollection> subscribers = new();
+        protected readonly Dictionary<Type, SubscriberCollection> Subscribers = new();
         public IDisposable Subscribe<T>(Action<T> callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalSubscribe<T>(callback, true, order, token);
+            return InternalSubscribe<T>(callback, true, token, order);
         }
 
         public IDisposable Subscribe<T>(Action callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalSubscribe<T>(callback, false, order, token);
+            return InternalSubscribe<T>(callback, false, token, order);
         }
 
         public IDisposable Subscribe<T>(Func<Task> callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalSubscribe<T>(callback, false, order, token);
+            return InternalSubscribe<T>(callback, false, token, order);
         }
 
         public IDisposable Subscribe<T>(Func<T, Task> callback, CancellationToken? token = null, int? order = null)
         {
-            return InternalSubscribe<T>(callback, true, order, token);
+            return InternalSubscribe<T>(callback, true, token, order);
         }
 
         public void Dispose()
         {
-            var disposables = subscribers.Values.OfType<IDisposable>().ToArray();
-            subscribers.Clear();
+            var disposables = Subscribers.Values.OfType<IDisposable>().ToArray();
+            Subscribers.Clear();
             
             foreach (var disposable in disposables)
                 disposable?.Dispose();
@@ -42,8 +42,21 @@ namespace Shared.Game.Context.EventSource
 
         public void Publish<T>(T value)
         {
-            if (!subscribers.TryGetValue(typeof(T), out var subscriberCollection))
-                return;
+            foreach (var subscriber in GetSubscribers(value))
+                DynamicInvoke(subscriber, value);
+        }
+
+        public async Task PublishAsync<T>(T value)
+        {
+            foreach (var subscriber in GetSubscribers(value))
+                if (DynamicInvoke(subscriber, value) is Task task)
+                    await task;
+        }
+
+        protected IEnumerable<Subscriber> GetSubscribers<T>(T value)
+        {
+            if (!Subscribers.TryGetValue(value?.GetType(), out var subscriberCollection))
+                return Array.Empty<Subscriber>();
 
             if (subscriberCollection.UnSorted)
             {
@@ -51,30 +64,30 @@ namespace Shared.Game.Context.EventSource
                 subscriberCollection.UnSorted = false;
             }
 
-            foreach (var subscriber in subscriberCollection.ToArray())
-            {
-                try
-                {
-                    if (subscriber.HasParameters)
-                    {
-                        subscriber.Callback?.DynamicInvoke(value);
-                        continue;
-                    }
-
-                    subscriber.Callback?.DynamicInvoke();
-                }
-                catch (Exception e)
-                {
-                    SharedLogger.Error($"[{GetType().Name}] Some exception caused when {nameof(Publish)} event method : {subscriber.Callback?.Method.Name}, with registered type : {typeof(T).FullName}. Full exception: {e}");
-                }
-            }
+            return subscriberCollection.ToArray();
         }
 
-        private IDisposable InternalSubscribe<T>(Delegate callback, bool hasParameters, int? order, CancellationToken? token)
+        protected object DynamicInvoke(Subscriber subscriber, object value)
+        {
+            try
+            {
+                return subscriber.HasParameters 
+                    ? subscriber.Callback?.DynamicInvoke(value) 
+                    : subscriber.Callback?.DynamicInvoke();
+            }
+            catch (Exception e)
+            {
+                SharedLogger.Error($"[{GetType().Name}] Some exception caused when {nameof(PublishAsync)} event method : {subscriber.Callback?.Method.Name}, with registered type : {value?.GetType().FullName}. Full exception: {e}");
+            }
+
+            return null;
+        }
+
+        protected IDisposable InternalSubscribe<T>(Delegate callback, bool hasParameters, CancellationToken? token, int? order)
         {
             var registerType = typeof(T);
-            if (!subscribers.TryGetValue(registerType, out var registered))
-                subscribers[registerType] = registered = new SubscriberCollection();
+            if (!Subscribers.TryGetValue(registerType, out var registered))
+                Subscribers[registerType] = registered = new SubscriberCollection();
 
             registered.UnSorted |= order.HasValue;
             var subscriber = new Subscriber
@@ -91,12 +104,12 @@ namespace Shared.Game.Context.EventSource
                 if (cancellationTokenRegistration is {Token: {IsCancellationRequested: false}})
                     cancellationTokenRegistration.Value.Dispose();
 
-                if (!subscribers.TryGetValue(registerType, out var result))
+                if (!Subscribers.TryGetValue(registerType, out var result))
                     return;
 
                 result.Remove(subscriber);
                 if (result.Count == 0)
-                    subscribers.Remove(registerType);
+                    Subscribers.Remove(registerType);
             };
 
             registered.Add(subscriber);
