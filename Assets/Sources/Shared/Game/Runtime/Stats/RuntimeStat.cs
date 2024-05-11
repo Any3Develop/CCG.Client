@@ -40,12 +40,14 @@ namespace Shared.Game.Runtime.Stats
             EventsSource = null;
         }
 
-        public IRuntimeStat Sync(IRuntimeStatData runtimeData)
+        public IRuntimeStat Sync(IRuntimeStatData runtimeData, bool notify = true)
         {
             if (!Initialized)
                 return this;
 
+            OnBeforeChanged(notify);
             RuntimeData = runtimeData;
+            OnAfterChanged(notify);
             return this;
         }
 

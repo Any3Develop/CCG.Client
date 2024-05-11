@@ -53,7 +53,7 @@ namespace Shared.Game.Factories
                 throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.Id}, not found in {nameof(IObjectsCollection)}");
 
             if (runtimeObject.StatsCollection.TryGet(runtimeData.Id, out var runtimeStat))
-                return runtimeStat.Sync(runtimeData);
+                return runtimeStat.Sync(runtimeData, notify);
             
             if (!database.Stats.TryGet(runtimeData.DataId, out var statData))
                 throw new NullReferenceException($"{nameof(StatData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<StatData>)}");

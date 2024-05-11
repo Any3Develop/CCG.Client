@@ -27,7 +27,7 @@ namespace Shared.Game.Context.EventProcessors
 
         protected virtual void OnSubscribed()
         {
-            context.EventSource.Subscribe<GameQueueReleaseEvent>(data =>
+            context.EventSource.Subscribe<AfterGameQueueReleasedEvent>(data =>
             {
                 var syncOrderEvent = new SyncRuntimeOrder();
                 var syncIdEvent = new SyncRuntimeId();

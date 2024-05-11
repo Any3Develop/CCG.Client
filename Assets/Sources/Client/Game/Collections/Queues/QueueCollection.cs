@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Client.Game.Abstractions.Collections.Queues;
 
 namespace Client.Game.Collections.Queues
 {
     public class QueueCollection<T> : IQueue<T>
     {
-        protected readonly Queue<T> Collection = new();
+        protected Queue<T> Collection = new();
         public virtual int Count => Collection.Count;
 
         public virtual T Dequeue()
@@ -23,6 +24,11 @@ namespace Client.Game.Collections.Queues
         {
             foreach (var value in values)
                 Enqueue(value);
+        }
+
+        public void Reverse()
+        {
+            Collection = new Queue<T>(Collection.Reverse());
         }
 
         public virtual void Clear()

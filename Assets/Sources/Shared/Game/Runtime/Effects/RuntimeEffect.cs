@@ -39,12 +39,14 @@ namespace Shared.Game.Runtime.Effects
             EventsSource = null;
         }
 
-        public IRuntimeEffect Sync(IRuntimeEffectData runtimeData)
+        public IRuntimeEffect Sync(IRuntimeEffectData runtimeData, bool notify = true)
         {
             if (!Initialized)
                 return this;
             
+            EventsSource.Publish<BeforeEffectChangeEvent>(notify, this);
             RuntimeData = runtimeData;
+            EventsSource.Publish<AfterEffectChangedEvent>(notify, this);
             return this;
         }
 
@@ -55,7 +57,7 @@ namespace Shared.Game.Runtime.Effects
             if (!Initialized)
                 return;
             
-            EventsSource.Publish<BeforeEffectExecutedEvent>(Initialized, this);
+            EventsSource.Publish<BeforeEffectExecuteEvent>(Initialized, this);
             OnExecute();
             EventsSource.Publish<AfterEffectExecutedEvent>(Initialized, this);
         }
@@ -71,12 +73,8 @@ namespace Shared.Game.Runtime.Effects
         }
 
         #region Callbacks
-        protected virtual void OnChanged(bool notify = true) =>
-            EventsSource.Publish<AfterEffectChangedEvent>(Initialized && notify, this);
-        
         protected virtual void OnExecute() {}
         protected virtual void OnExpire() {}
-
         #endregion
 
         #region IRuntimeObjectBase

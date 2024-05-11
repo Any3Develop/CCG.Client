@@ -4,6 +4,8 @@ using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Abstractions.Game.Runtime.Players;
+using Shared.Game.Events.Context.Players;
+using Shared.Game.Utils;
 
 namespace Shared.Game.Runtime.Players
 {
@@ -16,11 +18,9 @@ namespace Shared.Game.Runtime.Players
         protected bool Initialized { get; private set; }
 
         public IRuntimePlayer Init(
-            IRuntimePlayerData runtimeData,
             IStatsCollection statsCollection,
             IEventsSource eventsSource)
         {
-            RuntimeData = runtimeData;
             StatsCollection = statsCollection;
             EventsSource = eventsSource;
             Initialized = true;
@@ -35,6 +35,16 @@ namespace Shared.Game.Runtime.Players
             Initialized = false;
             EventsSource?.Dispose();
             StatsCollection?.Dispose();
+        }
+
+        public void Sync(IRuntimePlayerData runtimeData, bool notify = true)
+        {
+            if (!Initialized)
+                return;
+            
+            EventsSource.Publish<BeforePlayerChangeEvent>(notify, this);
+            RuntimeData = runtimeData;
+            EventsSource.Publish<AfterPlayerChangedEvent>(notify, this);
         }
 
         public bool TrySpendMana(int value)

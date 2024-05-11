@@ -12,7 +12,7 @@ namespace Shared.Abstractions.Game.Runtime.Objects
         IStatsCollection StatsCollection { get; }
         IEffectsCollection EffectsCollection { get; }
 
-        IRuntimeObject Sync(IRuntimeObjectData runtimeData);
+        IRuntimeObject Sync(IRuntimeObjectData runtimeData, bool notify = true);
         void SetState(ObjectState value, bool notify = true);
     }
 }

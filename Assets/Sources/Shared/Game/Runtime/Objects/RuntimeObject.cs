@@ -51,12 +51,14 @@ namespace Shared.Game.Runtime.Objects
             EffectsCollection = null;
         }
 
-        public IRuntimeObject Sync(IRuntimeObjectData runtimeData)
+        public IRuntimeObject Sync(IRuntimeObjectData runtimeData, bool notify = true)
         {
             if (!Initialized)
                 return this;
             
+            EventsSource.Publish<BeforeObjectChangeEvent>(notify, this);
             RuntimeData = runtimeData;
+            EventsSource.Publish<AfterObjectChangedEvent>(notify, this);
             return this;
         }
 
@@ -65,21 +67,11 @@ namespace Shared.Game.Runtime.Objects
             if (!Initialized)
                 return;
             
-            OnBeforeStateChanged(notify);
+            EventsSource.Publish<BeforeObjectStateChangeEvent>(notify, this);
             RuntimeData.PreviousState = RuntimeData.State;
             RuntimeData.State = value;
-            OnAfterStateChanged(notify);
+            EventsSource.Publish<AfterObjectStateChangedEvent>(notify, this);
         }
-
-        #region Callbacks
-
-        protected virtual void OnBeforeStateChanged(bool notify = true) =>
-            EventsSource.Publish<BeforeObjectStateChangedEvent>(Initialized && notify, this);
-
-        protected virtual void OnAfterStateChanged(bool notify = true) =>
-            EventsSource.Publish<AfterObjectStateChangedEvent>(Initialized && notify, this);
-
-        #endregion
 
         #region IRuntimeObjectBase
 

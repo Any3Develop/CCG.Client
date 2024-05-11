@@ -9,7 +9,7 @@ namespace Shared.Abstractions.Game.Runtime.Effects
         EffectData Data { get; }
         new IRuntimeEffectData RuntimeData { get; }
 
-        IRuntimeEffect Sync(IRuntimeEffectData runtimeData);
+        IRuntimeEffect Sync(IRuntimeEffectData runtimeData, bool notify = true);
         bool IsExecuteAllowed();
         void Execute();
         void Expire();

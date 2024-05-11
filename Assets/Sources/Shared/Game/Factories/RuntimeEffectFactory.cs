@@ -53,7 +53,7 @@ namespace Shared.Game.Factories
                 throw new NullReferenceException($"{nameof(IRuntimeObject)} with id {runtimeData.EffectOwnerId}, not found in {nameof(IObjectsCollection)}");
 
             if (runtimeEffectOwnerObject.EffectsCollection.TryGet(runtimeData.Id, out var runtimeEffect))
-                return runtimeEffect.Sync(runtimeData);
+                return runtimeEffect.Sync(runtimeData, notify);
             
             if (!database.Effects.TryGet(runtimeData.DataId, out var data))
                 throw new NullReferenceException($"{nameof(EffectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<EffectData>)}");

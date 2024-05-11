@@ -9,7 +9,7 @@ namespace Shared.Abstractions.Game.Runtime.Stats
         StatData Data { get; }
         new IRuntimeStatData RuntimeData { get; }
         
-        IRuntimeStat Sync(IRuntimeStatData runtimeData);
+        IRuntimeStat Sync(IRuntimeStatData runtimeData, bool notify = true);
         void SetValue(int value, bool notify = true);
         void SetMax(int value, bool notify = true);
         void Reset(bool notify = true);

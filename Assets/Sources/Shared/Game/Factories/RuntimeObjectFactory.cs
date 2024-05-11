@@ -57,7 +57,7 @@ namespace Shared.Game.Factories
         public IRuntimeObject Create(IRuntimeObjectData runtimeData, bool notify = true)
         {
             if (objectsCollection.TryGet(runtimeData.Id, out var runtimeObject))
-                return runtimeObject.Sync(runtimeData);
+                return runtimeObject.Sync(runtimeData, notify);
             
             if (!database.Objects.TryGet(runtimeData.DataId, out var data))
                 throw new NullReferenceException($"{nameof(ObjectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<ObjectData>)}");

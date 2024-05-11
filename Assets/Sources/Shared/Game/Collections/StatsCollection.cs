@@ -20,7 +20,7 @@ namespace Shared.Game.Collections
         public override bool Add(IRuntimeStat value, bool notify = true)
         {
             var result = base.Add(value, notify);
-            eventsSource.Publish<AddedObjectStatEvent>(notify && result, value);
+            eventsSource.Publish<AfterStatAddedEvent>(notify && result, value);
             return result;
         }
 
@@ -30,7 +30,7 @@ namespace Shared.Game.Collections
                 return false;
             
             var result = base.Remove(value, notify);
-            eventsSource.Publish<DeletedObjectStatEvent>(notify && result, value);
+            eventsSource.Publish<AfterStatDeletedEvent>(notify && result, value);
             return result;
         }
     }

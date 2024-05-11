@@ -4,7 +4,6 @@ using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Runtime.Cards;
 using Shared.Abstractions.Game.Runtime.Objects;
 using Shared.Game.Data.Enums;
-using Shared.Game.Events.Context.Effects;
 using Shared.Game.Events.Context.Objects;
 using Shared.Game.Utils;
 
@@ -34,9 +33,8 @@ namespace Shared.Game.Collections
             if (Contains(value))
                 return false;
             
-            eventsSource.Publish<BeforeAddedObjectEvent>(notify, value);
             var result = base.Add(value, notify);
-            eventsSource.Publish<AfterAddedObjectEvent>(notify && result, value);
+            eventsSource.Publish<AfterObjectAddedEvent>(notify && result, value);
             return result;
         }
 
@@ -45,9 +43,8 @@ namespace Shared.Game.Collections
             if (!TryGet(id, out var value))
                 return false;
 
-            eventsSource.Publish<BeforeDeletedObjectEvent>(notify, value);
             var result = base.Remove(value, notify);
-            eventsSource.Publish<AfterDeletedObjectEvent>(notify && result, value);
+            eventsSource.Publish<AfterObjectDeletedEvent>(notify && result, value);
             return result;
         }
     }
