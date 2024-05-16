@@ -2,12 +2,11 @@
 using Cysharp.Threading.Tasks;
 using Shared.Abstractions.Game.Events;
 
-namespace Client.Game.Abstractions.Context.Queue
+namespace Client.Game.Abstractions.Context.EventProcessors
 {
-    public interface IGameEventQueueProcessor
+    public interface IGameEventQueueLocalProcessor
     {
-        void Register(IEnumerable<IGameEvent> queue);
-        void StartProcess();
+        UniTask ProcessAsync(IEnumerable<IGameEvent> queue);
         UniTask ProcessAsync(IGameEvent gameEvent);
         UniTask InterruptAsync();
     }

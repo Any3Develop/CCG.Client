@@ -1,5 +1,4 @@
-﻿using System.Threading;
-using Client.Game.Abstractions.Collections.Queues;
+﻿using Client.Game.Abstractions.Collections.Queues;
 using Shared.Abstractions.Game.Context;
 using Shared.Abstractions.Game.Events;
 using Shared.Abstractions.Game.Runtime.Objects;
@@ -19,7 +18,6 @@ namespace Client.Game.Context.EventProcessors
     {
         private readonly IContext context;
         private readonly IGameEventRollbackQueue rollbackQueue;
-        private readonly CancellationTokenSource lifeTime;
         private bool contextSubscribed;
         private string predictionId;
 
@@ -30,16 +28,12 @@ namespace Client.Game.Context.EventProcessors
         {
             this.context = context;
             this.rollbackQueue = rollbackQueue;
-            lifeTime = new CancellationTokenSource();
         }
 
         private void SubscribeContext()
         {
-            context.EventSource.Subscribe<BeforeCommandExecuteEvent>(ev => 
-                predictionId = ev.Command.Model.PredictionId, lifeTime.Token);
-            
-            context.EventSource.Subscribe<AfterGameQueueReleasedEvent>(_ => 
-                predictionId = null, lifeTime.Token);
+            context.EventSource.Subscribe<BeforeCommandExecuteEvent>(ev => predictionId = ev.Command.Model.PredictionId);
+            context.EventSource.Subscribe<AfterGameQueueReleasedEvent>(_ => predictionId = null);
         }
 
         protected override void OnSubscribe(IRuntimeObjectBase runtimeObject)

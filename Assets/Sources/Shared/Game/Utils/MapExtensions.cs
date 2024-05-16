@@ -35,5 +35,27 @@ namespace Shared.Game.Utils
 
             return destination;
         }
+
+        public static bool ValueEquals(this object left, object rigth)
+        {
+            try
+            {
+                if (left == null && rigth == null)
+                    return true;
+            
+                if (left == null || rigth == null)
+                    return false;
+                
+                var rigthType = rigth.GetType();
+                var leftType = left.GetType();
+                
+                return leftType.GetFields().All(x => x.GetValue(left).Equals(rigthType.GetField(x.Name)?.GetValue(rigth)))
+                       && leftType.GetProperties().All(x => x.GetValue(left).Equals(rigthType.GetProperty(x.Name)?.GetValue(rigth)));
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

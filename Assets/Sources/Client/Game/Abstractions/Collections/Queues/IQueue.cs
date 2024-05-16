@@ -8,6 +8,8 @@ namespace Client.Game.Abstractions.Collections.Queues
         T Dequeue();
         void Enqueue(T value);
         void Enqueue(IEnumerable<T> values);
+        bool TryPeek(out T result);
+        T Peek();
         void Reverse();
         void Clear();
     }

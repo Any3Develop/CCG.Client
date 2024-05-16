@@ -26,6 +26,23 @@ namespace Client.Game.Collections.Queues
                 Enqueue(value);
         }
 
+        public bool TryPeek(out T result)
+        {
+            if (Count != 0)
+            {
+                result = Peek();
+                return true;
+            }
+
+            result = default;
+            return false;
+        }
+
+        public T Peek()
+        {
+            return Count == 0 ? default : Collection.Peek();
+        }
+
         public void Reverse()
         {
             Collection = new Queue<T>(Collection.Reverse());

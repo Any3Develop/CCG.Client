@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Threading;
 using Client.Game.Abstractions.Collections.Queues;
+using Client.Game.Abstractions.Context.EventProcessors;
 using Client.Game.Abstractions.Context.EventSource;
-using Client.Game.Abstractions.Context.Queue;
 using Cysharp.Threading.Tasks;
 using Shared.Abstractions.Game.Context.EventProcessors;
 using Shared.Abstractions.Game.Events;
 using Shared.Common.Logger;
 
-namespace Client.Game.Context.Queue
+namespace Client.Game.Context.EventProcessors
 {
-    public class GameEventQueueProcessor : IGameEventQueueProcessor, IDisposable
+    public class GameEventQueueLocalProcessor : IGameEventQueueLocalProcessor, IDisposable
     {
         private readonly IGameEventLocalQueue localQueue;
         private readonly IGameEventPublisher gameEventPublisher;
@@ -20,7 +20,7 @@ namespace Client.Game.Context.Queue
         private UniTaskCompletionSource interrupting;
         private bool initialized = true;
 
-        public GameEventQueueProcessor(
+        public GameEventQueueLocalProcessor(
             IGameEventLocalQueue localQueue,
             IGameEventPublisher gameEventPublisher,
             IGameEventProcessor gameEventProcessor)
@@ -43,19 +43,14 @@ namespace Client.Game.Context.Queue
             interrupting = null;
             localQueue.Clear();
         }
-
-        public void Register(IEnumerable<IGameEvent> queue)
+        
+        public async UniTask ProcessAsync(IEnumerable<IGameEvent> queue)
         {
             if (!initialized)
                 return;
             
             localQueue.Enqueue(queue);
-            StartProcess();
-        }
-
-        public void StartProcess()
-        {
-            StartUnQueueLoopAsync().Forget(SharedLogger.Error);
+            await StartUnQueueLoopAsync();
         }
 
         public async UniTask ProcessAsync(IGameEvent gameEvent)
@@ -81,6 +76,7 @@ namespace Client.Game.Context.Queue
             unQueueProcess = null;
             await interrupting.Task;
             interrupting = null;
+            localQueue.Clear();
         }
 
         private async UniTask StartUnQueueLoopAsync()
@@ -102,7 +98,7 @@ namespace Client.Game.Context.Queue
                 return;
             }
 
-            StartProcess();
+            StartUnQueueLoopAsync().Forget(SharedLogger.Error);
         }
     }
 }
