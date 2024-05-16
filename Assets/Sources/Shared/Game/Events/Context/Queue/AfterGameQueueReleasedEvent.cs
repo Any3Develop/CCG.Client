@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Shared.Abstractions.Game.Events;
 
 namespace Shared.Game.Events.Context.Queue

@@ -29,9 +29,9 @@ namespace Client.Game.Context.EventSource
             return InternalSubscribe<T>(callback, true, token, order);
         }
 
-        public async UniTask PublishAsync(IGameEvent value)
+        public new async UniTask PublishAsync<T>(T value) where T : IGameEvent
         {
-            foreach (var subscriber in GetSubscribers(value))
+            foreach (var subscriber in GetSubscribers<T>())
             {
                 switch (DynamicInvoke(subscriber, value))
                 {

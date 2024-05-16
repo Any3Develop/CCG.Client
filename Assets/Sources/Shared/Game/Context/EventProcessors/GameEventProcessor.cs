@@ -1,11 +1,11 @@
 ﻿using System;
-using Client.Game.Abstractions.Context.Queue;
 using Shared.Abstractions.Game.Context;
+using Shared.Abstractions.Game.Context.EventProcessors;
 using Shared.Abstractions.Game.Events;
 using Shared.Abstractions.Game.Runtime.Cards;
 using Shared.Game.Events.Output;
 
-namespace Client.Game.Context.Queue
+namespace Shared.Game.Context.EventProcessors
 {
     public class GameEventProcessor : IGameEventProcessor
     {

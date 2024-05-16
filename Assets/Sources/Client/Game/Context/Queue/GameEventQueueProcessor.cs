@@ -5,6 +5,7 @@ using Client.Game.Abstractions.Collections.Queues;
 using Client.Game.Abstractions.Context.EventSource;
 using Client.Game.Abstractions.Context.Queue;
 using Cysharp.Threading.Tasks;
+using Shared.Abstractions.Game.Context.EventProcessors;
 using Shared.Abstractions.Game.Events;
 using Shared.Common.Logger;
 
@@ -14,16 +15,19 @@ namespace Client.Game.Context.Queue
     {
         private readonly IGameEventLocalQueue localQueue;
         private readonly IGameEventPublisher gameEventPublisher;
+        private readonly IGameEventProcessor gameEventProcessor;
         private CancellationTokenSource unQueueProcess;
         private UniTaskCompletionSource interrupting;
         private bool initialized = true;
 
         public GameEventQueueProcessor(
             IGameEventLocalQueue localQueue,
-            IGameEventPublisher gameEventPublisher)
+            IGameEventPublisher gameEventPublisher,
+            IGameEventProcessor gameEventProcessor)
         {
             this.localQueue = localQueue;
             this.gameEventPublisher = gameEventPublisher;
+            this.gameEventProcessor = gameEventProcessor;
         }
 
         public void Dispose()
@@ -59,6 +63,7 @@ namespace Client.Game.Context.Queue
             if (!initialized)
                 return;
             
+            gameEventProcessor.Process(gameEvent);
             await gameEventPublisher.PublishAsync(gameEvent);
         }
 

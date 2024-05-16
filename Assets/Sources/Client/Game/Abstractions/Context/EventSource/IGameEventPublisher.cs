@@ -5,6 +5,6 @@ namespace Client.Game.Abstractions.Context.EventSource
 {
     public interface IGameEventPublisher
     {
-        UniTask PublishAsync(IGameEvent value);
+        UniTask PublishAsync<T>(T value) where T : IGameEvent;
     }
 }

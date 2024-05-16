@@ -11,6 +11,11 @@ namespace Shared.Game.Context.EventSource
     public class EventSource : IEventsSource
     {
         protected readonly Dictionary<Type, SubscriberCollection> Subscribers = new();
+        public IDisposable Subscribe(Action<object> callback, CancellationToken? token = null, int? order = null)
+        {
+            return InternalSubscribe<object>(callback, true, token, order);
+        }
+        
         public IDisposable Subscribe<T>(Action<T> callback, CancellationToken? token = null, int? order = null)
         {
             return InternalSubscribe<T>(callback, true, token, order);
@@ -42,20 +47,20 @@ namespace Shared.Game.Context.EventSource
 
         public void Publish<T>(T value)
         {
-            foreach (var subscriber in GetSubscribers(value))
+            foreach (var subscriber in GetSubscribers<T>().Union(GetSubscribers<object>()))
                 DynamicInvoke(subscriber, value);
         }
 
         public async Task PublishAsync<T>(T value)
         {
-            foreach (var subscriber in GetSubscribers(value))
+            foreach (var subscriber in GetSubscribers<T>().Union(GetSubscribers<object>()))
                 if (DynamicInvoke(subscriber, value) is Task task)
                     await task;
         }
 
-        protected IEnumerable<Subscriber> GetSubscribers<T>(T value)
+        protected IEnumerable<Subscriber> GetSubscribers<T>()
         {
-            if (!Subscribers.TryGetValue(value?.GetType(), out var subscriberCollection))
+            if (!Subscribers.TryGetValue(typeof(T), out var subscriberCollection))
                 return Array.Empty<Subscriber>();
 
             if (subscriberCollection.UnSorted)

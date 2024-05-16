@@ -81,6 +81,11 @@ namespace Shared.Game.Factories
             return new ContextEventProcessor(GetRequiredArgument<IContext>(args));
         }
 
+        public IGameEventProcessor CreateGameEventProcessor(params object[] args)
+        {
+            return new GameEventProcessor(GetRequiredArgument<IContext>(args));
+        }
+
         #endregion
 
         #region Context

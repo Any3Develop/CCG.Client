@@ -24,6 +24,7 @@ namespace Shared.Abstractions.Game.Factories
         IGameQueueCollector CreateGameQueueCollector(params object[] args);
         IObjectEventProcessor CreateObjectEventProcessor(params object[] args);
         IContextEventProcessor CreateContextEventProcessor(params object[] args);
+        IGameEventProcessor CreateGameEventProcessor(params object[] args);
         #endregion
 
         #region Context

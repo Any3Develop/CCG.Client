@@ -52,7 +52,7 @@ namespace Client.Game.Context.EventProcessors
                 SubscribeContext();
             }
             
-            #region Object
+            #region Objects
 
             eventSource.Subscribe<AfterObjectAddedEvent>(data =>
                 RegisterRollback(new ObjectDeleted{RuntimeData = data.RuntimeObject.RuntimeData.Clone()}));

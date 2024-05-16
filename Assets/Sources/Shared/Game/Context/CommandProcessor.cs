@@ -41,6 +41,7 @@ namespace Shared.Game.Context
             catch (Exception e)
             {
                 SharedLogger.Error(e);
+                throw;
             }
         }
     }

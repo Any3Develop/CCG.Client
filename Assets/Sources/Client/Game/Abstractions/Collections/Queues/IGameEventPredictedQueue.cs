@@ -2,5 +2,5 @@
 
 namespace Client.Game.Abstractions.Collections.Queues
 {
-    public interface IGameEventPredictionQueue : IQueue<IGameEvent> {}
+    public interface IGameEventPredictedQueue : IQueue<IGameEvent> {}
 }

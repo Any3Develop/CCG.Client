@@ -3,5 +3,5 @@ using Shared.Abstractions.Game.Events;
 
 namespace Client.Game.Collections.Queues
 {
-    public class GameEventPredictionQueue : QueueCollection<IGameEvent>, IGameEventPredictionQueue {}
+    public class GameEventPredictedQueue : QueueCollection<IGameEvent>, IGameEventPredictedQueue {}
 }

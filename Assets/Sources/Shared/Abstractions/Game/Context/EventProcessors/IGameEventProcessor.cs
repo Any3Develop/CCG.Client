@@ -1,6 +1,6 @@
 ﻿using Shared.Abstractions.Game.Events;
 
-namespace Client.Game.Abstractions.Context.Queue
+namespace Shared.Abstractions.Game.Context.EventProcessors
 {
     public interface IGameEventProcessor
     {
