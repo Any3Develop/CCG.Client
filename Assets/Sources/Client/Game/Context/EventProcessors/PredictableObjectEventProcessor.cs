@@ -1,4 +1,5 @@
 ﻿using Client.Game.Abstractions.Collections.Queues;
+using Shared.Abstractions.Game.Commands;
 using Shared.Abstractions.Game.Context;
 using Shared.Abstractions.Game.Events;
 using Shared.Abstractions.Game.Runtime.Objects;
@@ -32,8 +33,16 @@ namespace Client.Game.Context.EventProcessors
 
         private void SubscribeContext()
         {
-            context.EventSource.Subscribe<BeforeCommandExecuteEvent>(ev => predictionId = ev.Command.Model.PredictionId);
+            context.EventSource.Subscribe<BeforeCommandExecuteEvent>(ev => RegisterPrediction(ev.Command));
             context.EventSource.Subscribe<AfterGameQueueReleasedEvent>(_ => predictionId = null);
+        }
+
+        private void RegisterPrediction(ICommand command)
+        {
+            if (!string.IsNullOrWhiteSpace(predictionId) || command?.Model is null or {IsNested: true})
+                return;
+
+            predictionId = command.Model.PredictionId;
         }
 
         protected override void OnSubscribe(IRuntimeObjectBase runtimeObject)

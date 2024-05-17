@@ -1,4 +1,5 @@
-﻿using Client.Game.Abstractions.Collections.Queues;
+﻿using System;
+using Client.Game.Abstractions.Collections.Queues;
 using Client.Game.Abstractions.Context.EventProcessors;
 using Client.Lobby.Runtime;
 using Cysharp.Threading.Tasks;
@@ -30,6 +31,7 @@ namespace Client.Game.Context.EventProcessors
 
         public void Execute<TCommand>(ICommandModel model) where TCommand : ICommand
         {
+            model.PredictionId = Guid.NewGuid().ToString();
             using var _ = context.EventSource.Subscribe<AfterGameQueueReleasedEvent>(data => predictedQueue.Enqueue(data.Queue));
             commandProcessor.Execute<TCommand>(User.Id, model);
             queueLocalProcessor.ProcessAsync(predictedQueue).Forget(SharedLogger.Error);
