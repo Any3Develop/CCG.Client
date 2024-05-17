@@ -7,6 +7,7 @@ namespace Shared.Game.Runtime.Data
     {
         public int Id { get; set; }
         public string OwnerId { get; set; }
+        public string DataId { get; set; }
         public List<IRuntimeStatData> Stats { get; set; } = new();
     }
 }

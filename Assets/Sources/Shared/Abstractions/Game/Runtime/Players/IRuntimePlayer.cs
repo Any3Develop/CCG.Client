@@ -9,7 +9,7 @@ namespace Shared.Abstractions.Game.Runtime.Players
         new IRuntimePlayerData RuntimeData { get; }
         IStatsCollection StatsCollection { get; }
 
-        void Sync(IRuntimePlayerData runtimeData, bool notify = true);
+        IRuntimePlayer Sync(IRuntimePlayerData runtimeData, bool notify = true);
         bool TrySpendMana(int value);
     }
 }

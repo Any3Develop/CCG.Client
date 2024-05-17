@@ -9,5 +9,6 @@ namespace Shared.Game.Context
         public IDataCollection<ObjectData> Objects { get; set; }
         public IDataCollection<EffectData> Effects { get; set; }
         public IDataCollection<StatData> Stats{ get; set; }
+        public IDataCollection<PlayerData> Players{ get; set; }
     }
 }

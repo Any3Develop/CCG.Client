@@ -17,14 +17,10 @@ namespace Shared.Game.Runtime.Players
 
         protected bool Initialized { get; private set; }
 
-        public IRuntimePlayer Init(
-            IStatsCollection statsCollection,
-            IEventsSource eventsSource)
+        public RuntimePlayer(IStatsCollection statsCollection, IEventsSource eventsSource)
         {
             StatsCollection = statsCollection;
             EventsSource = eventsSource;
-            Initialized = true;
-            return this;
         }
 
         public void Dispose()
@@ -37,14 +33,16 @@ namespace Shared.Game.Runtime.Players
             StatsCollection?.Dispose();
         }
 
-        public void Sync(IRuntimePlayerData runtimeData, bool notify = true)
+        public IRuntimePlayer Sync(IRuntimePlayerData runtimeData, bool notify = true)
         {
             if (!Initialized)
-                return;
+                return this;
             
+            Initialized = true;
             EventsSource.Publish<BeforePlayerChangeEvent>(notify, this);
             RuntimeData = runtimeData;
             EventsSource.Publish<AfterPlayerChangedEvent>(notify, this);
+            return this;
         }
 
         public bool TrySpendMana(int value)

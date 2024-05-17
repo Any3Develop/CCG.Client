@@ -8,5 +8,6 @@ namespace Shared.Abstractions.Game.Context
         IDataCollection<ObjectData> Objects { get; }
         IDataCollection<EffectData> Effects { get; }
         IDataCollection<StatData> Stats { get; }
+        IDataCollection<PlayerData> Players { get; }
     }
 }
