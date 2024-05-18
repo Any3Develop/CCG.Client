@@ -5,14 +5,13 @@
         "Shared",
         "Unity.TextMeshPro",
         "UniRx",
-        "Zenject",
         "DOTween.Modules",
         "UniTask",
         "UniTask.DOTween",
         "UniTask.Addressables",
         "UniTask.TextMeshPro",
         "UniTask.Linq",
-        ""
+        "Zenject"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
