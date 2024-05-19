@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Server.Domain.Entities;
 
-namespace Server.Domain.Contracts
+namespace Server.Domain.Contracts.Persistence
 {
     public interface IDbContext
     {

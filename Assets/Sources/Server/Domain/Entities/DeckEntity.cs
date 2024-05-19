@@ -1,8 +1,7 @@
 ﻿namespace Server.Domain.Entities
 {
-    public class DeckEntity
+    public class DeckEntity : EntityBase
     {
-        public string Id { get; set; }
         public string[] CardIds { get; set; }
     }
 }

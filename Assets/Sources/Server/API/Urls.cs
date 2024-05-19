@@ -1,4 +1,4 @@
-﻿namespace Server.WebAPI.Network
+﻿namespace Server.API
 {
     public static class Urls
     {

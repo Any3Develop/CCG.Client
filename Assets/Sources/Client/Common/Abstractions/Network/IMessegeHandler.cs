@@ -2,7 +2,7 @@
 
 namespace Client.Common.Abstractions.Network
 {
-    public interface IMessageHandler
+    public interface IMessegeHandler
     {
         void Handle(Message message);
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -16,16 +17,16 @@ using UnityEngine;
 
 namespace Client.Common.Network
 {
-    public class TcpNetworkClient : IDisposable
+    public class TcpMessengerClient : IDisposable, IMessengerClient
     {
-        private readonly IMessageHandler messageHandler;
+        private readonly IMessegeHandler messegeHandler;
         private readonly IGameEventQueueRemoteProcessor queueRemoteProcessor;
         private CancellationTokenSource connectionSource;
         private TcpClient connection;
         
-        public TcpNetworkClient(IMessageHandler messageHandler)
+        public TcpMessengerClient(IMessegeHandler messegeHandler)
         {
-            this.messageHandler = messageHandler;
+            this.messegeHandler = messegeHandler;
         }
 
         public async UniTask<bool> ConnectAsync()
@@ -39,8 +40,8 @@ namespace Client.Common.Network
                 connection = new TcpClient();
                 await connection.ConnectAsync(Urls.ServerUrl, Urls.Port);
                 connectionSource = new CancellationTokenSource();
-                await SendAsync(Route.Auth, User.AccessToken, connectionSource.Token);
                 ReceiveAsync(connectionSource.Token).Forget();
+                await SendAsync(Route.Auth, User.AccessToken, connectionSource.Token);
                 return true;
             }
             catch (Exception e)
@@ -82,8 +83,7 @@ namespace Client.Common.Network
             var messageBytes = Encoding.UTF8.GetBytes(jsonData);
             var lengthPrefix = BitConverter.GetBytes(messageBytes.Length);
             
-            await stream.WriteAsync(lengthPrefix, token);
-            await stream.WriteAsync(messageBytes, token);
+            await stream.WriteAsync(lengthPrefix.Union(messageBytes).ToArray(), token);
         }
 
         private async UniTask ReceiveAsync(CancellationToken token)
@@ -93,7 +93,8 @@ namespace Client.Common.Network
             {
                 token.ThrowIfCancellationRequested();
                 var lengthBuffer = new byte[4];
-                if (await stream.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token) == 0)
+                var lengthRead = await stream.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token);
+                if (lengthRead == 0)
                 {
                     await ReceiveDelayTask(token);
                     continue;
@@ -107,12 +108,12 @@ namespace Client.Common.Network
                 }
                 
                 var buffer = new byte[responseLength];
-                if (await stream.ReadAsync(buffer, 0, buffer.Length, token) > 0)
+                if (await stream.ReadAsync(buffer, lengthRead, buffer.Length, token) > 0)
                 {
                     try
                     {
                         var jsonData = Encoding.UTF8.GetString(buffer);
-                        messageHandler.Handle(JsonConvert.DeserializeObject<Message>(jsonData, SerializeExtensions.SerializeSettings));
+                        messegeHandler.Handle(JsonConvert.DeserializeObject<Message>(jsonData, SerializeExtensions.SerializeSettings));
                     }
                     catch (Exception e)
                     {
@@ -131,8 +132,7 @@ namespace Client.Common.Network
 
         public void Dispose()
         {
-            connection?.Dispose();
-            connection = null;
+            Close();
         }
     }
 }

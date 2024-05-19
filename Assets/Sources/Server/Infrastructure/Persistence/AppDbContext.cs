@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Server.Domain.Contracts;
+using Server.Domain.Contracts.Persistence;
 using Server.Domain.Entities;
 
 namespace Server.Infrastructure.Persistence

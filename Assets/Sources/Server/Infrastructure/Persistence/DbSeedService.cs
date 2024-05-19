@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Server.Domain.Contracts;
+using Server.Domain.Contracts.Persistence;
 using Server.Domain.Entities;
 using Shared.Abstractions.Game.Context;
 using Shared.Game.Data;

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Server.Domain.Contracts
+namespace Server.Domain.Contracts.Persistence
 {
     public interface IDbSeedService
     {

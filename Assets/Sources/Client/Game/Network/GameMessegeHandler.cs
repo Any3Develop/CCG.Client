@@ -10,10 +10,10 @@ using Shared.Game.Utils;
 
 namespace Client.Game.Network
 {
-    public class GameMessageHandler : IMessageHandler
+    public class GameMessegeHandler : IMessegeHandler
     {
         private readonly IGameEventQueueRemoteProcessor queueRemoteProcessor;
-        public GameMessageHandler(IGameEventQueueRemoteProcessor queueRemoteProcessor)
+        public GameMessegeHandler(IGameEventQueueRemoteProcessor queueRemoteProcessor)
         {
             this.queueRemoteProcessor = queueRemoteProcessor;
         }
