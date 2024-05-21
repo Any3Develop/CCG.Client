@@ -62,6 +62,11 @@ namespace Shared.Game.Runtime.Players
             return true;
         }
 
+        public void SetReady(bool value)
+        {
+            RuntimeData.Ready = value;
+        }
+
         #region IRuntimeObjectBase
 
         IRuntimeDataBase IRuntimeObjectBase.RuntimeData => RuntimeData;

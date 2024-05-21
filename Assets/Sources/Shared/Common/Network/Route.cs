@@ -6,10 +6,9 @@ namespace Shared.Common.Network
     [JsonConverter(typeof(StringEnumConverter))]
     public enum Route
     {
-        Auth = 0,
-        ClientInit,
+        DropConnection,
+        Auth,
         GameEvent,
-        Command,
-        StartSession,
+        Command
     }
 }

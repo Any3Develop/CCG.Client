@@ -13,6 +13,7 @@ namespace Shared.Abstractions.Game.Context
         IPlayersCollection PlayersCollection { get; }
         IRuntimeOrderProvider RuntimeOrderProvider { get; }
         IRuntimeRandomProvider RuntimeRandomProvider { get; }
+        ICommandProcessor CommandProcessor { get; }
         IRuntimeIdProvider RuntimeIdProvider { get; }
         IEventsSource EventSource { get; }
 

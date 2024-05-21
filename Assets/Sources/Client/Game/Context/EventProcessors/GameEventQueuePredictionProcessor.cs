@@ -29,11 +29,11 @@ namespace Client.Game.Context.EventProcessors
             this.commandProcessor = commandProcessor;
         }
 
-        public void Execute<TCommand>(ICommandModel model) where TCommand : ICommand
+        public void Execute(ICommandModel model)
         {
             model.PredictionId = Guid.NewGuid().ToString();
             using var _ = context.EventSource.Subscribe<AfterGameQueueReleasedEvent>(data => predictedQueue.Enqueue(data.Queue));
-            commandProcessor.Execute<TCommand>(User.Id, model);
+            commandProcessor.Execute(User.Id, model);
             queueLocalProcessor.ProcessAsync(predictedQueue).Forget(SharedLogger.Error);
         }
     }

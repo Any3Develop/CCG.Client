@@ -1,49 +1,69 @@
 ﻿using System;
+using System.Linq;
+using Newtonsoft.Json;
 using Server.Domain.Contracts.Messanger;
-using Server.Domain.Contracts.Persistence;
 using Server.Domain.Contracts.Sessions;
+using Shared.Abstractions.Game.Commands;
 using Shared.Common.Logger;
 using Shared.Common.Network;
+using Shared.Game.Utils;
 
 namespace Server.Application.Messenger
 {
-    public class MessengerHandler : IMessengerHandler
+    public class MessengerHandler : IMessengerHandler, IDisposable
     {
-        private readonly IDbContext dbContext;
         private readonly IRuntimeSessionRepository sessionRepository;
-        private readonly ISessionFactory sessionFactory;
+        public event Action<string, Message> CallBack;
 
-        public MessengerHandler(
-            IDbContext dbContext,
-            IRuntimeSessionRepository sessionRepository, 
-            ISessionFactory sessionFactory)
+        public MessengerHandler(IRuntimeSessionRepository sessionRepository)
         {
-            this.dbContext = dbContext;
             this.sessionRepository = sessionRepository;
-            this.sessionFactory = sessionFactory;
         }
-        
-        public void Handle(string userId, Message message)
+
+        public void Handle(IClient client, Message message)
         {
             switch (message.Route)
             {
-                case Route.ClientInit:
-                    break;
-                case Route.GameEvent:
-                    break;
                 case Route.Command:
+                {
+                    if (!client.IsAuthorized)
+                        throw new NotAuthrorizedException();
+                    
+                    var session = sessionRepository.GetByUserId(client.UserId);
+                    if (session == null)
+                        throw new Exception($"There's no any available session for client : {client.UserId}.");
+                    
+                    var model = JsonConvert.DeserializeObject<ICommandModel>(message.Data, SerializeExtensions.GetDeserializeSettingsByType<ICommandModel>());
+                    session.Context.CommandProcessor.Execute(client.UserId, model);
                     break;
-                
-                case Route.StartSession:
-                    var session = sessionFactory.Create(Guid.NewGuid().ToString());
-                    sessionRepository.Add(session);
-                    session.Build();
-                    break;
+                }
                 
                 case Route.Auth:
-                default: SharedLogger.Warning($"Server cant handle unknown route : {message.Route}");
+                {
+                    var session = sessionRepository.GetFreeSession();
+                    if (session == null)
+                        throw new Exception($"There's no any free session.");
+
+                    var player = session.Context.PlayersCollection.First(x => !x.RuntimeData.Ready);
+                    client.SetUserId(player.RuntimeData.DataId);
+                    CallBack?.Invoke(player.RuntimeData.OwnerId, new Message
+                    {
+                        Route = Route.Auth,
+                        Data = player.RuntimeData.OwnerId
+                    });
+                    break;
+                }
+                
+                case Route.DropConnection:
+                case Route.GameEvent:
+                default: SharedLogger.Warning($"Server cant handle the route : {message.Route}");
                     break;
             }
+        }
+
+        public void Dispose()
+        {
+            CallBack = null;
         }
     }
 }

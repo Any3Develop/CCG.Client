@@ -12,7 +12,7 @@ namespace Shared.Game.Commands
         protected override void OnExecute()
         {
             if (!Context.PlayersCollection.Contains(ExecutorId))
-                throw new NullReferenceException("Player who executed the command was found.");
+                throw new NullReferenceException("Player who executed the command wasn't found.");
             
             if (!Context.ObjectsCollection.TryGet<IRuntimeCard>(Model.Id, out var runtimeCard))
                 throw new NullReferenceException($"Requested card with id {Model.Id} not found.");

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Server.Domain.Contracts.Persistence;
+using Server.Domain.Contracts.Sessions;
 using Server.Domain.Entities;
 using Shared.Abstractions.Game.Context;
 using Shared.Game.Data;
@@ -13,21 +14,27 @@ namespace Server.Infrastructure.Persistence
     {
         private readonly IDbContext dbContext;
         private readonly ISharedConfig sharedConfig;
+        private readonly ISessionFactory sessionFactory;
+        private readonly IRuntimeSessionRepository sessionRepository;
         private readonly IDatabase database;
 
         public DbSeedService(
             IDbContext dbContext,
             ISharedConfig sharedConfig,
+            ISessionFactory sessionFactory,
+            IRuntimeSessionRepository sessionRepository,
             IDatabase database)
         {
             this.dbContext = dbContext;
             this.sharedConfig = sharedConfig;
+            this.sessionFactory = sessionFactory;
+            this.sessionRepository = sessionRepository;
             this.database = database;
         }
         
         public Task SeedAsync()
         {
-            CreateCards();
+            SeedRuntimeDatabase();
             dbContext.Decks.Add(new DeckEntity
             {
                 Id = "Default-Deck-1",
@@ -53,11 +60,20 @@ namespace Server.Infrastructure.Persistence
                 Id = "Player-2",
                 DeckId = dbContext.Decks.Last().Id,
             });
-            
+
+
+            var session = sessionFactory.Create(Guid.NewGuid().ToString());
+            sessionRepository.Add(session);
+            session.Build(dbContext.Users.Select(x=> new SessionPlayer
+            {
+                Id = x.Id,
+                DeckId = x.DeckId,
+                DeckCards = dbContext.Decks.First(d => d.Id == x.DeckId).CardIds.ToArray()
+            }));
             return Task.CompletedTask;
         }
 
-        private void CreateCards()
+        private void SeedRuntimeDatabase()
         {
             var random = new Random();
             database.Objects.AddRange(Enumerable.Range(0, sharedConfig.MaxInDeckCount).Select(id =>

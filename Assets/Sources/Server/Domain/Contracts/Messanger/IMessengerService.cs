@@ -10,6 +10,7 @@ namespace Server.Domain.Contracts.Messanger
         
         void Start(int port);
         void Stop();
+        Task BroadcastAsync(Message message);
         Task SendAsync(string userId, Message message);
         Task SendAsync(IClient client, Message message);
         void Dispose();

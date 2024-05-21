@@ -25,9 +25,9 @@ namespace Shared.Game.Factories
             return cmd;
         }
 
-        public ICommand Create(string executorId, string command, ICommandModel model)
+        public ICommand Create(string executorId, ICommandModel model)
         {
-            var cmd = Create(commandTypeCollection.Get(command));
+            var cmd = Create(commandTypeCollection.Get(model.TypeName));
             cmd.Init(executorId, model, context);
             return cmd;
         }

@@ -8,5 +8,7 @@ namespace Shared.Abstractions.Game.Context
         IContext Context { get; }
         string Id { get; }
         void Build(params object[] args);
+        void Start();
+        void AddPlayer(SessionPlayer player);
     }
 }

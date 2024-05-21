@@ -11,5 +11,6 @@ namespace Shared.Abstractions.Game.Runtime.Players
 
         IRuntimePlayer Sync(IRuntimePlayerData runtimeData, bool notify = true);
         bool TrySpendMana(int value);
+        void SetReady(bool value);
     }
 }

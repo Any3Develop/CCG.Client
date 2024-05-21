@@ -21,6 +21,21 @@ namespace Server.Application.Sessions
             return sessions.Find(x => x.Id == id);
         }
 
+        public ISession GetByUserId(string id)
+        {
+            return sessions.Find(x => x.Context.PlayersCollection.Any(p => p.RuntimeData.OwnerId == id));
+        }
+
+        public ISession GetFreeSession()
+        {
+            return sessions.Find(x => x.Context.PlayersCollection.Any(p => !p.RuntimeData.Ready));
+        }
+
+        public IEnumerable<ISession> Get()
+        {
+            return sessions.ToArray();
+        }
+
         public bool Remove(string id)
         {
             return sessions.RemoveAll(x => x.Id == id) > 0;

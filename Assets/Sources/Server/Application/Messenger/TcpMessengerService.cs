@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Server.Domain.Contracts.Messanger;
-using Server.Domain.Contracts.Persistence;
 using Shared.Common.Logger;
 using Shared.Common.Network;
 using Shared.Game.Utils;
@@ -17,7 +16,6 @@ namespace Server.Application.Messenger
 {
     public class TcpMessengerService : IDisposable, IMessengerService
     {
-        private readonly IDbContext dbContext;
         private readonly IMessengerHandler messengerHandler;
         private readonly List<IClient> connected = new();
         private readonly object connectedLock = new();
@@ -33,9 +31,8 @@ namespace Server.Application.Messenger
             }
         }
         
-        public TcpMessengerService(IDbContext dbContext, IMessengerHandler messengerHandler)
+        public TcpMessengerService(IMessengerHandler messengerHandler)
         {
-            this.dbContext = dbContext;
             this.messengerHandler = messengerHandler;
         }
         
@@ -46,6 +43,7 @@ namespace Server.Application.Messenger
                 listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
                 SharedLogger.Log($"Server started on port {port}");
+                messengerHandler.CallBack += (userId, msg) => SendAsync(userId, msg).GetAwaiter();
                 AcceptClientsAsyncLoop(connectionSource.Token).GetAwaiter();
             }
             catch (Exception e)
@@ -71,7 +69,18 @@ namespace Server.Application.Messenger
                 SharedLogger.Error(e);
             }
         }
-        
+
+        public async Task BroadcastAsync(Message message)
+        {
+            Task[] clientsTasks;
+            lock (connectedLock)
+            {
+                clientsTasks = connected.Select(x => SendAsync(x, message)).ToArray();
+            }
+
+            await Task.WhenAll(clientsTasks);
+        }
+
         private async Task AcceptClientsAsyncLoop(CancellationToken token)
         {
             var acceptDelay = TimeSpan.FromSeconds(1);
@@ -92,10 +101,16 @@ namespace Server.Application.Messenger
 
         public async Task SendAsync(string userId, Message message)
         {
-            if (!TryGetClientById(userId, out var client))
-                return;
+            if (!string.IsNullOrEmpty(userId))
+            {
+                if (!TryGetClientById(userId, out var client))
+                    return;
             
-            await SendAsync(client, message);
+                await SendAsync(client, message);
+                return;
+            }
+
+            await BroadcastAsync(message);
         }
 
         public async Task SendAsync(IClient client, Message message)
@@ -131,33 +146,25 @@ namespace Server.Application.Messenger
                 }
                 
                 var buffer = new byte[responseLength];
-                if (await stream.ReadAsync(buffer, readLength, buffer.Length, token) > 0)
+                if (await stream.ReadAsync(buffer, readLength, buffer.Length, token) <= 0) 
+                    continue;
+                
+                try
                 {
-                    try
+                    var jsonData = Encoding.UTF8.GetString(buffer);
+                    var message = JsonConvert.DeserializeObject<Message>(jsonData, SerializeExtensions.GetDeserializeSettingsByType<Message>());
+                    messengerHandler.Handle(client, message);
+                }
+                catch (Exception e)
+                {
+                    SharedLogger.Error(e);
+                    await SendAsync(client, new Message
                     {
-                        var jsonData = Encoding.UTF8.GetString(buffer);
-                        var message = JsonConvert.DeserializeObject<Message>(jsonData, SerializeExtensions.GetDeserializeSettingsByType<Message>());
-                        if (message.Route == Route.Auth)
-                        {
-                            var user = dbContext.Users.FirstOrDefault(x => x.AccessToken == message.Data);
-                            if (user != null)
-                            {
-                                client.SetUserId(user.Id);
-                                continue;
-                            }
-                            
-                            message.Data = $"Unauthorized, invalid AccessToken: '{message.Data}'.";
-                            await SendAsync(client, message);
-                            DropConnection(client);
-                            return;
-                        }
-
-                        messengerHandler.Handle(client.UserId, message);
-                    }
-                    catch (Exception e)
-                    {
-                        SharedLogger.Error(e);
-                    }
+                        Route = Route.DropConnection,
+                        Data = e.Message
+                    });
+                    DropConnection(client);
+                    return;
                 }
             }
         }

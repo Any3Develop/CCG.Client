@@ -4,7 +4,6 @@ namespace Shared.Abstractions.Game.Factories
 {
     public interface ICommandFactory
     {
-        ICommand Create<T>(string executorId, ICommandModel model) where T : ICommand;
-        ICommand Create(string executorId, string command, ICommandModel model);
+        ICommand Create(string executorId, ICommandModel model);
     }
 }

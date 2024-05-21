@@ -19,15 +19,10 @@ namespace Shared.Game.Context
             this.context = context;
             this.commandFactory = commandFactory;
         }
-
-        public void Execute<TCommand>(string executorId, ICommandModel model) where TCommand : ICommand
-        {
-            Execute(commandFactory.Create<TCommand>(executorId, model));
-        }
         
-        public void Execute(string executorId, string command, ICommandModel model)
+        public void Execute(string executorId, ICommandModel model)
         {
-            Execute(commandFactory.Create(command, executorId, model));
+            Execute(commandFactory.Create(executorId, model));
         }
 
         private void Execute(ICommand command)
