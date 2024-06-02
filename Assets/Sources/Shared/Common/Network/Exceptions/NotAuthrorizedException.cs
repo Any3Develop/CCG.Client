@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Shared.Common.Network
+namespace Shared.Common.Network.Exceptions
 {
     public class NotAuthrorizedException : Exception
     {

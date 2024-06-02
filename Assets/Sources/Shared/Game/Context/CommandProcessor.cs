@@ -31,12 +31,18 @@ namespace Shared.Game.Context
             {
                 context.EventSource.Publish(new BeforeCommandExecuteEvent(command));
                 command.Execute();
-                context.EventSource.Publish(new AfterCommandExecutedEvent(command));
             }
             catch (Exception e)
             {
                 SharedLogger.Error(e);
-                throw;
+            }
+            finally
+            {
+                // moved here to prevent interrupt event by command throw
+                context.EventSource.Publish(new AfterCommandExecutedEvent(command)); 
+                
+                if (!command.Model.IsNested)
+                    context.GameQueueCollector.Release();
             }
         }
     }

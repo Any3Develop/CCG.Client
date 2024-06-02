@@ -1,4 +1,4 @@
-﻿namespace Shared.Common.Network
+﻿namespace Shared.Common.Network.Data
 {
     public class Message
     {

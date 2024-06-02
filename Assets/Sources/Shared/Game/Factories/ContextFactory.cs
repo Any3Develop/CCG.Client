@@ -11,7 +11,6 @@ using Shared.Game.Context;
 using Shared.Game.Context.EventProcessors;
 using Shared.Game.Context.EventSource;
 using Shared.Game.Context.Providers;
-using Shared.Game.Data;
 
 namespace Shared.Game.Factories
 {
@@ -84,19 +83,6 @@ namespace Shared.Game.Factories
         public IGameEventProcessor CreateGameEventProcessor(params object[] args)
         {
             return new GameEventProcessor(GetRequiredArgument<IContext>(args));
-        }
-
-        #endregion
-
-        #region Context
-        public IDatabase CreateDatabase(params object[] args)
-        {
-            return new Database
-            {
-                Objects = new DataCollection<ObjectData>(),
-                Effects = new DataCollection<EffectData>(),
-                Stats = new DataCollection<StatData>()
-            };
         }
 
         #endregion

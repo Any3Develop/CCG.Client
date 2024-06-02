@@ -27,10 +27,6 @@ namespace Shared.Abstractions.Game.Factories
         IGameEventProcessor CreateGameEventProcessor(params object[] args);
         #endregion
 
-        #region Context
-        IDatabase CreateDatabase(params object[] args);
-        #endregion
-
         #region Factories
         ICommandFactory CreateCommandFactory(params object[] args);
         #endregion

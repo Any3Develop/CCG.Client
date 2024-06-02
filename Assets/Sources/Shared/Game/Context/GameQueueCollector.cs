@@ -32,9 +32,6 @@ namespace Shared.Game.Context
 
         public void Release()
         {
-            if (queue.Count == 0)
-                return;
-
             var releaseEvent = new AfterGameQueueReleasedEvent(queue.ToList());
             predictionId = null;
             queue.Clear();

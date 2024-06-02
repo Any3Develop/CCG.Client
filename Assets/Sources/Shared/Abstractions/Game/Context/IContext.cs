@@ -13,8 +13,9 @@ namespace Shared.Abstractions.Game.Context
         IPlayersCollection PlayersCollection { get; }
         IRuntimeOrderProvider RuntimeOrderProvider { get; }
         IRuntimeRandomProvider RuntimeRandomProvider { get; }
-        ICommandProcessor CommandProcessor { get; }
         IRuntimeIdProvider RuntimeIdProvider { get; }
+        ICommandProcessor CommandProcessor { get; }
+        IGameQueueCollector GameQueueCollector { get; }
         IEventsSource EventSource { get; }
 
         #region Factories
