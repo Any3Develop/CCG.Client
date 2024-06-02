@@ -5,6 +5,7 @@ using Server.Domain.Contracts.Persistence;
 using Server.Domain.Contracts.Sessions;
 using Server.Domain.Entities;
 using Shared.Abstractions.Game.Context;
+using Shared.Game.Context;
 using Shared.Game.Data;
 using Shared.Game.Data.Enums;
 
@@ -34,17 +35,18 @@ namespace Server.Infrastructure.Persistence
         
         public Task SeedAsync()
         {
+            SeedSharedConfig();
             SeedRuntimeDatabase();
             dbContext.Decks.Add(new DeckEntity
             {
                 Id = "Default-Deck-1",
-                CardIds = database.Objects.Select(x=> x.Id).ToArray()
+                CardIds = database.Objects.Select(x=> x.Id).Take(sharedConfig.MaxInDeckCount).ToArray()
             });
             
             dbContext.Decks.Add(new DeckEntity
             {
                 Id = "Default-Deck-2",
-                CardIds = database.Objects.Select(x=> x.Id).Reverse().ToArray()
+                CardIds = database.Objects.Select(x=> x.Id).Take(sharedConfig.MaxInDeckCount).Reverse().ToArray()
             });
             
             dbContext.Users.Add(new UserDataEntity
@@ -68,9 +70,20 @@ namespace Server.Infrastructure.Persistence
             {
                 Id = x.Id,
                 DeckId = x.DeckId,
+                HeroId = x.Id, // TODO
                 DeckCards = dbContext.Decks.First(d => d.Id == x.DeckId).CardIds.ToArray()
             }));
             return Task.CompletedTask;
+        }
+
+        private void SeedSharedConfig()
+        {
+            if (sharedConfig is not SharedConfig impl)
+                throw new InvalidOperationException($"Can't seed the config instance, no match with instance type, expected: {nameof(SharedConfig)}, now is: {sharedConfig.GetType().Name}");
+
+            impl.MaxInDeckCount = 30;
+            impl.MaxInHandCount = 6;
+            impl.MaxInTableCount = 6;
         }
 
         private void SeedRuntimeDatabase()

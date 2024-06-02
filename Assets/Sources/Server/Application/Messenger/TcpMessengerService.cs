@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Server.Domain.Contracts.Messanger;
 using Shared.Common.Logger;
-using Shared.Common.Network;
+using Shared.Common.Network.Data;
 using Shared.Game.Utils;
 
 namespace Server.Application.Messenger
@@ -19,7 +19,7 @@ namespace Server.Application.Messenger
         private readonly IMessengerHandler messengerHandler;
         private readonly List<IClient> connected = new();
         private readonly object connectedLock = new();
-        private CancellationTokenSource connectionSource;
+        private CancellationTokenSource connection;
         private TcpListener listener;
 
         public IEnumerable<IClient> Clients
@@ -36,15 +36,23 @@ namespace Server.Application.Messenger
             this.messengerHandler = messengerHandler;
         }
         
+        public void Dispose()
+        {
+            Stop();
+        }
+        
         public void Start(int port)
         {
             try
             {
+                connection?.Cancel();
+                connection?.Dispose();
+                connection = new CancellationTokenSource();
                 listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
                 SharedLogger.Log($"Server started on port {port}");
-                messengerHandler.CallBack += (userId, msg) => SendAsync(userId, msg).GetAwaiter();
-                AcceptClientsAsyncLoop(connectionSource.Token).GetAwaiter();
+                messengerHandler.CallBack += SendCallBack;
+                AcceptClientsAsyncLoop(connection.Token).ConfigureAwait(false).GetAwaiter();
             }
             catch (Exception e)
             {
@@ -57,12 +65,13 @@ namespace Server.Application.Messenger
         {
             try
             {
-                DropConnections();
+                DropAllConnections();
                 listener?.Stop();
                 listener = null;
-                connectionSource?.Cancel();
-                connectionSource?.Dispose();
-                connectionSource = null;
+                connection?.Cancel();
+                connection?.Dispose();
+                connection = null;
+                messengerHandler.CallBack -= SendCallBack;
             }
             catch (Exception e)
             {
@@ -79,24 +88,6 @@ namespace Server.Application.Messenger
             }
 
             await Task.WhenAll(clientsTasks);
-        }
-
-        private async Task AcceptClientsAsyncLoop(CancellationToken token)
-        {
-            var acceptDelay = TimeSpan.FromSeconds(1);
-            while (listener != null && !token.IsCancellationRequested)
-            {
-                await Task.Delay(acceptDelay, token).ConfigureAwait(false);
-                var connnection = await listener.AcceptTcpClientAsync();
-                if (connnection is not {Connected: true} || TryGetClientByConnection(connnection, out _))
-                    continue;
-                
-                SharedLogger.Log($"Client connected : {connnection}");
-                
-                var client = new TcpNetworkClient(connnection);
-                SetConnected(client);
-                HandleAsync(client, token).ConfigureAwait(false).GetAwaiter();
-            }
         }
 
         public async Task SendAsync(string userId, Message message)
@@ -126,11 +117,40 @@ namespace Server.Application.Messenger
             await stream.WriteAsync(lengthBytes.Union(messageBytes).ToArray());
         }
 
+        private void SendCallBack(IClient client, Message message)
+        {
+            SendAsync(client, message).GetAwaiter();
+        }
+        
+        private async Task AcceptClientsAsyncLoop(CancellationToken token)
+        {
+            var acceptDelay = TimeSpan.FromSeconds(1);
+            while (listener != null && !token.IsCancellationRequested)
+            {
+                await Task.Delay(acceptDelay, token).ConfigureAwait(false);
+                var connnection = await listener.AcceptTcpClientAsync();
+                if (connnection is not {Connected: true} || TryGetClientByConnection(connnection, out _))
+                    continue;
+                
+                SharedLogger.Log($"Client connected : {connnection}");
+                
+                var client = new TcpNetworkClient(connnection);
+                SetConnected(client);
+                HandleAsync(client, token).ConfigureAwait(false).GetAwaiter();
+            }
+        }
+        
         private async Task HandleAsync(IClient client, CancellationToken token)
         {
             await using var stream = client.GetStream();
             while (!token.IsCancellationRequested)
             {
+                if (!client.IsConnected)
+                {
+                    DropConnection(client);
+                    return;
+                }
+                
                 await ReceiveDelayTask(token);
                 
                 var lengthBuffer = new byte[4];
@@ -210,15 +230,15 @@ namespace Server.Application.Messenger
                     if (!x.Equals(client)) 
                         return false;
                     
-                    x.Dispose();
+                    x.Abort();
                     return true;
                 });
                 
-                client.Dispose();
+                client.Abort();
             }
         }
 
-        private void DropConnections()
+        private void DropAllConnections()
         {
             lock (connectedLock)
             {
@@ -232,11 +252,6 @@ namespace Server.Application.Messenger
         private static Task ReceiveDelayTask(CancellationToken token)
         {
             return Task.Delay(1000, token);
-        }
-
-        public void Dispose()
-        {
-            Stop();
         }
     }
 }

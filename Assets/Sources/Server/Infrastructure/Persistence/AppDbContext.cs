@@ -6,7 +6,7 @@ namespace Server.Infrastructure.Persistence
 {
     public class AppDbContext : IDbContext
     {
-        public HashSet<UserDataEntity> Users { get; set; } = new();
-        public HashSet<DeckEntity> Decks { get; set; } = new();
+        public HashSet<UserDataEntity> Users { get; } = new();
+        public HashSet<DeckEntity> Decks { get; } = new();
     }
 }

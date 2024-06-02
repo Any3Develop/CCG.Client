@@ -1,14 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace Server.Domain.Contracts.Messanger
 {
-    public interface IClient : IDisposable
+    public interface IClient
     {
         bool IsAuthorized { get; }
         bool IsConnected { get; }
         string UserId { get; }
         Stream GetStream();
         void SetUserId(string userId);
+        void Abort();
     }
 }

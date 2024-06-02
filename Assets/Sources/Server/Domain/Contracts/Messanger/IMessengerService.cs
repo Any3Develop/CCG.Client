@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shared.Common.Network;
+using Shared.Common.Network.Data;
 
 namespace Server.Domain.Contracts.Messanger
 {

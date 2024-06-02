@@ -1,11 +1,12 @@
 ﻿using System;
 using Shared.Common.Network;
+using Shared.Common.Network.Data;
 
 namespace Server.Domain.Contracts.Messanger
 {
     public interface IMessengerHandler
     {
-        event Action<string, Message> CallBack; 
+        event Action<IClient, Message> CallBack; 
         void Handle(IClient client, Message message);
     }
 }

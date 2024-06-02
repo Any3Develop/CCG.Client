@@ -28,7 +28,7 @@ namespace Server.Application.Messenger
             UserId = userId;
         }
         
-        public void Dispose()
+        public void Abort()
         {
             SetUserId(null);
             connection?.Close();
@@ -39,7 +39,7 @@ namespace Server.Application.Messenger
         {
             return obj switch
             {
-                TcpClient other => other == connection,
+                TcpClient other => other.Equals(connection),
                 TcpNetworkClient other => other.UserId == UserId || other.connection == connection,
                 _ => false
             };
