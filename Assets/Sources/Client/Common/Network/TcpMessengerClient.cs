@@ -12,6 +12,7 @@ using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Shared.Common.Logger;
 using Shared.Common.Network;
+using Shared.Common.Network.Data;
 using Shared.Game.Utils;
 using UnityEngine;
 

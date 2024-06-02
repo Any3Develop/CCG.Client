@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Shared.Abstractions.Game.Events;
 using Shared.Common.Logger;
 using Shared.Common.Network;
+using Shared.Common.Network.Data;
+using Shared.Common.Network.Exceptions;
 using Shared.Game.Utils;
 
 namespace Client.Game.Network

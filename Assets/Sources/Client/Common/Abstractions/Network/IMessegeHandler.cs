@@ -1,4 +1,5 @@
 ﻿using Shared.Common.Network;
+using Shared.Common.Network.Data;
 
 namespace Client.Common.Abstractions.Network
 {

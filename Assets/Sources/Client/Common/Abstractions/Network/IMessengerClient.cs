@@ -2,6 +2,7 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Shared.Common.Network;
+using Shared.Common.Network.Data;
 
 namespace Client.Common.Abstractions.Network
 {

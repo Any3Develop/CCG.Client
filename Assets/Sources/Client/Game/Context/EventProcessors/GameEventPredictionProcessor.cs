@@ -10,14 +10,14 @@ using Shared.Game.Events.Context.Queue;
 
 namespace Client.Game.Context.EventProcessors
 {
-    public class GameEventQueuePredictionProcessor : IGameEventQueuePredictionProcessor
+    public class GameEventPredictionProcessor : IGameEventPredictionProcessor
     {
         private readonly IContext context;
         private readonly IGameEventPredictedQueue predictedQueue;
         private readonly IGameEventQueueLocalProcessor queueLocalProcessor;
         private readonly ICommandProcessor commandProcessor;
 
-        public GameEventQueuePredictionProcessor(
+        public GameEventPredictionProcessor(
             IContext context,
             IGameEventPredictedQueue predictedQueue,
             IGameEventQueueLocalProcessor queueLocalProcessor,
