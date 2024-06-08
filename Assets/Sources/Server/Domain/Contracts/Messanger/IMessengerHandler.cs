@@ -1,5 +1,4 @@
 ﻿using System;
-using Shared.Common.Network;
 using Shared.Common.Network.Data;
 
 namespace Server.Domain.Contracts.Messanger

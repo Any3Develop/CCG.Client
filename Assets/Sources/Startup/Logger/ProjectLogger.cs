@@ -2,11 +2,11 @@ using Shared.Abstractions.Common.Logger;
 using Shared.Common.Logger;
 using UnityEngine;
 
-namespace Client.Common.Logger
+namespace Startup.Logger
 {
-    public class ClientSharedLogger : ISharedLogger
+    public class ProjectLogger : ISharedLogger
     {
-        public ClientSharedLogger()
+        public ProjectLogger()
         {
             SharedLogger.Initialize(this);
         }

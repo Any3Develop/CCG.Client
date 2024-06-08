@@ -3,7 +3,7 @@ using Zenject;
 
 namespace Startup.Infrastructure.Server
 {
-    public class InfrastructureInstaller : MonoInstaller
+    public class ServerInfrastructureInstaller : MonoInstaller
     {
         public override void InstallBindings()
         {

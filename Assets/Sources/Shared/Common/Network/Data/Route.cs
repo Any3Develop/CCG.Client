@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using Unity.Plastic.Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Converters;
 
 namespace Shared.Common.Network.Data
 {

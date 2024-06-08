@@ -1,21 +1,19 @@
 ﻿using System.Collections.Generic;
 using Client.Common.Abstractions.Network;
-using Client.Common.Network.Exceptions;
 using Client.Game.Abstractions.Context.EventProcessors;
 using Newtonsoft.Json;
 using Shared.Abstractions.Game.Events;
 using Shared.Common.Logger;
-using Shared.Common.Network;
 using Shared.Common.Network.Data;
 using Shared.Common.Network.Exceptions;
 using Shared.Game.Utils;
 
 namespace Client.Game.Network
 {
-    public class GameMessegeHandler : IMessegeHandler
+    public class ClientMessageHandler : IMessageHandler
     {
         private readonly IGameEventQueueRemoteProcessor queueRemoteProcessor;
-        public GameMessegeHandler(IGameEventQueueRemoteProcessor queueRemoteProcessor)
+        public ClientMessageHandler(IGameEventQueueRemoteProcessor queueRemoteProcessor)
         {
             this.queueRemoteProcessor = queueRemoteProcessor;
         }

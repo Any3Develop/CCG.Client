@@ -3,17 +3,12 @@ using Zenject;
 
 namespace Startup.Infrastructure.Server
 {
-    public class APIInstaller : MonoInstaller
+    public class ServerAPIInstaller : MonoInstaller
     {
         public override void InstallBindings()
         {
             Container
                 .BindInterfacesTo<Program>()
-                .AsSingle()
-                .NonLazy();
-            
-            Container
-                .BindInterfacesTo<ApiLauncher>()
                 .AsSingle()
                 .NonLazy();
         }

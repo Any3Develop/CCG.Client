@@ -14,7 +14,7 @@ using Shared.Game.Utils;
 
 namespace Server.Application.Messenger
 {
-    public class TcpMessengerService : IDisposable, IMessengerService
+    public class ServerTcpMessengerService : IMessengerService
     {
         private readonly IMessengerHandler messengerHandler;
         private readonly List<IClient> connected = new();
@@ -31,7 +31,7 @@ namespace Server.Application.Messenger
             }
         }
         
-        public TcpMessengerService(IMessengerHandler messengerHandler)
+        public ServerTcpMessengerService(IMessengerHandler messengerHandler)
         {
             this.messengerHandler = messengerHandler;
         }
@@ -50,9 +50,9 @@ namespace Server.Application.Messenger
                 connection = new CancellationTokenSource();
                 listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
-                SharedLogger.Log($"Server started on port {port}");
+                SharedLogger.Log($"[Server.{GetType().Name}] Started on port {port}");
                 messengerHandler.CallBack += SendCallBack;
-                AcceptClientsAsyncLoop(connection.Token).ConfigureAwait(false).GetAwaiter();
+                AcceptClientsAsyncLoop(connection.Token).GetAwaiter();
             }
             catch (Exception e)
             {
@@ -65,6 +65,9 @@ namespace Server.Application.Messenger
         {
             try
             {
+                if (connection == null)
+                    return;
+                
                 DropAllConnections();
                 listener?.Stop();
                 listener = null;
@@ -72,6 +75,7 @@ namespace Server.Application.Messenger
                 connection?.Dispose();
                 connection = null;
                 messengerHandler.CallBack -= SendCallBack;
+                SharedLogger.Log($"[Server.{GetType().Name}] Shutdown.");
             }
             catch (Exception e)
             {
@@ -109,12 +113,11 @@ namespace Server.Application.Messenger
             if (client is not {IsAuthorized:true, IsConnected: true})
                 return;
             
-            await using var stream = client.GetStream();
             var jsonData = JsonConvert.SerializeObject(message, SerializeExtensions.SerializeSettings);
             var messageBytes = Encoding.UTF8.GetBytes(jsonData);
             var lengthBytes = BitConverter.GetBytes(messageBytes.Length);
             
-            await stream.WriteAsync(lengthBytes.Union(messageBytes).ToArray());
+            await client.SendAsync(lengthBytes.Union(messageBytes).ToArray());
         }
 
         private void SendCallBack(IClient client, Message message)
@@ -127,12 +130,12 @@ namespace Server.Application.Messenger
             var acceptDelay = TimeSpan.FromSeconds(1);
             while (listener != null && !token.IsCancellationRequested)
             {
-                await Task.Delay(acceptDelay, token).ConfigureAwait(false);
+                await Task.Delay(acceptDelay, token);
                 var connnection = await listener.AcceptTcpClientAsync();
                 if (connnection is not {Connected: true} || TryGetClientByConnection(connnection, out _))
                     continue;
                 
-                SharedLogger.Log($"Client connected : {connnection}");
+                SharedLogger.Log($"[Server.{GetType().Name}] Client connected.");
                 
                 var client = new TcpNetworkClient(connnection);
                 SetConnected(client);
@@ -142,7 +145,6 @@ namespace Server.Application.Messenger
         
         private async Task HandleAsync(IClient client, CancellationToken token)
         {
-            await using var stream = client.GetStream();
             while (!token.IsCancellationRequested)
             {
                 if (!client.IsConnected)
@@ -154,19 +156,19 @@ namespace Server.Application.Messenger
                 await ReceiveDelayTask(token);
                 
                 var lengthBuffer = new byte[4];
-                var readLength = await stream.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token);
+                var readLength = await client.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token);
                 if (readLength == 0)
                     continue;
                 
                 var responseLength = BitConverter.ToInt32(lengthBuffer, 0);
                 if (responseLength < 0)
                 {
-                    SharedLogger.Error("Client sent length header less than zero");
+                    SharedLogger.Error($"[Server.{GetType().Name}] Client sent length-header less than zero");
                     continue;
                 }
                 
                 var buffer = new byte[responseLength];
-                if (await stream.ReadAsync(buffer, readLength, buffer.Length, token) <= 0) 
+                if (await client.ReadAsync(buffer, readLength, buffer.Length, token) <= 0) 
                     continue;
                 
                 try

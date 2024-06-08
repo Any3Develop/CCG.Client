@@ -5,7 +5,8 @@
         "Shared",
         "Server",
         "Client",
-        "Zenject"
+        "Zenject",
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

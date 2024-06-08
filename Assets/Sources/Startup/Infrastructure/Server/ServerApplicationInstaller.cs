@@ -14,7 +14,7 @@ namespace Startup.Infrastructure.Server
                 .NonLazy();
             
             Container
-                .BindInterfacesTo<TcpMessengerService>()
+                .BindInterfacesTo<ServerTcpMessengerService>()
                 .AsSingle()
                 .NonLazy();
             

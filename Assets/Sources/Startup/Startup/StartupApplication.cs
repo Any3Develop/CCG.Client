@@ -1,40 +1,23 @@
-﻿using System;
-using CardGame.App;
-using CardGame.Cards.Bootstraps;
-using CardGame.Services.BootstrapService;
-using CardGame.Services.StatsService;
-using CardGame.UI;
+﻿using Client.Common.Services.SceneService;
+using Cysharp.Threading.Tasks;
+using UnityEngine.SceneManagement;
 using Zenject;
 
-namespace Startup
+namespace Startup.Startup
 {
     public class StartupApplication : IInitializable
     {
-        private readonly IBootstrap bootstrap;
-        private readonly IInstantiator instantiator;
-
-        public StartupApplication(
-            IBootstrap bootstrap,
-            IInstantiator instantiator)
+        private readonly ISceneService sceneService;
+        public StartupApplication(ISceneService sceneService)
         {
-            this.bootstrap = bootstrap;
-            this.instantiator = instantiator;
+            this.sceneService = sceneService;
         }
 
-        public void Initialize()
+        public async void Initialize()
         {
-            bootstrap.AddCommand(instantiator.Instantiate<InitStatsCommand>());
-            // bootstrap.AddCommand(instantiator.Instantiate<UISetupCommand>());
-            bootstrap.StartExecute();
-            bootstrap.AllCommandsDone += OnPreLoadInitsCompleteHandler;
-        }
-
-        private void OnPreLoadInitsCompleteHandler(object sender, EventArgs e)
-        {
-            bootstrap.AllCommandsDone -= OnPreLoadInitsCompleteHandler;
-            bootstrap.AddCommand(instantiator.Instantiate<InitCardsCommad>(new[] {bootstrap}));
-            bootstrap.AddCommand(instantiator.Instantiate<StartGameCommand>());
-            bootstrap.StartExecute();
+            await sceneService.LoadAsync(SceneId.Server);
+            await UniTask.Delay(2000);
+            await sceneService.LoadAsync(SceneId.Client, LoadSceneMode.Additive);
         }
     }
 }

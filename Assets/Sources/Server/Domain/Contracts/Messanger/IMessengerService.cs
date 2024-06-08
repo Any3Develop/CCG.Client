@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Shared.Common.Network;
 using Shared.Common.Network.Data;
 
 namespace Server.Domain.Contracts.Messanger
 {
-    public interface IMessengerService
+    public interface IMessengerService : IDisposable
     {
         IEnumerable<IClient> Clients { get; }
         
@@ -14,6 +14,5 @@ namespace Server.Domain.Contracts.Messanger
         Task BroadcastAsync(Message message);
         Task SendAsync(string userId, Message message);
         Task SendAsync(IClient client, Message message);
-        void Dispose();
     }
 }

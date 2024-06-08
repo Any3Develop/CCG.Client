@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using Server.Domain.Contracts.Messanger;
 
 namespace Server.Application.Messenger
@@ -18,9 +19,18 @@ namespace Server.Application.Messenger
             this.connection = connection;
         }
 
-        public Stream GetStream()
+        public async Task<int> SendAsync(byte[] data, CancellationToken token = default)
         {
-            return connection?.GetStream();
+            await using var stream = connection.GetStream();
+            await stream.WriteAsync(data, token);
+            // await stream.FlushAsync(token);
+            return data.Length;
+        }
+
+        public async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken token = default)
+        {
+            await using var stream = connection.GetStream();
+            return await stream.ReadAsync(buffer, offset, count, token);
         }
 
         public void SetUserId(string userId)

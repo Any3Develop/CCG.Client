@@ -1,14 +1,14 @@
-using Startup.Startup;
+﻿using Startup.Logger;
 using Zenject;
 
-namespace Startup.Infrastructure
+namespace Startup.Infrastructure.Project
 {
-    public class StartupInstaller : MonoInstaller
+    public class ProjectLoggerInstaller : MonoInstaller
     {
         public override void InstallBindings()
         {
             Container
-                .BindInterfacesTo<StartupApplication>()
+                .BindInterfacesTo<ProjectLogger>()
                 .AsSingle()
                 .NonLazy();
         }
