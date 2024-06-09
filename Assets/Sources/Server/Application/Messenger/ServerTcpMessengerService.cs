@@ -54,7 +54,7 @@ namespace Server.Application.Messenger
                 messengerHandler.CallBack += SendCallBack;
                 AcceptClientsAsyncLoop(connection.Token).GetAwaiter();
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
             {
                 // Nothing to do
             }
@@ -81,7 +81,7 @@ namespace Server.Application.Messenger
                 messengerHandler.CallBack -= SendCallBack;
                 SharedLogger.Log($"[Server.{GetType().Name}] Shutdown.");
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
             {
                 // Nothing to do
             }
@@ -97,7 +97,7 @@ namespace Server.Application.Messenger
             {
                 await Task.WhenAll(Clients.Select(x => SendAsync(x, message, token)));
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
             {
                 // Nothing to do
             }
@@ -115,7 +115,7 @@ namespace Server.Application.Messenger
                 if (!TryGetClientById(userId, out var client))
                     await SendAsync(client, message, token);
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
             {
                 // Nothing to do
             }
@@ -150,7 +150,7 @@ namespace Server.Application.Messenger
                 await stream.WriteAsync(lengthBytes.Concat(messageBytes).ToArray(), token);
                 SharedLogger.Log($"[Server.{GetType().Name}] Sent to client a message : {message.ReflectionFormat()}");
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
             {
                 // Nothing to do
             }
@@ -184,7 +184,7 @@ namespace Server.Application.Messenger
                     ReceiveAsync(client, token).GetAwaiter();
                 }
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
             {
                 // Nothing to do
             }
@@ -226,7 +226,7 @@ namespace Server.Application.Messenger
                     messengerHandler.Handle(client, message);
                 }
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
             {
                 // Nothing to do
             }

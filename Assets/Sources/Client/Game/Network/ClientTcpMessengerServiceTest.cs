@@ -59,16 +59,20 @@ namespace Client.Game.Network
             {
                 if (client == null)
                     return;
-                
+
                 client?.Close();
                 client?.Dispose();
                 connection = null;
                 client = null;
-                
+
                 connectionSource?.Cancel();
                 connectionSource?.Dispose();
                 connectionSource = null;
                 SharedLogger.Log($"[Client.{GetType().Name}] Shutdown.");
+            }
+            catch (Exception e) when (e is OperationCanceledException or ObjectDisposedException)
+            {
+                // Nothing to do.
             }
             catch (Exception e)
             {
@@ -135,9 +139,9 @@ namespace Client.Game.Network
                     messageHandler.Handle(message);
                 }
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (e is OperationCanceledException or ObjectDisposedException)
             {
-                // Nothing to do
+                // Nothing to do.
             }
             catch (Exception e)
             {

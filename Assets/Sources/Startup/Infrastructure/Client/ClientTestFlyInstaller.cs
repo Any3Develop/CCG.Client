@@ -32,11 +32,17 @@ namespace Startup.Infrastructure.Client
                 await messanger.ConnectAsync();
                 await UniTask.Delay(2000);
                 
-                await messanger.SendAsync(Route.Auth, "Client sent some Auth");
-                await messanger.SendAsync(Route.GameEvent, "Client sent some GameEvents");
-                await messanger.SendAsync(Route.Command, "Client sent some Command");
-                await messanger.SendAsync(Route.Config, "Client sent request to Config");
-                await messanger.SendAsync(Route.Database, "Client sent request to Database");
+                await messanger.SendAsync(Route.Command, new object[]
+                {
+                    "AAAAAAAAAAAAAAAA",
+                    "BBBBBBBBBBBBBBBB",
+                    "CCCCCCCCCCCCCCCC",
+                    "DDDDDDDDDDDDDDDD",
+                    "EEEEEEEEEEEEEEEE",
+                    "FFFFFFFFFFFFFFFF",
+                    "GGGGGGGGGGGGGGGG",
+                    "HHHHHHHHHHHHHHHH",
+                });
                 SharedLogger.Log($"[Client.{GetType().Name}] Sent all the messages.");
             }
             catch (Exception e)
