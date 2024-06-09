@@ -1,7 +1,6 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
 using Server.Domain.Contracts.Messanger;
 
 namespace Server.Application.Messenger
@@ -9,28 +8,21 @@ namespace Server.Application.Messenger
     public class TcpNetworkClient : IClient
     {
         public bool IsAuthorized => !string.IsNullOrWhiteSpace(UserId);
-        public bool IsConnected => connection is {Connected: true};
+        public bool IsConnected => client is {Connected: true};
         public string UserId { get; private set; }
 
-        private TcpClient connection;
+        private TcpClient client;
+        private Stream connection;
         
-        public TcpNetworkClient(TcpClient connection)
+        public TcpNetworkClient(TcpClient client)
         {
-            this.connection = connection;
+            this.client = client;
+            connection = this.client.GetStream();
         }
 
-        public async Task<int> SendAsync(byte[] data, CancellationToken token = default)
+        public Stream GetStream()
         {
-            await using var stream = connection.GetStream();
-            await stream.WriteAsync(data, token);
-            // await stream.FlushAsync(token);
-            return data.Length;
-        }
-
-        public async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken token = default)
-        {
-            await using var stream = connection.GetStream();
-            return await stream.ReadAsync(buffer, offset, count, token);
+            return connection;
         }
 
         public void SetUserId(string userId)
@@ -41,23 +33,25 @@ namespace Server.Application.Messenger
         public void Abort()
         {
             SetUserId(null);
-            connection?.Close();
             connection = null;
+            client?.Close();
+            client?.Dispose();
+            client = null;
         }
 
         public override bool Equals(object obj)
         {
             return obj switch
             {
-                TcpClient other => other.Equals(connection),
-                TcpNetworkClient other => other.UserId == UserId || other.connection == connection,
+                TcpClient other => other.Equals(client),
+                TcpNetworkClient other => other.UserId == UserId || other.client == client,
                 _ => false
             };
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(connection?.GetHashCode() ?? 0, UserId?.GetHashCode() ?? 0);
+            return !IsConnected ? 0 : HashCode.Combine(client.GetHashCode(), UserId?.GetHashCode() ?? 0);
         }
     }
 }

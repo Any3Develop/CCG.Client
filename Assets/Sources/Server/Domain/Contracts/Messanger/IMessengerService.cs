@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Shared.Common.Network.Data;
 
@@ -11,8 +12,8 @@ namespace Server.Domain.Contracts.Messanger
         
         void Start(int port);
         void Stop();
-        Task BroadcastAsync(Message message);
-        Task SendAsync(string userId, Message message);
-        Task SendAsync(IClient client, Message message);
+        Task BroadcastAsync(Message message, CancellationToken token = default);
+        Task SendAsync(string userId, Message message, CancellationToken token = default);
+        Task SendAsync(IClient client, Message message, CancellationToken token = default);
     }
 }

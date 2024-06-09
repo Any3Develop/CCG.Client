@@ -35,9 +35,6 @@ namespace Shared.Game.Runtime.Players
 
         public IRuntimePlayer Sync(IRuntimePlayerData runtimeData, bool notify = true)
         {
-            if (!Initialized)
-                return this;
-            
             Initialized = true;
             EventsSource.Publish<BeforePlayerChangeEvent>(notify, this);
             RuntimeData = runtimeData;

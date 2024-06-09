@@ -45,14 +45,18 @@ namespace Server.Application.Messenger
         {
             try
             {
-                connection?.Cancel();
-                connection?.Dispose();
+                Stop();
                 connection = new CancellationTokenSource();
                 listener = new TcpListener(IPAddress.Any, port);
                 listener.Start();
                 SharedLogger.Log($"[Server.{GetType().Name}] Started on port {port}");
+                
                 messengerHandler.CallBack += SendCallBack;
                 AcceptClientsAsyncLoop(connection.Token).GetAwaiter();
+            }
+            catch (OperationCanceledException)
+            {
+                // Nothing to do
             }
             catch (Exception e)
             {
@@ -77,47 +81,84 @@ namespace Server.Application.Messenger
                 messengerHandler.CallBack -= SendCallBack;
                 SharedLogger.Log($"[Server.{GetType().Name}] Shutdown.");
             }
+            catch (OperationCanceledException)
+            {
+                // Nothing to do
+            }
             catch (Exception e)
             {
                 SharedLogger.Error(e);
             }
         }
 
-        public async Task BroadcastAsync(Message message)
+        public async Task BroadcastAsync(Message message, CancellationToken token = default)
         {
-            Task[] clientsTasks;
-            lock (connectedLock)
+            try
             {
-                clientsTasks = connected.Select(x => SendAsync(x, message)).ToArray();
+                await Task.WhenAll(Clients.Select(x => SendAsync(x, message, token)));
             }
-
-            await Task.WhenAll(clientsTasks);
+            catch (OperationCanceledException)
+            {
+                // Nothing to do
+            }
+            catch (Exception e)
+            {
+                SharedLogger.Error(e);
+                throw;
+            }
         }
-
-        public async Task SendAsync(string userId, Message message)
+        
+        public async Task SendAsync(string userId, Message message, CancellationToken token = default)
         {
-            if (!string.IsNullOrEmpty(userId))
+            try
             {
                 if (!TryGetClientById(userId, out var client))
-                    return;
-            
-                await SendAsync(client, message);
-                return;
+                    await SendAsync(client, message, token);
             }
-
-            await BroadcastAsync(message);
+            catch (OperationCanceledException)
+            {
+                // Nothing to do
+            }
+            catch (Exception e)
+            {
+                SharedLogger.Error(e);
+                throw;
+            }
         }
 
-        public async Task SendAsync(IClient client, Message message)
+        public async Task SendAsync(IClient client, Message message, CancellationToken token = default)
         {
-            if (client is not {IsAuthorized:true, IsConnected: true})
-                return;
+            try
+            {
+                if (client is not {IsConnected: true})
+                    return;
+                
+                var jsonData = JsonConvert.SerializeObject(message, SerializeExtensions.SerializeSettings);
+                var messageBytes = Encoding.UTF8.GetBytes(jsonData);
+                var lengthBytes = BitConverter.GetBytes(messageBytes.Length);
+
+                var stream = client.GetStream();
+                while (stream is {CanWrite: false})
+                    await NetworkDelayTask(500, token);
             
-            var jsonData = JsonConvert.SerializeObject(message, SerializeExtensions.SerializeSettings);
-            var messageBytes = Encoding.UTF8.GetBytes(jsonData);
-            var lengthBytes = BitConverter.GetBytes(messageBytes.Length);
-            
-            await client.SendAsync(lengthBytes.Union(messageBytes).ToArray());
+                if (stream is not {CanWrite: true})
+                {
+                    SharedLogger.Error($"[Server.{GetType().Name}] Can't send a message because connection with Client is closed.");
+                    return;
+                }
+                
+                await stream.WriteAsync(lengthBytes.Concat(messageBytes).ToArray(), token);
+                SharedLogger.Log($"[Server.{GetType().Name}] Sent to client a message : {message.ReflectionFormat()}");
+            }
+            catch (OperationCanceledException)
+            {
+                // Nothing to do
+            }
+            catch (Exception e)
+            {
+                SharedLogger.Error(e);
+                throw;
+            }
         }
 
         private void SendCallBack(IClient client, Message message)
@@ -127,67 +168,88 @@ namespace Server.Application.Messenger
         
         private async Task AcceptClientsAsyncLoop(CancellationToken token)
         {
-            var acceptDelay = TimeSpan.FromSeconds(1);
-            while (listener != null && !token.IsCancellationRequested)
+            try
             {
-                await Task.Delay(acceptDelay, token);
-                var connnection = await listener.AcceptTcpClientAsync();
-                if (connnection is not {Connected: true} || TryGetClientByConnection(connnection, out _))
-                    continue;
-                
-                SharedLogger.Log($"[Server.{GetType().Name}] Client connected.");
-                
-                var client = new TcpNetworkClient(connnection);
-                SetConnected(client);
-                HandleAsync(client, token).ConfigureAwait(false).GetAwaiter();
+                while (listener != null && !token.IsCancellationRequested)
+                {
+                    await NetworkDelayTask(token: token);
+                    var connnection = await listener.AcceptTcpClientAsync();
+                    if (connnection is not {Connected: true})
+                        continue;
+
+                    SharedLogger.Log($"[Server.{GetType().Name}] Client connected. \n{connection.ReflectionFormat()}");
+
+                    var client = new TcpNetworkClient(connnection);
+                    SetConnected(client);
+                    ReceiveAsync(client, token).GetAwaiter();
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Nothing to do
+            }
+            catch (Exception e)
+            {
+                SharedLogger.Error(e);
             }
         }
         
-        private async Task HandleAsync(IClient client, CancellationToken token)
+        private async Task ReceiveAsync(IClient client, CancellationToken token)
         {
-            while (!token.IsCancellationRequested)
+            try
             {
-                if (!client.IsConnected)
-                {
-                    DropConnection(client);
-                    return;
-                }
-                
-                await ReceiveDelayTask(token);
-                
+                var stream = client.GetStream();
                 var lengthBuffer = new byte[4];
-                var readLength = await client.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token);
-                if (readLength == 0)
-                    continue;
-                
-                var responseLength = BitConverter.ToInt32(lengthBuffer, 0);
-                if (responseLength < 0)
+                while (client is {IsConnected: true})
                 {
-                    SharedLogger.Error($"[Server.{GetType().Name}] Client sent length-header less than zero");
-                    continue;
-                }
-                
-                var buffer = new byte[responseLength];
-                if (await client.ReadAsync(buffer, readLength, buffer.Length, token) <= 0) 
-                    continue;
-                
-                try
-                {
-                    var jsonData = Encoding.UTF8.GetString(buffer);
-                    var message = JsonConvert.DeserializeObject<Message>(jsonData, SerializeExtensions.GetDeserializeSettingsByType<Message>());
+                    await NetworkDelayTask(token: token);
+                    if (!stream.CanRead)
+                        continue;
+                    
+                    var readLength = await stream.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token);
+                    if (readLength == 0)
+                        continue;
+
+                    var responseLength = BitConverter.ToInt32(lengthBuffer, 0);
+                    if (responseLength < 0)
+                    {
+                        SharedLogger.Error($"[Server.{GetType().Name}] Client sent incorrect header.");
+                        continue;
+                    }
+
+                    var buffer = new byte[responseLength];
+                    if (await stream.ReadAsync(buffer, 0, buffer.Length, token) <= 0)
+                        continue;
+
+                    var data = Encoding.UTF8.GetString(buffer);
+                    var message = JsonConvert.DeserializeObject<Message>(data, SerializeExtensions.SerializeSettings);
                     messengerHandler.Handle(client, message);
                 }
-                catch (Exception e)
+            }
+            catch (OperationCanceledException)
+            {
+                // Nothing to do
+            }
+            catch (Exception e)
+            {
+                SharedLogger.Error(e);
+                try
                 {
-                    SharedLogger.Error(e);
+                    // try to send disconnection message
                     await SendAsync(client, new Message
                     {
                         Route = Route.DropConnection,
                         Data = e.Message
-                    });
-                    DropConnection(client);
-                    return;
+                    }, token);
                 }
+                catch
+                {
+                    // Nothing to do.
+                }
+            }
+            finally
+            {
+                DropConnection(client);
             }
         }
 
@@ -195,16 +257,7 @@ namespace Server.Application.Messenger
         {
             lock (connectedLock)
             {
-                result = connected.FirstOrDefault(x => x.IsAuthorized && x.UserId == userId);
-                return result != null;
-            }
-        }
-
-        private bool TryGetClientByConnection(TcpClient connection, out IClient result)
-        {
-            lock (connectedLock)
-            {
-                result = connected.FirstOrDefault(x => x.Equals(connection));
+                result = connected.FirstOrDefault(x => x.UserId == userId);
                 return result != null;
             }
         }
@@ -224,36 +277,33 @@ namespace Server.Application.Messenger
         {
             if (client == null)
                 return;
-            
+
             lock (connectedLock)
             {
-                connected.RemoveAll(x =>
-                {
-                    if (!x.Equals(client)) 
-                        return false;
-                    
-                    x.Abort();
-                    return true;
-                });
-                
-                client.Abort();
+                if (connected.Count > 0)
+                    connected.RemoveAll(x =>
+                    {
+                        if (!x.Equals(client)) 
+                            return false;
+                        
+                        x.Abort();
+                        return true;
+                    });
             }
+            
+            client.Abort();
+            SharedLogger.Log($"[Server.{GetType().Name}] Client disconnected.");
         }
 
         private void DropAllConnections()
         {
-            lock (connectedLock)
-            {
-                foreach (var client in connected.ToArray())
-                    DropConnection(client);
-                
-                connected.Clear();
-            }
+            foreach (var client in Clients)
+                DropConnection(client);
         }
 
-        private static Task ReceiveDelayTask(CancellationToken token)
+        private static Task NetworkDelayTask(int miliseconds = 1000, CancellationToken token = default)
         {
-            return Task.Delay(1000, token);
+            return Task.Delay(miliseconds, token);
         }
     }
 }
