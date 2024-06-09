@@ -4,7 +4,7 @@ using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
 
-namespace CardGame.Services.UIService
+namespace Client.Common.Services.UIService
 {
     public class UIService : IUIService
     {

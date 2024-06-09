@@ -1,4 +1,4 @@
-﻿using CardGame.Services.UIService;
+﻿using Client.Common.Services.UIService;
 using Zenject;
 
 namespace Startup.Infrastructure.Client.Common.Services

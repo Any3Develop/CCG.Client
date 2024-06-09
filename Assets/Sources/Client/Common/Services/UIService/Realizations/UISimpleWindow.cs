@@ -3,7 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace CardGame.Services.UIService
+namespace Client.Common.Services.UIService
 {
     public abstract class UISimpleWindow : UIWindow
     {

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CardGame.Services.UIService
+namespace Client.Common.Services.UIService
 {
     public abstract class UIBaseAnimation : MonoBehaviour
     {

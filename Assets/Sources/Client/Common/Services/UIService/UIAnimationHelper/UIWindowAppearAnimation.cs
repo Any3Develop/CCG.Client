@@ -2,7 +2,7 @@ using System;
 using DG.Tweening;
 using UnityEngine;
 
-namespace CardGame.Services.UIService
+namespace Client.Common.Services.UIService
 {
     public class UIWindowAppearAnimation : UIBaseAnimation
     {

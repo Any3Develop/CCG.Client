@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace CardGame.Services.UIService
+namespace Client.Common.Services.UIService
 {
     public class UIRoot : MonoBehaviour
     {

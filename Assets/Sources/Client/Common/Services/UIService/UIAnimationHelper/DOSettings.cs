@@ -1,7 +1,7 @@
 using System;
 using DG.Tweening;
 
-namespace CardGame.Services.UIService
+namespace Client.Common.Services.UIService
 {
     [Serializable]
     public struct DOSettings

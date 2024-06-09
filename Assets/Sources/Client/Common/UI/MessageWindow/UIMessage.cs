@@ -1,5 +1,5 @@
 ﻿using System;
-using CardGame.Services.UIService;
+using Client.Common.Services.UIService;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
