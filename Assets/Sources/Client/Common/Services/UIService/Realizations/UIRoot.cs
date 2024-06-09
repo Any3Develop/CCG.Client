@@ -2,28 +2,24 @@ using UnityEngine;
 
 namespace Client.Common.Services.UIService
 {
-    public class UIRoot : MonoBehaviour
+    public class UIRoot : MonoBehaviour, IUIRoot
     {
-        [SerializeField] private Camera _uiCamera;
-        [SerializeField] private Canvas _uiCanvas;
-        [SerializeField] private RectTransform _poolContainer;
-        [SerializeField] private RectTransform _deactivatedContainer;
-        [SerializeField] private RectTransform _buttomContainer;
-        [SerializeField] private RectTransform _middleContainer;
-        [SerializeField] private RectTransform _topContainer;
-        [SerializeField] private RectTransform _safeArea;
-
-        public Camera UICamera => _uiCamera;
-        public Canvas UICanvas => _uiCanvas;
-
-        public RectTransform SafeArea => _safeArea;
+        [SerializeField] private Camera uiCamera;
+        [SerializeField] private Canvas uiCanvas;
+        [SerializeField] private RectTransform safeArea;
+        [SerializeField] private RectTransform poolContainer;
+        [SerializeField] private RectTransform deactivatedContainer;
+        [SerializeField] private RectTransform topContainer;
+        [SerializeField] private RectTransform middleContainer;
+        [SerializeField] private RectTransform buttomContainer;
         
-        public RectTransform DeactivatedContainer => _deactivatedContainer;
-        public RectTransform PoolContainer => _poolContainer;
-
-        public RectTransform ButtomContainer => _buttomContainer;
-        public RectTransform MiddleContainer => _middleContainer;
-
-        public RectTransform TopContainer => _topContainer;
+        public Camera UICamera => uiCamera;
+        public Canvas UICanvas => uiCanvas;
+        public RectTransform SafeArea => safeArea;
+        public RectTransform PoolContainer => poolContainer;
+        public RectTransform DeactivatedContainer => deactivatedContainer;
+        public RectTransform TopContainer => topContainer;
+        public RectTransform MiddleContainer => middleContainer;
+        public RectTransform ButtomContainer => buttomContainer;
     }
 }

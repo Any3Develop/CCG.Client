@@ -9,7 +9,8 @@ namespace Client.Common.Abstractions.DependencyInjection
         T Instantiate<T>(params object[] args);
         object Instantiate(Type concreteType, params object[] args);
         
-        TComponent AddComponent<TComponent>(GameObject placeHolder, params object[] args) where TComponent : Component;
-        TObject Instantiate<TObject>(TObject prototype, Transform parent = null, params object[] args) where TObject : Object;
+        TComponent AddComponent<TComponent>(GameObject componentHolder, params object[] args) where TComponent : Component;
+        TObject InstantiatePrototype<TObject>(Object prototype, Transform parent = null, params object[] args);
+        TObject InstantiatePrototype<TObject>(Object prototype, Transform parent = null);
     }
 }

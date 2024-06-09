@@ -38,24 +38,28 @@ namespace Shared.Game.Context.EventSource
 
         public void Dispose()
         {
-            var disposables = Subscribers.Values.OfType<IDisposable>().ToArray();
-            Subscribers.Clear();
-            
-            foreach (var disposable in disposables)
-                disposable?.Dispose();
+            Clear();
         }
 
         public void Publish<T>(T value)
         {
-            foreach (var subscriber in GetSubscribers<T>().Union(GetSubscribers<object>()))
+            foreach (var subscriber in GetSubscribers<T>().Concat(GetSubscribers<object>()))
                 DynamicInvoke(subscriber, value);
         }
 
         public async Task PublishAsync<T>(T value)
         {
-            foreach (var subscriber in GetSubscribers<T>().Union(GetSubscribers<object>()))
+            foreach (var subscriber in GetSubscribers<T>().Concat(GetSubscribers<object>()))
                 if (DynamicInvoke(subscriber, value) is Task task)
                     await task;
+        }
+
+        public void Clear()
+        {
+            foreach (var collection in Subscribers.Values.ToArray())
+                collection.Clear();
+            
+            Subscribers.Clear();
         }
 
         protected IEnumerable<Subscriber> GetSubscribers<T>()

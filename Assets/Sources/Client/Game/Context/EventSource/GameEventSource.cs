@@ -1,44 +1,27 @@
 ﻿using System;
 using System.Threading;
-using System.Threading.Tasks;
+using Client.Common.Services.EventSourceService.Realizations;
 using Client.Game.Abstractions.Context.EventSource;
 using Cysharp.Threading.Tasks;
 using Shared.Abstractions.Game.Events;
 
 namespace Client.Game.Context.EventSource
 {
-    public class GameEventSource : Shared.Game.Context.EventSource.EventSource, IGameEventSource, IGameEventPublisher
+    public class GameEventSource : UnitaskBasedEventSource, IGameEventSource, IGameEventPublisher
     {
-        public new IDisposable Subscribe<T>(Action<T> callback, CancellationToken? token = null, int? order = null) where T : IGameEvent
-        {
-            return base.Subscribe(callback, token, order);
-        }
+        public new IDisposable Subscribe<T>(Action<T> callback, CancellationToken? token = null, int? order = null) 
+            where T : IGameEvent => base.Subscribe(callback, token, order);
 
-        public new IDisposable Subscribe<T>(Action callback, CancellationToken? token = null, int? order = null) where T : IGameEvent
-        {
-            return base.Subscribe<T>(callback, token, order);
-        }
+        public new IDisposable Subscribe<T>(Action callback, CancellationToken? token = null, int? order = null) 
+            where T : IGameEvent => base.Subscribe<T>(callback, token, order);
 
-        public IDisposable Subscribe<T>(Func<UniTask> callback, CancellationToken? token = null, int? order = null) where T : IGameEvent
-        {
-            return InternalSubscribe<T>(callback, false, token, order);
-        }
+        public new IDisposable Subscribe<T>(Func<UniTask> callback, CancellationToken? token = null, int? order = null) 
+            where T : IGameEvent => base.Subscribe<T>(callback, token, order);
 
-        public IDisposable Subscribe<T>(Func<T, UniTask> callback, CancellationToken? token = null, int? order = null) where T : IGameEvent
-        {
-            return InternalSubscribe<T>(callback, true, token, order);
-        }
+        public new IDisposable Subscribe<T>(Func<T, UniTask> callback, CancellationToken? token = null, int? order = null) 
+            where T : IGameEvent => base.Subscribe(callback, token, order);
 
-        public new async UniTask PublishAsync<T>(T value) where T : IGameEvent
-        {
-            foreach (var subscriber in GetSubscribers<T>())
-            {
-                switch (DynamicInvoke(subscriber, value))
-                {
-                    case UniTask uniTask : await uniTask; return;
-                    case Task task : await task.AsUniTask(); return;
-                }
-            }
-        }
+        public new UniTask PublishAsync<T>(T value) 
+            where T : IGameEvent => base.PublishAsync(value);
     }
 }

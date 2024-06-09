@@ -4,7 +4,7 @@ using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;
 
-namespace Client.Common.DependencyInjection
+namespace Startup.Infrastructure.Client.Common.DependencyInjection
 {
     public class ZenjectDiProvider : IAbstractFactory
     {
@@ -25,14 +25,19 @@ namespace Client.Common.DependencyInjection
             return instantiator.Instantiate(concreteType, args);
         }
 
-        public TComponent AddComponent<TComponent>(GameObject placeHolder, params object[] args) where TComponent : Component
+        public TComponent AddComponent<TComponent>(GameObject componentHolder, params object[] args) where TComponent : Component
         {
-            return instantiator.InstantiateComponent<TComponent>(placeHolder, args);
+            return instantiator.InstantiateComponent<TComponent>(componentHolder, args);
         }
 
-        public TObject Instantiate<TObject>(TObject prototype, Transform parent = null, params object[] args) where TObject : Object
+        public TObject InstantiatePrototype<TObject>(Object prototype, Transform parent = null, params object[] args)
         {
             return instantiator.InstantiatePrefabForComponent<TObject>(prototype, parent, args);
+        }
+
+        public TObject InstantiatePrototype<TObject>(Object prototype, Transform parent = null)
+        {
+            return instantiator.InstantiatePrefab(prototype, parent).GetComponent<TObject>();
         }
     }
 }

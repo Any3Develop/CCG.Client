@@ -10,8 +10,7 @@
         "UniTask.DOTween",
         "UniTask.Addressables",
         "UniTask.TextMeshPro",
-        "UniTask.Linq",
-        "Zenject"
+        "UniTask.Linq"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

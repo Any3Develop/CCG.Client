@@ -7,14 +7,20 @@ namespace Shared.Game.Context.EventSource
     public class SubscriberCollection : List<Subscriber>, IDisposable
     {
         public bool UnSorted { get; set; }
-        public void Dispose()
+
+        public new void Clear()
         {
             UnSorted = false;
             var disposables = this.OfType<IDisposable>().ToArray();
-            Clear();
+            base.Clear();
             
             foreach (var disposable in disposables)
                 disposable?.Dispose();
+        }
+        
+        public void Dispose()
+        {
+            Clear();
         }
     }
 }

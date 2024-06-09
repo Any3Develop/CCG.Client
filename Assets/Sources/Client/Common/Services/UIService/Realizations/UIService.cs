@@ -1,160 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
+using Client.Common.Abstractions.DependencyInjection;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Zenject;
 using Object = UnityEngine.Object;
 
 namespace Client.Common.Services.UIService
 {
     public class UIService : IUIService
     {
-        private readonly IInstantiator _instantiator;
-        private readonly UIRoot _uiRoot;
+        private readonly IUIRoot uiRoot;
+        private readonly IAbstractFactory abstractFactory;
+        private readonly IUIPrototypeProvider uiPrototypeProvider;
+        private readonly Dictionary<Type, Object> prototypeStorage = new();
+        private readonly Dictionary<Type, IWindow> instanceStorage = new();
 
-        private readonly Dictionary<Type, UIWindow> _viewStorage = new Dictionary<Type, UIWindow>();
-        private readonly Dictionary<Type, UIWindow> _instViews = new Dictionary<Type, UIWindow>();
-
-        public UIService(IInstantiator instantiator, UIRoot uiRoot)
+        public UIService(IUIRoot uiRoot, IAbstractFactory abstractFactory, IUIPrototypeProvider uiPrototypeProvider)
         {
-            _instantiator = instantiator;
-            _uiRoot = uiRoot;
-            LoadWindows();
-            InitWindows();
-        }
-
-        public void LoadWindows()
-        {
-            var windows = Resources.LoadAll<UIWindow>("UIWindows");
-            foreach (var window in windows)
-            {
-                _viewStorage.Add(window.GetType(), window);
-            }
-        }
-
-        public void InitWindows()
-        {
-            foreach (var uiWindow in _viewStorage)
-            {
-                Init(uiWindow.Key, _uiRoot.DeactivatedContainer);
-            }
+            this.uiRoot = uiRoot;
+            this.abstractFactory = abstractFactory;
+            this.uiPrototypeProvider = uiPrototypeProvider;
         }
         
-        /// <summary>
-        /// Turns on screen display
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public T Show<T>() where T : UIWindow
+        public void Initialize()
         {
-            return Show<T>(null);
+            foreach (var window in uiPrototypeProvider.GetAll())
+                prototypeStorage.Add(window.GetType(), window);
+            
+            foreach (var pair in prototypeStorage)
+                Create(pair.Key, uiRoot.DeactivatedContainer);
         }
-
-        /// <summary>
-        /// Turns on screen display
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public T Show<T>(Transform parent) where T : UIWindow
+        
+        public void Dispose<T>() where T : IWindow
         {
-            var type = typeof(T);
-            if (_instViews.ContainsKey(type))
-            {
-                var view = _instViews[type];
-                Move<T>(parent);
-                var component = view.GetComponent<T>();
-
-                // always resize to screen size
-                var rect = component.transform as RectTransform;
-                if (rect != null)
-                {
-                    rect.offsetMin = Vector2.zero;
-                    rect.offsetMax = Vector2.zero;
-                }
-                
-                component.Show();
-                return component;
-            }
-            return null;
-        }
-
-        public void Move<T>(Transform parent) where T : UIWindow
-        {
-            var type = typeof(T);
-            if (_instViews.ContainsKey(type))
-            {
-                _instViews[type].transform.SetParent(parent ? parent : _uiRoot.MiddleContainer , false);
-            }
-        }
-
-        /// <summary>
-        /// Turns off screen display
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public void Hide<T>() where T : UIWindow
-        {
-            var type = typeof(T);
-            if (_instViews.ContainsKey(type))
-            {
-                var view = _instViews[type].GetComponent<T>();
-                view.HidedEvent += () =>
-                {
-                    view.transform.SetParent(_uiRoot.DeactivatedContainer);
-                };
-                view.Hide();
-            }
-        }
-
-        /// <summary>
-        /// Screen creates with specified parent(optional).
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <typeparam name="T"></typeparam>
-        public void Init<T>(Transform parent = null) where T : UIWindow
-        {
-            Init(typeof(T), parent);
-        }
-
-        private void Init(Type t, Transform parent = null)
-        {
-            if (_viewStorage.ContainsKey(t) && !_instViews.ContainsKey(t))
-            {
-                parent = parent ? parent : _uiRoot.MiddleContainer;
-                _instViews.Add(t, (UIWindow)_instantiator.InstantiatePrefabForComponent(t, _viewStorage[t], parent, new object[0]));
-            }
-        }
-
-        /// <summary>
-        /// Returns screen by type
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
-        public T Get<T>() where T : UIWindow
-        {
-            var type = typeof(T);
-            if (_instViews.ContainsKey(type))
-            {
-                var view = _instViews[type];
-                return view.GetComponent<T>();
-            } 
-            return null;
-        }
-
-        /// <summary>
-        /// Removes the screen from the scene
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        public void Disponse<T>() where T : UIWindow
-        {
-            var type = typeof(T);
-            if (!_instViews.ContainsKey(type))
-            {
+            if (!TryGet(out T view))
                 return;
+
+            instanceStorage.Remove(typeof(T));
+
+            if (view != null && view.Container && view.Container.gameObject)
+                Object.Destroy(view.Container.gameObject);
+        }
+        
+        public void Create<T>(Transform parent = null) where T : IWindow
+        {
+            Create(typeof(T), parent);
+        }
+
+        public T Get<T>() where T : IWindow
+        {
+            return TryGet<T>(out var view) ? view : default;
+        }
+
+        public bool TryGet<T>(out T result) where T : IWindow
+        {
+            result = default;
+            return instanceStorage.TryGetValue(typeof(T), out var view)
+                   && view?.Container
+                   && view.Container.TryGetComponent(out result);
+        }
+        
+        public async UniTask<T> ShowAsync<T>(Transform parent = null) where T : IWindow
+        {
+            if (!TryGet<T>(out var view))
+                return default;
+            
+            Move(view, parent);
+            
+            // always resize to screen size
+            if (view.Container)
+            {
+                view.Container.offsetMin = Vector2.zero;
+                view.Container.offsetMax = Vector2.zero;
             }
 
-            var window = _instViews[type];
-            _instViews.Remove(type);
-            if (window)
-            {
-                Object.Destroy(window.gameObject); 
-            }
+            await view.ShowAsync();
+            return view;
+        }
+        
+        public async UniTask<T> HideAsync<T>() where T : IWindow
+        {
+            if (!TryGet<T>(out var view))
+                return default;
+
+            await view.HideAsync();
+            return Move(view, uiRoot.DeactivatedContainer);
+        }
+        
+        public void Move<T>(Transform parent) where T : IWindow
+        {
+            if (!instanceStorage.TryGetValue(typeof(T), out var view) || view == null)
+                return;
+
+            Move(view, parent);
+        }
+        
+        private T Move<T>(T view, Transform parent) where T : IWindow
+        {
+            if (view == null)
+                return default;
+
+            view.Container.SetParent(ParentFix(parent), false);
+            return view;
+        }
+        
+        private void Create(Type type, Transform parent = null)
+        {
+            if (instanceStorage.ContainsKey(type) || !prototypeStorage.TryGetValue(type, out var prototype))
+                return;
+
+            instanceStorage.Add(type, abstractFactory.InstantiatePrototype<IWindow>(prototype, ParentFix(parent)));
+        }
+
+        private Transform ParentFix(Transform parent)
+        {
+            return parent ? parent : uiRoot.MiddleContainer;
         }
     }
 }
