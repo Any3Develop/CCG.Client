@@ -1,4 +1,4 @@
-﻿using Server.Domain.Contracts.Sessions;
+﻿using Server.Application.Contracts.Sessions;
 using Shared.Abstractions.Game.Context;
 using Shared.Abstractions.Game.Factories;
 

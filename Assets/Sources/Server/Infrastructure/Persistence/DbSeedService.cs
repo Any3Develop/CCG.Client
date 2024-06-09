@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Server.Application.Contracts.Sessions;
 using Server.Domain.Contracts.Persistence;
-using Server.Domain.Contracts.Sessions;
 using Server.Domain.Entities;
 using Shared.Abstractions.Game.Context;
 using Shared.Game.Context;

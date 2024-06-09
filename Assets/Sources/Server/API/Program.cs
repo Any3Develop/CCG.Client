@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
+using Server.Application.Contracts.Network;
 using Server.Domain.Contracts;
-using Server.Domain.Contracts.Messanger;
 using Server.Domain.Contracts.Persistence;
 
 namespace Server.API

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Server.Domain.Contracts.Messanger
+namespace Server.Application.Contracts.Network
 {
     public interface IClient
     {

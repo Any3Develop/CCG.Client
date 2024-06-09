@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Shared.Abstractions.Game.Context;
 
-namespace Server.Domain.Contracts.Sessions
+namespace Server.Application.Contracts.Sessions
 {
     public interface IRuntimeSessionRepository
     {

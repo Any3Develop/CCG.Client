@@ -1,4 +1,4 @@
-﻿using Server.Application.Messenger;
+﻿using Server.Application.Network;
 using Server.Application.Sessions;
 using Zenject;
 
@@ -9,7 +9,7 @@ namespace Startup.Infrastructure.Server
         public override void InstallBindings()
         {
             Container
-                .BindInterfacesTo<MessengerHandler>()
+                .BindInterfacesTo<ServerMessageHandler>()
                 .AsSingle()
                 .NonLazy();
             

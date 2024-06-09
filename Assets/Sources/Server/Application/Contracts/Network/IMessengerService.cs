@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Shared.Common.Network.Data;
 
-namespace Server.Domain.Contracts.Messanger
+namespace Server.Application.Contracts.Network
 {
     public interface IMessengerService : IDisposable
     {

@@ -1,54 +1,54 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using Client.Common.Abstractions.Network;
 using Client.Common.Network.Exceptions;
-using Client.Game.Abstractions.Context.EventProcessors;
-using Client.Lobby.Runtime;
 using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using Shared.Common.Logger;
 using Shared.Common.Network.Data;
 using Shared.Game.Utils;
-using UnityEngine;
 
 namespace Client.Game.Network
 {
-    public class ClientTcpMessengerService : IDisposable, IMessengerService
+    public class ClientTcpMessengerService : IMessengerService
     {
         private readonly IMessageHandler messageHandler;
-        private readonly IGameEventQueueRemoteProcessor queueRemoteProcessor;
         private CancellationTokenSource connectionSource;
-        private TcpClient connection;
+        private TcpClient client;
+        private Stream connection;
         
         public ClientTcpMessengerService(IMessageHandler messageHandler)
         {
             this.messageHandler = messageHandler;
         }
 
+        public void Dispose()
+        {
+            Close();
+        }
+        
         public async UniTask<bool> ConnectAsync()
         {
             try
             {
-                if (connection is {Connected: true})
-                    return true;
-                
                 Close();
-                connection = new TcpClient();
-                await connection.ConnectAsync(Urls.ServerUrl, Urls.Port);
+                client = new TcpClient();
+                await client.ConnectAsync(IPAddress.Parse(Urls.ServerUrl), Urls.Port);
+                connection = client.GetStream();
                 connectionSource = new CancellationTokenSource();
+                SharedLogger.Log($"[Client.{GetType().Name}] Connected to the server!");
                 ReceiveAsync(connectionSource.Token).Forget();
-                await SendAsync(Route.Auth, User.AccessToken, connectionSource.Token);
                 return true;
             }
             catch (Exception e)
             {
-                Close();
                 SharedLogger.Error(e);
-                connectionSource?.Cancel();
-                connectionSource = null;
+                Close();
                 return false;
             }
         }
@@ -57,8 +57,22 @@ namespace Client.Game.Network
         {
             try
             {
-                connection?.Close();
+                if (client == null)
+                    return;
+
+                client?.Close();
+                client?.Dispose();
                 connection = null;
+                client = null;
+
+                connectionSource?.Cancel();
+                connectionSource?.Dispose();
+                connectionSource = null;
+                SharedLogger.Log($"[Client.{GetType().Name}] Shutdown.");
+            }
+            catch (Exception e) when (e is OperationCanceledException or ObjectDisposedException)
+            {
+                // Nothing to do.
             }
             catch (Exception e)
             {
@@ -68,10 +82,9 @@ namespace Client.Game.Network
 
         public async UniTask SendAsync(Route route, object data, CancellationToken token = default)
         {
-            if (connection is not {Connected:true})
+            if (client is not {Connected:true} || connection == null)
                 throw new NotConnectedException();
             
-            await using var stream = connection.GetStream();
             var message = new Message
             {
                 Route = route,
@@ -81,57 +94,68 @@ namespace Client.Game.Network
             var jsonData = JsonConvert.SerializeObject(message, SerializeExtensions.SerializeSettings);
             var messageBytes = Encoding.UTF8.GetBytes(jsonData);
             var lengthPrefix = BitConverter.GetBytes(messageBytes.Length);
+            var totalMessageBytes = lengthPrefix.Concat(messageBytes).ToArray();
             
-            await stream.WriteAsync(lengthPrefix.Union(messageBytes).ToArray(), token);
+            while (connection is {CanWrite: false})
+                await NetworkDelayTask(500, token);
+            
+            if (connection is not {CanWrite: true})
+            {
+                SharedLogger.Error($"[Client.{GetType().Name}] Can't send a message because connection with Server is closed.");
+                return;
+            }
+            
+            await connection.WriteAsync(totalMessageBytes, token);
         }
 
         private async UniTask ReceiveAsync(CancellationToken token)
         {
-            await using var stream = connection.GetStream();
-            while (Application.isPlaying)
+            try
             {
-                token.ThrowIfCancellationRequested();
                 var lengthBuffer = new byte[4];
-                var lengthRead = await stream.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token);
-                if (lengthRead == 0)
+                while (!token.IsCancellationRequested && client is {Connected: true})
                 {
-                    await ReceiveDelayTask(token);
-                    continue;
-                }
-                
-                var responseLength = BitConverter.ToInt32(lengthBuffer, 0);
-                if (responseLength < 0)
-                {
-                    SharedLogger.Error("Server sent length header less than zero");
-                    continue;
-                }
-                
-                var buffer = new byte[responseLength];
-                if (await stream.ReadAsync(buffer, lengthRead, buffer.Length, token) > 0)
-                {
-                    try
+                    await NetworkDelayTask(token: token);
+                    if (!connection.CanRead)
+                        continue;
+                    
+                    var lengthRead = await connection.ReadAsync(lengthBuffer, 0, lengthBuffer.Length, token);
+                    if (lengthRead == 0)
+                        continue;
+
+                    var responseLength = BitConverter.ToInt32(lengthBuffer, 0);
+                    if (responseLength <= 0)
                     {
-                        var jsonData = Encoding.UTF8.GetString(buffer);
-                        messageHandler.Handle(JsonConvert.DeserializeObject<Message>(jsonData, SerializeExtensions.SerializeSettings));
+                        SharedLogger.Error($"[Client.{GetType().Name}] Server sent incorrect header.");
+                        continue;
                     }
-                    catch (Exception e)
-                    {
-                        SharedLogger.Error(e);
-                    }
+
+                    var buffer = new byte[responseLength];
+                    if (await connection.ReadAsync(buffer, 0, buffer.Length, token) <= 0)
+                        continue;
+
+                    var data = Encoding.UTF8.GetString(buffer);
+                    var message = JsonConvert.DeserializeObject<Message>(data, SerializeExtensions.DeserializeSettings);
+                    messageHandler.Handle(message);
                 }
-                
-                await ReceiveDelayTask(token);
+            }
+            catch (Exception e) when (e is OperationCanceledException or ObjectDisposedException)
+            {
+                // Nothing to do.
+            }
+            catch (Exception e)
+            {
+                SharedLogger.Error(e);
+            }
+            finally
+            {
+                Close();
             }
         }
-
-        private static UniTask ReceiveDelayTask(CancellationToken token)
+        
+        private static UniTask NetworkDelayTask(int miliseconds = 1000, CancellationToken token = default)
         {
-            return UniTask.Delay(1000, DelayType.Realtime, PlayerLoopTiming.PostLateUpdate, token);
-        }
-
-        public void Dispose()
-        {
-            Close();
+            return UniTask.Delay(miliseconds, DelayType.Realtime, PlayerLoopTiming.EarlyUpdate, token);
         }
     }
 }

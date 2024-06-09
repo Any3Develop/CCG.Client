@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Newtonsoft.Json;
-using Server.Domain.Contracts.Messanger;
-using Server.Domain.Contracts.Sessions;
+using Server.Application.Contracts.Network;
+using Server.Application.Contracts.Sessions;
 using Shared.Abstractions.Game.Commands;
 using Shared.Abstractions.Game.Context;
 using Shared.Common.Logger;
@@ -10,16 +10,16 @@ using Shared.Common.Network.Data;
 using Shared.Common.Network.Exceptions;
 using Shared.Game.Utils;
 
-namespace Server.Application.Messenger
+namespace Server.Application.Network
 {
-    public class MessengerHandler : IMessengerHandler, IDisposable
+    public class ServerMessageHandler : IMessageHandler
     {
         private readonly IRuntimeSessionRepository sessionRepository;
         private readonly ISharedConfig sharedConfig;
         private readonly IDatabase database;
         public event Action<IClient, Message> CallBack;
 
-        public MessengerHandler(
+        public ServerMessageHandler(
             IRuntimeSessionRepository sessionRepository,
             ISharedConfig sharedConfig,
             IDatabase database)

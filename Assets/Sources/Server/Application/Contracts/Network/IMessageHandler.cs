@@ -1,9 +1,9 @@
 ﻿using System;
 using Shared.Common.Network.Data;
 
-namespace Server.Domain.Contracts.Messanger
+namespace Server.Application.Contracts.Network
 {
-    public interface IMessengerHandler
+    public interface IMessageHandler : IDisposable
     {
         event Action<IClient, Message> CallBack; 
         void Handle(IClient client, Message message);

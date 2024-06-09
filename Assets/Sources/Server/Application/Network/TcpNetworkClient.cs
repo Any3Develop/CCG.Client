@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
-using Server.Domain.Contracts.Messanger;
+using Server.Application.Contracts.Network;
 
-namespace Server.Application.Messenger
+namespace Server.Application.Network
 {
     public class TcpNetworkClient : IClient
     {

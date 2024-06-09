@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Server.Domain.Contracts.Sessions;
+using Server.Application.Contracts.Sessions;
 using Shared.Abstractions.Game.Context;
 
 namespace Server.Application.Sessions

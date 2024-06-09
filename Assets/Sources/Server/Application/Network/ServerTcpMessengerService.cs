@@ -7,16 +7,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Server.Domain.Contracts.Messanger;
+using Server.Application.Contracts.Network;
 using Shared.Common.Logger;
 using Shared.Common.Network.Data;
 using Shared.Game.Utils;
 
-namespace Server.Application.Messenger
+namespace Server.Application.Network
 {
     public class ServerTcpMessengerService : IMessengerService
     {
-        private readonly IMessengerHandler messengerHandler;
+        private readonly IMessageHandler messageHandler;
         private readonly List<IClient> connected = new();
         private readonly object connectedLock = new();
         private CancellationTokenSource connection;
@@ -31,9 +31,9 @@ namespace Server.Application.Messenger
             }
         }
         
-        public ServerTcpMessengerService(IMessengerHandler messengerHandler)
+        public ServerTcpMessengerService(IMessageHandler messageHandler)
         {
-            this.messengerHandler = messengerHandler;
+            this.messageHandler = messageHandler;
         }
         
         public void Dispose()
@@ -51,7 +51,7 @@ namespace Server.Application.Messenger
                 listener.Start();
                 SharedLogger.Log($"[Server.{GetType().Name}] Started on port {port}");
                 
-                messengerHandler.CallBack += SendCallBack;
+                messageHandler.CallBack += SendCallBack;
                 AcceptClientsAsyncLoop(connection.Token).GetAwaiter();
             }
             catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
@@ -78,7 +78,7 @@ namespace Server.Application.Messenger
                 connection?.Cancel();
                 connection?.Dispose();
                 connection = null;
-                messengerHandler.CallBack -= SendCallBack;
+                messageHandler.CallBack -= SendCallBack;
                 SharedLogger.Log($"[Server.{GetType().Name}] Shutdown.");
             }
             catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
@@ -223,7 +223,7 @@ namespace Server.Application.Messenger
 
                     var data = Encoding.UTF8.GetString(buffer);
                     var message = JsonConvert.DeserializeObject<Message>(data, SerializeExtensions.SerializeSettings);
-                    messengerHandler.Handle(client, message);
+                    messageHandler.Handle(client, message);
                 }
             }
             catch (Exception e) when( e is OperationCanceledException or ObjectDisposedException)
