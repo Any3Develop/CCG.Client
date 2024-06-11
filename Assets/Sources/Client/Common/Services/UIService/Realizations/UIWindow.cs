@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Client.Common.Services.UIService
 {
-    public abstract class UIWindow : MonoBehaviour, IWindow
+    public abstract class UIWindow : MonoBehaviour, IUIWindow
     {
         [SerializeField] private RectTransform selfContainer;
         public IEventSource EventSource { get; private set; }
@@ -33,11 +33,19 @@ namespace Client.Common.Services.UIService
             await EventSource.PublishAsync(new WindowHideEvent(this));
             await OnHidedAsync();
             await EventSource.PublishAsync(new WindowHidedEvent(this));
-            EventSource.Clear();
         }
 
+        protected void OnDestroy()
+        {
+            OnDisposed();
+            EventSource.Clear();
+            EventSource = null;
+            selfContainer = null;
+        }
+        
         protected virtual void OnInit() {}
         protected virtual UniTask OnShowedAsync() => UniTask.CompletedTask;
         protected virtual UniTask OnHidedAsync() => UniTask.CompletedTask;
+        protected virtual void OnDisposed(){}
     }
 }

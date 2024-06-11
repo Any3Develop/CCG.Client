@@ -54,6 +54,16 @@ namespace Shared.Game.Context.EventSource
                     await task;
         }
 
+        public async Task PublishParallelAsync<T>(T value)
+        {
+            await Task.WhenAll(GetSubscribers<T>().Concat(GetSubscribers<object>())
+                .Select(subscriber => DynamicInvoke(subscriber, value) switch
+                {
+                    Task task => task,
+                    _ => Task.CompletedTask
+                }));
+        }
+
         public void Clear()
         {
             foreach (var collection in Subscribers.Values.ToArray())

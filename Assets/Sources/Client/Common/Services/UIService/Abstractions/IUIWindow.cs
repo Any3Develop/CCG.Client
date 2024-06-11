@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Client.Common.Services.UIService
 {
-    public interface IWindow
+    public interface IUIWindow
     {
         IEventSource EventSource { get; }
         RectTransform Container { get; }

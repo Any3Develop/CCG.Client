@@ -2,8 +2,8 @@
 {
     public readonly struct WindowShowEvent
     {
-        public IWindow Window { get; }
-        public WindowShowEvent(IWindow window)
+        public IUIWindow Window { get; }
+        public WindowShowEvent(IUIWindow window)
         {
             Window = window;
         }

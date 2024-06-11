@@ -14,6 +14,7 @@ namespace Shared.Abstractions.Game.Context.EventSource
 		
         void Publish<T>(T value);
         Task PublishAsync<T>(T value);
+        Task PublishParallelAsync<T>(T value);
         void Clear();
     }
 }

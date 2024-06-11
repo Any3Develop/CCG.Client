@@ -39,5 +39,10 @@ namespace Startup.Infrastructure.Client.Common.DependencyInjection
         {
             return instantiator.InstantiatePrefab(prototype, parent).GetComponent<TObject>();
         }
+
+        public GameObject InstantiatePrototype(Object prototype, Transform parent = null)
+        {
+            return instantiator.InstantiatePrefab(prototype, parent);
+        }
     }
 }

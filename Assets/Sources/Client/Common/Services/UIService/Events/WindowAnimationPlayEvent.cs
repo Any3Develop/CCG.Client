@@ -1,11 +1,11 @@
 ﻿namespace Client.Common.Services.UIService.Events
 {
-    public readonly struct WindowAnimationShowEvent
+    public readonly struct WindowAnimationPlayEvent
     {
         public IUIAnimation Animation { get; }
-        public IWindow Window { get; }
+        public IUIWindow Window { get; }
 
-        public WindowAnimationShowEvent(IWindow window, IUIAnimation animation)
+        public WindowAnimationPlayEvent(IUIWindow window, IUIAnimation animation)
         {
             Window = window;
             Animation = animation;

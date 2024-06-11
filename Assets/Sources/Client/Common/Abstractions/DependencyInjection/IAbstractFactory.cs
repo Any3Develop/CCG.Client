@@ -12,5 +12,6 @@ namespace Client.Common.Abstractions.DependencyInjection
         TComponent AddComponent<TComponent>(GameObject componentHolder, params object[] args) where TComponent : Component;
         TObject InstantiatePrototype<TObject>(Object prototype, Transform parent = null, params object[] args);
         TObject InstantiatePrototype<TObject>(Object prototype, Transform parent = null);
+        GameObject InstantiatePrototype(Object prototype, Transform parent = null);
     }
 }

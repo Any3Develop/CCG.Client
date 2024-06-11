@@ -13,9 +13,12 @@ namespace Client.Common.Services.UIService
         private readonly IAbstractFactory abstractFactory;
         private readonly IUIPrototypeProvider uiPrototypeProvider;
         private readonly Dictionary<Type, Object> prototypeStorage = new();
-        private readonly Dictionary<Type, IWindow> instanceStorage = new();
+        private readonly Dictionary<Type, IUIWindow> instanceStorage = new();
 
-        public UIService(IUIRoot uiRoot, IAbstractFactory abstractFactory, IUIPrototypeProvider uiPrototypeProvider)
+        public UIService(
+            IUIRoot uiRoot, 
+            IAbstractFactory abstractFactory, 
+            IUIPrototypeProvider uiPrototypeProvider)
         {
             this.uiRoot = uiRoot;
             this.abstractFactory = abstractFactory;
@@ -31,7 +34,7 @@ namespace Client.Common.Services.UIService
                 Create(pair.Key, uiRoot.DeactivatedContainer);
         }
         
-        public void Dispose<T>() where T : IWindow
+        public void Dispose<T>() where T : IUIWindow
         {
             if (!TryGet(out T view))
                 return;
@@ -42,17 +45,17 @@ namespace Client.Common.Services.UIService
                 Object.Destroy(view.Container.gameObject);
         }
         
-        public void Create<T>(Transform parent = null) where T : IWindow
+        public T Create<T>(Transform parent = null) where T : IUIWindow
         {
-            Create(typeof(T), parent);
+            return Create(typeof(T), parent).GetComponent<T>();
         }
 
-        public T Get<T>() where T : IWindow
+        public T Get<T>() where T : IUIWindow
         {
-            return TryGet<T>(out var view) ? view : default;
+            return instanceStorage[typeof(T)].Container.GetComponent<T>();
         }
 
-        public bool TryGet<T>(out T result) where T : IWindow
+        public bool TryGet<T>(out T result) where T : IUIWindow
         {
             result = default;
             return instanceStorage.TryGetValue(typeof(T), out var view)
@@ -60,25 +63,29 @@ namespace Client.Common.Services.UIService
                    && view.Container.TryGetComponent(out result);
         }
         
-        public async UniTask<T> ShowAsync<T>(Transform parent = null) where T : IWindow
+        public T Move<T>(Transform parent, int? sibling = null) where T : IUIWindow
         {
-            if (!TryGet<T>(out var view))
+            return TryGet(out T view) 
+                ? Move(view, parent, sibling) 
+                : default;
+        }
+        
+        public async UniTask<T> ShowAsync<T>(Transform parent = null) where T : IUIWindow
+        {
+            if (!TryGet<T>(out var view) || !view?.Container)
                 return default;
             
             Move(view, parent);
             
             // always resize to screen size
-            if (view.Container)
-            {
-                view.Container.offsetMin = Vector2.zero;
-                view.Container.offsetMax = Vector2.zero;
-            }
+            view.Container.offsetMin = Vector2.zero;
+            view.Container.offsetMax = Vector2.zero;
 
             await view.ShowAsync();
             return view;
         }
         
-        public async UniTask<T> HideAsync<T>() where T : IWindow
+        public async UniTask<T> HideAsync<T>() where T : IUIWindow
         {
             if (!TryGet<T>(out var view))
                 return default;
@@ -87,32 +94,33 @@ namespace Client.Common.Services.UIService
             return Move(view, uiRoot.DeactivatedContainer);
         }
         
-        public void Move<T>(Transform parent) where T : IWindow
+        private T Move<T>(T view, Transform parent, int? sibling = null) where T : IUIWindow
         {
-            if (!instanceStorage.TryGetValue(typeof(T), out var view) || view == null)
-                return;
-
-            Move(view, parent);
-        }
-        
-        private T Move<T>(T view, Transform parent) where T : IWindow
-        {
-            if (view == null)
+            if (!view?.Container)
                 return default;
 
-            view.Container.SetParent(ParentFix(parent), false);
+            view.Container.SetParent(DefaultIfEmpty(parent), false);
+            if (sibling.HasValue)
+                view.Container.SetSiblingIndex(sibling.Value);
+            else 
+                view.Container.SetAsLastSibling();
+            
             return view;
         }
         
-        private void Create(Type type, Transform parent = null)
+        private GameObject Create(Type type, Transform parent = null)
         {
-            if (instanceStorage.ContainsKey(type) || !prototypeStorage.TryGetValue(type, out var prototype))
-                return;
+            if (!prototypeStorage.TryGetValue(type, out var prototype))
+                return default;
 
-            instanceStorage.Add(type, abstractFactory.InstantiatePrototype<IWindow>(prototype, ParentFix(parent)));
+            var objectView = abstractFactory.InstantiatePrototype(prototype, DefaultIfEmpty(parent));
+            if (objectView.TryGetComponent(out IUIWindow view))
+                instanceStorage.TryAdd(type, view);
+            
+            return objectView;
         }
 
-        private Transform ParentFix(Transform parent)
+        private Transform DefaultIfEmpty(Transform parent)
         {
             return parent ? parent : uiRoot.MiddleContainer;
         }

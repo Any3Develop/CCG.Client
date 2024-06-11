@@ -4,8 +4,9 @@ namespace Client.Common.Services.UIService
 {
     public interface IUIAnimation
     {
-        UniTask PlayAsync();
-        UniTask StopAsync();
-        void Reset();
+        void Init(IUIWindow window);
+        UniTask PlayAsync(bool forceEnd = false);
+        UniTask StopAsync(bool forceEnd = false);
+        void Restart();
     }
 }
