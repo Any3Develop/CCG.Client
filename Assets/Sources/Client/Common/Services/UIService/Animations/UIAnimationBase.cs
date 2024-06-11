@@ -12,7 +12,7 @@ namespace Client.Common.Services.UIService.Animations
         [SerializeField] protected UIAnimationTrigger playTrigger = UIAnimationTrigger.Show;
         [SerializeField] protected UIAnimationTrigger stopTrigger = UIAnimationTrigger.Hided;
         [SerializeField] protected UIAnimationTrigger resetTrigger = UIAnimationTrigger.Show | UIAnimationTrigger.Hided;
-       
+
         protected UIAnimationPresetData Presset { get; private set; }
         protected IDisposableBlock DisposableBlock { get; private set; }
         protected IUIWindow Window { get; private set; }
@@ -60,7 +60,11 @@ namespace Client.Common.Services.UIService.Animations
         {
             OnSubscribe(playTrigger, () => PlayAsync());
             OnSubscribe(stopTrigger, () => StopAsync());
-            OnSubscribe(resetTrigger, () => { Restart(); return UniTask.CompletedTask; });
+            OnSubscribe(resetTrigger, () =>
+            {
+                Restart();
+                return UniTask.CompletedTask;
+            });
         }
 
         protected virtual void OnSubscribe(UIAnimationTrigger trigger, Func<UniTask> callBack)
@@ -78,11 +82,11 @@ namespace Client.Common.Services.UIService.Animations
             if (trigger.HasFlag(UIAnimationTrigger.Hided))
                 eventSource.Subscribe<WindowHidedEvent>(_ => callBack()).AddTo(DisposableBlock);
         }
-        
+
         protected virtual UniTask OnPlayAsync(bool forceEnd = false) => UniTask.CompletedTask;
-        
+
         protected virtual UniTask OnStopAsync(bool forceEnd = false) => UniTask.CompletedTask;
-        
+
         protected virtual void OnRestart() {}
 
         protected virtual void OnDisposed() {}
