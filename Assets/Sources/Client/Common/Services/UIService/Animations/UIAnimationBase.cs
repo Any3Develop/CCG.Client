@@ -9,11 +9,8 @@ namespace Client.Common.Services.UIService.Animations
     public abstract class UIAnimationBase : MonoBehaviour, IUIAnimation
     {
         [SerializeField] private UIAnimationPresetAsset presetAsset;
-        [SerializeField] protected UIAnimationTrigger playTrigger = UIAnimationTrigger.Show;
-        [SerializeField] protected UIAnimationTrigger stopTrigger = UIAnimationTrigger.Hided;
-        [SerializeField] protected UIAnimationTrigger resetTrigger = UIAnimationTrigger.Show | UIAnimationTrigger.Hided;
-
-        protected UIAnimationPresetData Presset { get; private set; }
+        [SerializeField] protected UIAnimationData animationData = UIAnimationPresetAsset.Default();
+        
         protected IDisposableBlock DisposableBlock { get; private set; }
         protected IUIWindow Window { get; private set; }
 
@@ -21,30 +18,24 @@ namespace Client.Common.Services.UIService.Animations
         public void Init(IUIWindow window)
         {
             Window = window;
-            Presset = presetAsset ? presetAsset.PresetData : UIAnimationPresetAsset.Default();
+            animationData = presetAsset ? presetAsset.PresetData : animationData;
             DisposableBlock?.Dispose();
             DisposableBlock ??= DisposableExtensions.CreateBlock();
             OnInit();
             Window.EventSource.Publish(new WindowAnimationInitEvent(Window, this));
         }
 
-        public async UniTask PlayAsync(bool forceEnd = false)
+        public async UniTask PlayAsync()
         {
             Window.EventSource.Publish(new WindowAnimationPlayEvent(Window, this));
-            await OnPlayAsync(forceEnd);
-            await StopAsync(forceEnd);
-        }
-
-        public async UniTask StopAsync(bool forceEnd = false)
-        {
-            await OnStopAsync();
+            await OnPlayAsync();
             Window.EventSource.Publish(new WindowAnimationStopEvent(Window, this));
         }
-
-        public void Restart()
+        
+        public async UniTask ResetAsync()
         {
-            OnRestart();
-            Window.EventSource.Publish(new WindowAnimationRestartEvent(Window, this));
+            await OnResetAsync();
+            Window.EventSource.Publish(new WindowAnimationResetEvent(Window, this));
         }
 
         protected void OnDestroy()
@@ -53,18 +44,12 @@ namespace Client.Common.Services.UIService.Animations
             DisposableBlock?.Dispose();
             DisposableBlock = null;
             Window = null;
-            Presset = null;
         }
 
         protected virtual void OnInit()
         {
-            OnSubscribe(playTrigger, () => PlayAsync());
-            OnSubscribe(stopTrigger, () => StopAsync());
-            OnSubscribe(resetTrigger, () =>
-            {
-                Restart();
-                return UniTask.CompletedTask;
-            });
+            OnSubscribe(animationData.PlayTrigger, PlayAsync);
+            OnSubscribe(animationData.ResetTrigger, ResetAsync);
         }
 
         protected virtual void OnSubscribe(UIAnimationTrigger trigger, Func<UniTask> callBack)
@@ -83,11 +68,9 @@ namespace Client.Common.Services.UIService.Animations
                 eventSource.Subscribe<WindowHidedEvent>(_ => callBack()).AddTo(DisposableBlock);
         }
 
-        protected virtual UniTask OnPlayAsync(bool forceEnd = false) => UniTask.CompletedTask;
+        protected virtual UniTask OnPlayAsync() => UniTask.CompletedTask;
 
-        protected virtual UniTask OnStopAsync(bool forceEnd = false) => UniTask.CompletedTask;
-
-        protected virtual void OnRestart() {}
+        protected virtual UniTask OnResetAsync() => UniTask.CompletedTask;
 
         protected virtual void OnDisposed() {}
     }

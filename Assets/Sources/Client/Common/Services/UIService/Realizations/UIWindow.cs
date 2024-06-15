@@ -23,16 +23,16 @@ namespace Client.Common.Services.UIService
 
         public async UniTask ShowAsync()
         {
-            await EventSource.PublishAsync(new WindowShowEvent(this));
+            await EventSource.PublishParallelAsync(new WindowShowEvent(this));
             await OnShowedAsync();
-            await EventSource.PublishAsync(new WindowShowedEvent(this));
+            await EventSource.PublishParallelAsync(new WindowShowedEvent(this));
         }
 
         public async UniTask HideAsync()
         {
-            await EventSource.PublishAsync(new WindowHideEvent(this));
+            await EventSource.PublishParallelAsync(new WindowHideEvent(this));
             await OnHidedAsync();
-            await EventSource.PublishAsync(new WindowHidedEvent(this));
+            await EventSource.PublishParallelAsync(new WindowHidedEvent(this));
         }
 
         protected void OnDestroy()
