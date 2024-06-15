@@ -48,8 +48,8 @@ namespace Client.Common.Services.UIService.Animations
 
         protected virtual void OnInit()
         {
-            OnSubscribe(animationData.PlayTrigger, PlayAsync);
-            OnSubscribe(animationData.ResetTrigger, ResetAsync);
+            OnSubscribe(animationData.PlayAt, PlayAsync);
+            OnSubscribe(animationData.ResetAt, ResetAsync);
         }
 
         protected virtual void OnSubscribe(UIAnimationTrigger trigger, Func<UniTask> callBack)

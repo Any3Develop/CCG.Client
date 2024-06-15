@@ -23,14 +23,19 @@ namespace Client.Common.Services.UIService.Animations
         {
             toPosition = GetComponent<RectTransform>().anchoredPosition;
         }
+        
+        [ContextMenu("Swap Positions")]
+        public void SwapPositions()
+        {
+            (fromPosition, toPosition) = (toPosition, fromPosition);
+        }
 #endif
         
         protected override async UniTask OnPlayAsync()
         {
             await ResetAsync();
-            var destination = animationData.Reversed ? fromPosition : toPosition;
             appearTween = Window.Container
-                .DOAnchorPos(destination, animationData.Duration)
+                .DOAnchorPos(toPosition, animationData.Duration)
                 .SetDelay(animationData.Delay)
                 .SetEase(animationData.Ease)
                 .SetAutoKill(false);
@@ -42,11 +47,8 @@ namespace Client.Common.Services.UIService.Animations
         {
             appearTween?.Kill();
             appearTween = null;
-            if (!beginFromCurrent)
-            {
-                var from = animationData.Reversed ? toPosition : fromPosition;
-                Window.Container.anchoredPosition = from;
-            }
+            if (!beginFromCurrent && Window?.Container)
+                Window.Container.anchoredPosition = fromPosition;
             
             return UniTask.CompletedTask;
         }

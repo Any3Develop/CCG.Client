@@ -7,12 +7,10 @@ namespace Client.Common.Services.UIService.Animations
     [Serializable]
     public class UIAnimationData
     {
-        public bool Reversed;
         public float Delay;
         public float Duration = 1f;
         public Ease Ease = Ease.Linear;
-        public UIAnimationTrigger PlayTrigger = UIAnimationTrigger.Show;
-        public UIAnimationTrigger StopTrigger = UIAnimationTrigger.Hided;
-        public UIAnimationTrigger ResetTrigger = UIAnimationTrigger.Show | UIAnimationTrigger.Hided;
+        public UIAnimationTrigger PlayAt = UIAnimationTrigger.Show;
+        public UIAnimationTrigger ResetAt = UIAnimationTrigger.Show | UIAnimationTrigger.Hided;
     }
 }

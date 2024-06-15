@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3f1ed7311bdb46b2b28c15abd0222ba1, type: 3}
-  m_Name: AppearAnimationPreset
+  m_Name: PopOutAnimationPreset
   m_EditorClassIdentifier: 
   presetData:
     Delay: 0
     Duration: 0.35
-    Ease: 7
+    Ease: 30
     PlayAt: 2
     ResetAt: 4

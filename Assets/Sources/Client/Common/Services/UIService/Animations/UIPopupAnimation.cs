@@ -6,14 +6,23 @@ namespace Client.Common.Services.UIService.Animations
 {
     public class UIPopupAnimation : UIAnimationBase
     {
+        [SerializeField] protected Vector3 fromSize;
+        [SerializeField] protected Vector3 toSize;
         [SerializeField] protected bool beginFromCurrent = true;
         private Tween popupTween;
         
+#if UNITY_EDITOR
+        [ContextMenu("Swap Size")]
+        public void SwapSize()
+        {
+            (fromSize, toSize) = (toSize, fromSize);
+        }
+#endif
+        
         protected override async UniTask OnPlayAsync()
         {
-            var destination = animationData.Reversed ? Vector3.one : Vector3.zero;
             await Window.Container
-                .DOScale(destination, animationData.Duration)
+                .DOScale(toSize, animationData.Duration)
                 .SetDelay(animationData.Delay)
                 .SetEase(animationData.Ease)
                 .SetAutoKill(false)
@@ -25,11 +34,8 @@ namespace Client.Common.Services.UIService.Animations
         {
             popupTween?.Kill();
             popupTween = null;
-            if (!beginFromCurrent)
-            {
-                var from = animationData.Reversed ? Vector3.zero : Vector3.one;
-                Window.Container.localScale = from;
-            }
+            if (!beginFromCurrent && Window?.Container)
+                Window.Container.localScale = fromSize;
             
             return UniTask.CompletedTask;
         }
