@@ -6,8 +6,8 @@ namespace Client.Common.Services.UIService.Animations
 {
     public class UIPopupAnimation : UIAnimationBase
     {
-        [SerializeField] protected Vector3 fromSize;
-        [SerializeField] protected Vector3 toSize;
+        [SerializeField] protected Vector3 fromSize = Vector3.zero;
+        [SerializeField] protected Vector3 toSize = Vector3.one;
         [SerializeField] protected bool beginFromCurrent = true;
         private Tween popupTween;
         
