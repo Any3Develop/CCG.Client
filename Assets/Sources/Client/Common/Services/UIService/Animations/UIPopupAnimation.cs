@@ -25,7 +25,6 @@ namespace Client.Common.Services.UIService.Animations
                 .DOScale(toSize, animationData.Duration)
                 .SetDelay(animationData.Delay)
                 .SetEase(animationData.Ease)
-                .SetAutoKill(false)
                 .Play()
                 .ToUniTask();
         }

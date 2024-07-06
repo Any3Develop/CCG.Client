@@ -1,6 +1,5 @@
 ﻿using System;
 using DG.Tweening;
-using UnityEngine.Serialization;
 
 namespace Client.Common.Services.UIService.Animations
 {

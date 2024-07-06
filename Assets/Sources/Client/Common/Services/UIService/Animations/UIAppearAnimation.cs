@@ -37,8 +37,7 @@ namespace Client.Common.Services.UIService.Animations
             appearTween = Window.Container
                 .DOAnchorPos(toPosition, animationData.Duration)
                 .SetDelay(animationData.Delay)
-                .SetEase(animationData.Ease)
-                .SetAutoKill(false);
+                .SetEase(animationData.Ease);
 
             await appearTween.Play().ToUniTask();
         }

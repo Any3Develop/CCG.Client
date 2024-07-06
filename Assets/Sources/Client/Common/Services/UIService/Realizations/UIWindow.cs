@@ -18,7 +18,6 @@ namespace Client.Common.Services.UIService
                 selfContainer = GetComponent<RectTransform>();
 
             OnInit();
-            EventSource.Publish(new WindowInitEvent(this));
         }
 
         public async UniTask ShowAsync()
