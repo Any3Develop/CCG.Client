@@ -11,11 +11,11 @@ namespace Shared.Game.Collections
 {
     public class ObjectsCollection : RuntimeCollectionBase<IRuntimeObject>, IObjectsCollection
     {
-        private readonly IEventsSource eventsSource;
+        private readonly IEventPublisher eventPublisher;
 
-        public ObjectsCollection(IEventsSource eventsSource)
+        public ObjectsCollection(IEventPublisher eventPublisher)
         {
-            this.eventsSource = eventsSource;
+            this.eventPublisher = eventPublisher;
         }
         
         protected override int GetId(IRuntimeObject value) =>
@@ -34,7 +34,7 @@ namespace Shared.Game.Collections
                 return false;
             
             var result = base.Add(value, notify);
-            eventsSource.Publish<AfterObjectAddedEvent>(notify && result, value);
+            eventPublisher.Publish<AfterObjectAddedEvent>(notify && result, value);
             return result;
         }
 
@@ -44,7 +44,7 @@ namespace Shared.Game.Collections
                 return false;
 
             var result = base.Remove(value, notify);
-            eventsSource.Publish<AfterObjectDeletedEvent>(notify && result, value);
+            eventPublisher.Publish<AfterObjectDeletedEvent>(notify && result, value);
             return result;
         }
     }

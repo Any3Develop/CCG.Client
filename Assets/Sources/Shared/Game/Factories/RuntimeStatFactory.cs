@@ -58,7 +58,7 @@ namespace Shared.Game.Factories
             if (!database.Stats.TryGet(runtimeData.DataId, out var statData))
                 throw new NullReferenceException($"{nameof(StatData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<StatData>)}");
             
-            runtimeStat = new RuntimeStat().Init(statData, runtimeData, runtimeObject.EventsSource);
+            runtimeStat = new RuntimeStat().Init(statData, runtimeData, runtimeObject.EventPublisher, runtimeObject.EventsSource);
             runtimeObject.StatsCollection.Add(runtimeStat, notify);
             
             return runtimeStat;

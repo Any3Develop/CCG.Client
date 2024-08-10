@@ -35,7 +35,7 @@ namespace Shared.Game.Context
             var releaseEvent = new AfterGameQueueReleasedEvent(queue.ToList());
             predictionId = null;
             queue.Clear();
-            context.EventSource.Publish(releaseEvent);
+            context.EventPublisher.Publish(releaseEvent);
         }
 
         public void Dispose()

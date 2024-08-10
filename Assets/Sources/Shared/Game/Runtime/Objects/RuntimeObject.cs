@@ -15,8 +15,9 @@ namespace Shared.Game.Runtime.Objects
         public IRuntimeObjectData RuntimeData { get; private set; }
         public IStatsCollection StatsCollection { get; private set; }
         public IEffectsCollection EffectsCollection { get; private set; }
+        public IEventPublisher EventPublisher { get; private set; }
         public IEventsSource EventsSource { get; private set; }
-
+        
         protected bool Initialized { get; private set; }
 
         public IRuntimeObject Init(
@@ -24,12 +25,14 @@ namespace Shared.Game.Runtime.Objects
             IRuntimeObjectData runtimeData,
             IStatsCollection statsCollection,
             IEffectsCollection effectCollection,
+            IEventPublisher eventPublisher,
             IEventsSource eventsSource)
         {
             Data = data;
             RuntimeData = runtimeData;
             StatsCollection = statsCollection;
             EffectsCollection = effectCollection;
+            EventPublisher = eventPublisher;
             EventsSource = eventsSource;
             Initialized = true;
             return this;
@@ -56,9 +59,9 @@ namespace Shared.Game.Runtime.Objects
             if (!Initialized)
                 return this;
             
-            EventsSource.Publish<BeforeObjectChangeEvent>(notify, this);
+            EventPublisher.Publish<BeforeObjectChangeEvent>(notify, this);
             RuntimeData = runtimeData;
-            EventsSource.Publish<AfterObjectChangedEvent>(notify, this);
+            EventPublisher.Publish<AfterObjectChangedEvent>(notify, this);
             return this;
         }
 
@@ -67,10 +70,10 @@ namespace Shared.Game.Runtime.Objects
             if (!Initialized)
                 return;
             
-            EventsSource.Publish<BeforeObjectStateChangeEvent>(notify, this);
+            EventPublisher.Publish<BeforeObjectStateChangeEvent>(notify, this);
             RuntimeData.PreviousState = RuntimeData.State;
             RuntimeData.State = value;
-            EventsSource.Publish<AfterObjectStateChangedEvent>(notify, this);
+            EventPublisher.Publish<AfterObjectStateChangedEvent>(notify, this);
         }
 
         #region IRuntimeObjectBase

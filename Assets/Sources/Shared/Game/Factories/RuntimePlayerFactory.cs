@@ -2,6 +2,7 @@
 using System.Linq;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
+using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Context.Providers;
 using Shared.Abstractions.Game.Factories;
 using Shared.Abstractions.Game.Runtime.Data;
@@ -55,8 +56,9 @@ namespace Shared.Game.Factories
                 return runtimePlayer.Sync(runtimeData, notify);
             
             var eventSource = contextFactory.CreateEventsSource();
+            var eventPublisher = (IEventPublisher)eventSource;
             var statsCollection = contextFactory.CreateStatsCollection(eventSource);
-            runtimePlayer = new RuntimePlayer(statsCollection, eventSource).Sync(runtimeData, notify);
+            runtimePlayer = new RuntimePlayer(statsCollection, eventPublisher, eventSource).Sync(runtimeData, notify);
             playersCollection.Add(runtimePlayer, notify);
             
             foreach (var runtimeStatData in runtimeData.Stats)

@@ -17,6 +17,7 @@ namespace Shared.Abstractions.Game.Factories
 
         #region Logic
         IEventsSource CreateEventsSource(params object[] args);
+        IEventPublisher CreateEventPublisher(params object[] args);
         IRuntimeIdProvider CreateRuntimeIdProvider(params object[] args);
         IRuntimeOrderProvider CreateRuntimeOrderProvider(params object[] args);
         IRuntimeRandomProvider CreateRuntimeRandomProvider(params object[] args);

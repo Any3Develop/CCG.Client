@@ -58,7 +58,7 @@ namespace Shared.Game.Factories
             if (!database.Effects.TryGet(runtimeData.DataId, out var data))
                 throw new NullReferenceException($"{nameof(EffectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<EffectData>)}");
             
-            runtimeEffect = CreateEffectInstance(data.LogicId).Init(data, runtimeData, runtimeEffectOwnerObject.EventsSource);
+            runtimeEffect = CreateEffectInstance(data.LogicId).Init(data, runtimeData, runtimeEffectOwnerObject.EventPublisher, runtimeEffectOwnerObject.EventsSource);
             runtimeEffectOwnerObject.EffectsCollection.Add(runtimeEffect, notify);
             
             return runtimeEffect;

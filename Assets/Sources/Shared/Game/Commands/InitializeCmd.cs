@@ -8,7 +8,7 @@ namespace Shared.Game.Commands
     {
         protected override void OnExecute()
         {
-            Context.EventSource.Publish<PlayerInitializeEvent>(Context.PlayersCollection.TryGet(ExecutorId, out var player), player);
+            Context.EventPublisher.Publish<PlayerInitializeEvent>(Context.PlayersCollection.TryGet(ExecutorId, out var player), player);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Shared.Game.Context
         {
             try
             {
-                context.EventSource.Publish(new BeforeCommandExecuteEvent(command));
+                context.EventPublisher.Publish(new BeforeCommandExecuteEvent(command));
                 command.Execute();
             }
             catch (Exception e)
@@ -39,7 +39,7 @@ namespace Shared.Game.Context
             finally
             {
                 // moved here to prevent interrupt event by command throw
-                context.EventSource.Publish(new AfterCommandExecutedEvent(command)); 
+                context.EventPublisher.Publish(new AfterCommandExecutedEvent(command)); 
                 
                 if (!command.Model.IsNested)
                     context.GameQueueCollector.Release();

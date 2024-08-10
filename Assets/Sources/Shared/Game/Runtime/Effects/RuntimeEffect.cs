@@ -13,16 +13,19 @@ namespace Shared.Game.Runtime.Effects
         public EffectData Data { get; private set; }
         public IRuntimeEffectData RuntimeData { get; private set; }
         public IEventsSource EventsSource { get; private set; }
+        public IEventPublisher EventPublisher { get; private set; }
 
         protected bool Initialized { get; private set; }
 
         public IRuntimeEffect Init(
             EffectData data,
             IRuntimeEffectData runtimeData,
+            IEventPublisher eventPublisher,
             IEventsSource eventsSource)
         {
             Data = data;
             RuntimeData = runtimeData;
+            EventPublisher = eventPublisher;
             EventsSource = eventsSource;
             Initialized = true;
             return this;
@@ -44,9 +47,9 @@ namespace Shared.Game.Runtime.Effects
             if (!Initialized)
                 return this;
             
-            EventsSource.Publish<BeforeEffectChangeEvent>(notify, this);
+            EventPublisher.Publish<BeforeEffectChangeEvent>(notify, this);
             RuntimeData = runtimeData;
-            EventsSource.Publish<AfterEffectChangedEvent>(notify, this);
+            EventPublisher.Publish<AfterEffectChangedEvent>(notify, this);
             return this;
         }
 
@@ -57,9 +60,9 @@ namespace Shared.Game.Runtime.Effects
             if (!Initialized)
                 return;
             
-            EventsSource.Publish<BeforeEffectExecuteEvent>(Initialized, this);
+            EventPublisher.Publish<BeforeEffectExecuteEvent>(Initialized, this);
             OnExecute();
-            EventsSource.Publish<AfterEffectExecutedEvent>(Initialized, this);
+            EventPublisher.Publish<AfterEffectExecutedEvent>(Initialized, this);
         }
 
         public void Expire()
@@ -67,9 +70,9 @@ namespace Shared.Game.Runtime.Effects
             if (!Initialized)
                 return;
             
-            EventsSource.Publish<BeforeEffectExpireEvent>(Initialized, this);
+            EventPublisher.Publish<BeforeEffectExpireEvent>(Initialized, this);
             OnExpire();
-            EventsSource.Publish<AfterEffectExpiredEvent>(Initialized, this);
+            EventPublisher.Publish<AfterEffectExpiredEvent>(Initialized, this);
         }
 
         #region Callbacks

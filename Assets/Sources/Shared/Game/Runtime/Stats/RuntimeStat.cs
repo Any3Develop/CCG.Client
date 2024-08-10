@@ -13,6 +13,7 @@ namespace Shared.Game.Runtime.Stats
     {
         public StatData Data { get; private set; }
         public IRuntimeStatData RuntimeData { get; private set; }
+        public IEventPublisher EventPublisher { get; private set; }
         public IEventsSource EventsSource { get; private set; }
         protected bool Initialized { get; private set; }
 
@@ -20,10 +21,12 @@ namespace Shared.Game.Runtime.Stats
         public IRuntimeStat Init(
             StatData data,
             IRuntimeStatData runtimeData,
+            IEventPublisher eventPublisher,
             IEventsSource eventsSource)
         {
             Data = data;
             RuntimeData = runtimeData;
+            EventPublisher = eventPublisher;
             EventsSource = eventsSource;
             Initialized = true;
             return this;
@@ -86,10 +89,10 @@ namespace Shared.Game.Runtime.Stats
         #region Callbacks
 
         protected virtual void OnBeforeChanged(bool notify = true) =>
-            EventsSource.Publish<BeforeStatChangeEvent>(Initialized && notify, this);
+            EventPublisher.Publish<BeforeStatChangeEvent>(Initialized && notify, this);
 
         protected virtual void OnAfterChanged(bool notify = true) =>
-            EventsSource.Publish<AfterStatChangedEvent>(Initialized && notify, this);
+            EventPublisher.Publish<AfterStatChangedEvent>(Initialized && notify, this);
 
         #endregion
 

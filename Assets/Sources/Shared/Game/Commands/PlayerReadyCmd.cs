@@ -21,7 +21,7 @@ namespace Shared.Game.Commands
             }
             
             player.SetReady(true);
-            Context.EventSource.Publish<SessionStartEvent>(Context.PlayersCollection.All(x => x.RuntimeData.Ready));
+            Context.EventPublisher.Publish<SessionStartEvent>(Context.PlayersCollection.All(x => x.RuntimeData.Ready));
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Shared.Game.Utils
 {
     public static class EventSourceExtensions
     {
-        public static void Publish<T>(this IEventsSource source, bool isAllowed, params object[] args)
+        public static void Publish<T>(this IEventPublisher source, bool isAllowed, params object[] args)
         {
             if (!isAllowed || source == null)
                 return;

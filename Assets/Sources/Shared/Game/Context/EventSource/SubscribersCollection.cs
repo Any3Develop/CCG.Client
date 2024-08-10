@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Shared.Game.Context.EventSource
 {
-    public class SubscriberCollection : List<Subscriber>, IDisposable
+    public class SubscribersCollection : List<Subscriber>, IDisposable
     {
         public bool UnSorted { get; set; }
 

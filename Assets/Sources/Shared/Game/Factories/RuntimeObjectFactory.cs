@@ -2,6 +2,7 @@
 using System.Linq;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
+using Shared.Abstractions.Game.Context.EventSource;
 using Shared.Abstractions.Game.Context.Providers;
 using Shared.Abstractions.Game.Factories;
 using Shared.Abstractions.Game.Runtime.Data;
@@ -63,12 +64,13 @@ namespace Shared.Game.Factories
                 throw new NullReferenceException($"{nameof(ObjectData)} with id {runtimeData.DataId}, not found in {nameof(IDataCollection<ObjectData>)}");
             
             var eventSource = contextFactory.CreateEventsSource();
+            var eventPublisher = contextFactory.CreateEventPublisher(eventSource);
             var statsCollection = contextFactory.CreateStatsCollection(eventSource);
             var effectsCollection = contextFactory.CreateEffectsCollection(eventSource);
             runtimeObject = data.Type switch
             {
-                ObjectType.Creature => new RuntimeCardCreature().Init(data, runtimeData, statsCollection, effectsCollection, eventSource),
-                ObjectType.Spell => new RuntimeCardSpell().Init(data, runtimeData, statsCollection, effectsCollection, eventSource),
+                ObjectType.Creature => new RuntimeCardCreature().Init(data, runtimeData, statsCollection, effectsCollection, eventPublisher, eventSource),
+                ObjectType.Spell => new RuntimeCardSpell().Init(data, runtimeData, statsCollection, effectsCollection, eventPublisher, eventSource),
                 _ => throw new NotImplementedException($"Unknown {nameof(ObjectType)}: {data.Type}")
             };
             

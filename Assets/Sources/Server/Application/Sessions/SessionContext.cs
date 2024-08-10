@@ -19,6 +19,7 @@ namespace Server.Application.Sessions
         public ICommandProcessor CommandProcessor { get; }
         public IGameQueueCollector GameQueueCollector { get; }
         public IEventsSource EventSource { get; }
+        public IEventPublisher EventPublisher { get; }
         public IRuntimeObjectFactory ObjectFactory { get; }
         public IRuntimeEffectFactory EffectFactory { get; }
         public IRuntimeStatFactory StatFactory { get; }

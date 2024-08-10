@@ -8,5 +8,6 @@ namespace Shared.Abstractions.Game.Runtime.Objects
     {
         IRuntimeDataBase RuntimeData { get; }
         IEventsSource EventsSource { get; }
+        IEventPublisher EventPublisher { get; }
     }
 }

@@ -8,11 +8,11 @@ namespace Shared.Game.Collections
 {
     public class EffectsCollection : RuntimeCollectionBase<IRuntimeEffect>, IEffectsCollection
     {
-        private readonly IEventsSource eventsSource;
+        private readonly IEventPublisher eventPublisher;
 
-        public EffectsCollection(IEventsSource eventsSource)
+        public EffectsCollection(IEventPublisher eventPublisher)
         {
-            this.eventsSource = eventsSource;
+            this.eventPublisher = eventPublisher;
         }
         
         protected override int GetId(IRuntimeEffect value) =>
@@ -21,7 +21,7 @@ namespace Shared.Game.Collections
         public override bool Add(IRuntimeEffect value, bool notify = true)
         {
             var result = base.Add(value, notify);
-            eventsSource.Publish<AfterEffectAddedEvent>(notify && result, value);
+            eventPublisher.Publish<AfterEffectAddedEvent>(notify && result, value);
             return result;
         }
 
@@ -31,7 +31,7 @@ namespace Shared.Game.Collections
                 return false;
 
             var result = base.Remove(value, notify);
-            eventsSource.Publish<AfterEffectDeletedEvent>(notify && result, value);
+            eventPublisher.Publish<AfterEffectDeletedEvent>(notify && result, value);
             return result;
         }
     }

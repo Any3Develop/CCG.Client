@@ -8,10 +8,10 @@ namespace Shared.Game.Collections
 {
     public class StatsCollection : RuntimeCollectionBase<IRuntimeStat>, IStatsCollection
     {
-        private readonly IEventsSource eventsSource;
-        public StatsCollection(IEventsSource eventsSource)
+        private readonly IEventPublisher eventPublisher;
+        public StatsCollection(IEventPublisher eventPublisher)
         {
-            this.eventsSource = eventsSource;
+            this.eventPublisher = eventPublisher;
         }
 
         protected override int GetId(IRuntimeStat value) =>
@@ -20,7 +20,7 @@ namespace Shared.Game.Collections
         public override bool Add(IRuntimeStat value, bool notify = true)
         {
             var result = base.Add(value, notify);
-            eventsSource.Publish<AfterStatAddedEvent>(notify && result, value);
+            eventPublisher.Publish<AfterStatAddedEvent>(notify && result, value);
             return result;
         }
 
@@ -30,7 +30,7 @@ namespace Shared.Game.Collections
                 return false;
             
             var result = base.Remove(value, notify);
-            eventsSource.Publish<AfterStatDeletedEvent>(notify && result, value);
+            eventPublisher.Publish<AfterStatDeletedEvent>(notify && result, value);
             return result;
         }
     }

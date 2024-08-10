@@ -17,6 +17,7 @@ namespace Shared.Abstractions.Game.Context
         ICommandProcessor CommandProcessor { get; }
         IGameQueueCollector GameQueueCollector { get; }
         IEventsSource EventSource { get; }
+        IEventPublisher EventPublisher { get; }
 
         #region Factories
 

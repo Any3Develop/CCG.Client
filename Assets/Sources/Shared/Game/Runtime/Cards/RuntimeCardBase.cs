@@ -17,9 +17,9 @@ namespace Shared.Game.Runtime.Cards
             if (!Initialized)
                 return;
             
-            EventsSource.Publish<BeforeCardPositionChangeEvent>(notify, this);
+            EventPublisher.Publish<BeforeCardPositionChangeEvent>(notify, this);
             RuntimeData.Position = value;
-            EventsSource.Publish<AfterCardPositionChangedEvent>(notify, this);
+            EventPublisher.Publish<AfterCardPositionChangedEvent>(notify, this);
         }
     }
 }

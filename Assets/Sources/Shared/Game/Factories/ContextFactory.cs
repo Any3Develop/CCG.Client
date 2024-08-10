@@ -9,27 +9,32 @@ using Shared.Abstractions.Game.Factories;
 using Shared.Game.Collections;
 using Shared.Game.Context;
 using Shared.Game.Context.EventProcessors;
-using Shared.Game.Context.EventSource;
 using Shared.Game.Context.Providers;
 
 namespace Shared.Game.Factories
 {
     public class ContextFactory : IContextFactory
     {
+        private readonly IEventsSourceFactory eventsSourceFactory;
+        public ContextFactory(IEventsSourceFactory eventsSourceFactory)
+        {
+            this.eventsSourceFactory = eventsSourceFactory;
+        }
+
         #region Collections
         public IObjectsCollection CreateObjectsCollection(params object[] args)
         {
-            return new ObjectsCollection(GetRequiredArgument<IEventsSource>(args));
+            return new ObjectsCollection(GetRequiredArgument<IEventPublisher>(args));
         }
 
         public IEffectsCollection CreateEffectsCollection(params object[] args)
         {
-            return new EffectsCollection(GetRequiredArgument<IEventsSource>(args));
+            return new EffectsCollection(GetRequiredArgument<IEventPublisher>(args));
         }
 
         public IStatsCollection CreateStatsCollection(params object[] args)
         {
-            return new StatsCollection(GetRequiredArgument<IEventsSource>(args));
+            return new StatsCollection(GetRequiredArgument<IEventPublisher>(args));
         }
 
         public IPlayersCollection CreatePlayersCollection(params object[] args)
@@ -41,7 +46,12 @@ namespace Shared.Game.Factories
         #region Logic
         public IEventsSource CreateEventsSource(params object[] args)
         {
-            return new EventSource();
+            return eventsSourceFactory.Create(args);
+        }
+
+        public IEventPublisher CreateEventPublisher(params object[] args)
+        {
+            return GetRequiredArgument<IEventPublisher>(args);
         }
 
         public IRuntimeIdProvider CreateRuntimeIdProvider(params object[] args)

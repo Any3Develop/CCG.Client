@@ -13,12 +13,17 @@ namespace Shared.Game.Runtime.Players
     {
         public IRuntimePlayerData RuntimeData { get; private set; }
         public IStatsCollection StatsCollection { get; private set; }
+        public IEventPublisher EventPublisher { get; private set; }
         public IEventsSource EventsSource { get; private set; }
 
         protected bool Initialized { get; private set; }
 
-        public RuntimePlayer(IStatsCollection statsCollection, IEventsSource eventsSource)
+        public RuntimePlayer(
+            IStatsCollection statsCollection, 
+            IEventPublisher eventPublisher,
+            IEventsSource eventsSource)
         {
+            EventPublisher = eventPublisher;
             StatsCollection = statsCollection;
             EventsSource = eventsSource;
         }
@@ -36,9 +41,9 @@ namespace Shared.Game.Runtime.Players
         public IRuntimePlayer Sync(IRuntimePlayerData runtimeData, bool notify = true)
         {
             Initialized = true;
-            EventsSource.Publish<BeforePlayerChangeEvent>(notify, this);
+            EventPublisher.Publish<BeforePlayerChangeEvent>(notify, this);
             RuntimeData = runtimeData;
-            EventsSource.Publish<AfterPlayerChangedEvent>(notify, this);
+            EventPublisher.Publish<AfterPlayerChangedEvent>(notify, this);
             return this;
         }
 
