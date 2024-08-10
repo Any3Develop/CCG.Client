@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44043f4c07e4113ae4e842f36653d61, type: 3}
+  m_Name: UITMPInputAudioHandler
+  m_EditorClassIdentifier: 
+  enabledByDefault: 1
+  reInitWhenModified: 0
+  includeDisabled: 1
+  includeInherited: 0
+  writeAudio:
+    clip: {fileID: 8300000, guid: bd3b39b6d084f08489ef5057616d7650, type: 3}
+    clipId: 
+  eraseAudio:
+    clip: {fileID: 8300000, guid: 66d748f579df0dd47b7c2871a6ac4995, type: 3}
+    clipId: 
+  submitAudio:
+    clip: {fileID: 8300000, guid: 652d4063b50312148a6af72ddf6a6029, type: 3}
+    clipId: 
+  selectAudio:
+    clip: {fileID: 8300000, guid: fe34f9355def2624c87b6141d3e90735, type: 3}
+    clipId: 
+  deselectAudio:
+    clip: {fileID: 8300000, guid: ecb8e8d40cd7bf943a33bb9d4affe587, type: 3}
+    clipId: 

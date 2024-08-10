@@ -1,4 +1,5 @@
-﻿using Client.Common.Services.UIService;
+﻿using Services.UIService;
+using Services.UIService.Abstractions;
 using Zenject;
 
 namespace Startup.Infrastructure.Client.Common.Services

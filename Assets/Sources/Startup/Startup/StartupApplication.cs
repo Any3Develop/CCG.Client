@@ -1,5 +1,6 @@
-﻿using Client.Common.Services.SceneService;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
+using Services.SceneService;
+using Services.SceneService.Abstractions;
 using UnityEngine.SceneManagement;
 using Zenject;
 
@@ -15,9 +16,9 @@ namespace Startup.Startup
 
         public async void Initialize()
         {
-            await sceneService.LoadAsync(SceneId.Server);
+            await sceneService.LoadAsync("Server");
             await UniTask.Delay(2000);
-            await sceneService.LoadAsync(SceneId.Client, LoadSceneMode.Additive);
+            await sceneService.LoadAsync("Client", LoadSceneMode.Additive);
         }
     }
 }

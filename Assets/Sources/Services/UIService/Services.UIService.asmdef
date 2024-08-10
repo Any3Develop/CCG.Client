@@ -1,0 +1,28 @@
+{
+  "name": "Services.UIService",
+  "references": [
+    "Unity.TextMeshPro",
+    "DOTween.Modules",
+    "Unity.Addressables"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "noEngineReferences": false,
+  "versionDefines": [
+    {
+      "name": "com.unity.textmeshpro",
+      "expression": "1",
+      "define": "TEXTMESHPRO"
+    },
+    {
+      "name": "com.unity.addressables",
+      "expression": "1",
+      "define": "ADDRESSABLES"
+    }
+  ]
+}

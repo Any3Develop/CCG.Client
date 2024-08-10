@@ -6,7 +6,11 @@
         "Server",
         "Client",
         "Zenject",
-        "UniTask"
+        "UniTask",
+        "Services.EventsService",
+        "Services.SceneService",
+        "Services.UIService",
+        "Services.Utils"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

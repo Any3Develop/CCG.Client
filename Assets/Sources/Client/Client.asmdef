@@ -1,6 +1,6 @@
 {
     "name": "Client",
-    "rootNamespace": "Client",
+    "rootNamespace": "",
     "references": [
         "Shared",
         "Unity.TextMeshPro",
@@ -10,7 +10,12 @@
         "UniTask.DOTween",
         "UniTask.Addressables",
         "UniTask.TextMeshPro",
-        "UniTask.Linq"
+        "UniTask.Linq",
+        "Services.EventsService",
+        "Services.SceneService",
+        "Services.UIService",
+        "Services.Inspector",
+        "Services.Utils"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
