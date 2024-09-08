@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using Client.Common.Abstractions.DependencyInjection;
 using Client.Game.Abstractions.Factories;
 using Client.Game.Abstractions.Runtime.Models;
 using Client.Game.Runtime.Models;
+using Client.Services.DIService;
 using Shared.Abstractions.Game.Collections;
 using Shared.Abstractions.Game.Context;
 using Shared.Abstractions.Game.Runtime.Data;

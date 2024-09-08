@@ -1,5 +1,5 @@
 ﻿using System;
-using Client.Common.Abstractions.DependencyInjection;
+using Client.Services.DIService;
 using UnityEngine;
 using Zenject;
 using Object = UnityEngine.Object;

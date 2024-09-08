@@ -1,9 +1,9 @@
 ﻿using System;
-using Client.Common.Abstractions.DependencyInjection;
 using Client.Game.Abstractions.Collections;
 using Client.Game.Abstractions.Factories;
 using Client.Game.Abstractions.Runtime.Models;
 using Client.Game.Abstractions.Runtime.Views;
+using Client.Services.DIService;
 using Shared.Abstractions.Game.Collections;
 using Shared.Game.Data.Enums;
 

@@ -1,7 +1,7 @@
-﻿using Client.Common.Abstractions.DependencyInjection;
-using Client.Game.Abstractions.Factories;
+﻿using Client.Game.Abstractions.Factories;
 using Client.Game.Abstractions.Runtime.Models;
 using Client.Game.Runtime.Models;
+using Client.Services.DIService;
 using Shared.Abstractions.Game.Runtime.Data;
 using Shared.Game.Utils;
 

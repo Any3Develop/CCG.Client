@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 using Server.Application.Contracts.Network;
 using Server.Domain.Contracts;
 using Server.Domain.Contracts.Persistence;
@@ -8,25 +9,31 @@ namespace Server.API
     public class Program : IProgram
     {
         private readonly IDbSeedService dbSeedService;
-        private readonly IMessengerService messengerService;
+        private readonly INetworkHubConnection networkHubConnection;
+        private readonly CancellationTokenSource lifeTime;
         
         public Program(
-            IDbSeedService dbSeedService, 
-            IMessengerService messengerService)
+            IDbSeedService dbSeedService,
+            INetworkHubConnectionFactory hubConnectionFactory)
         {
             this.dbSeedService = dbSeedService;
-            this.messengerService = messengerService;
+            networkHubConnection = hubConnectionFactory.Create();
+            lifeTime = new CancellationTokenSource();
         }
 
         public async Task Main()
         {
             await dbSeedService.SeedAsync();
-            messengerService.Start(Urls.Port);
+            await networkHubConnection
+                .ConnectAsync(Urls.Port, lifeTime.Token)
+                .ConfigureAwait(false);
         }
 
         public void Dispose()
         {
-            messengerService?.Stop();
+            networkHubConnection.CloseAsync()
+                .ConfigureAwait(false)
+                .GetAwaiter();
         }
     }
 }

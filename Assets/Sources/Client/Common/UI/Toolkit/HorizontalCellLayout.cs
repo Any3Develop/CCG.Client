@@ -5,7 +5,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace CardGame.Layouts
+namespace Client.Common.UI.Toolkit
 {
     [ExecuteInEditMode]
     public class HorizontalCellLayout : MonoBehaviour // TODO : Make Controller and View (not time for this)

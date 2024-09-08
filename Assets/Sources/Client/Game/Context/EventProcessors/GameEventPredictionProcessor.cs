@@ -1,7 +1,7 @@
 ﻿using System;
+using Client.Common.UserIdentity;
 using Client.Game.Abstractions.Collections.Queues;
 using Client.Game.Abstractions.Context.EventProcessors;
-using Client.Lobby.Runtime;
 using Cysharp.Threading.Tasks;
 using Shared.Abstractions.Game.Commands;
 using Shared.Abstractions.Game.Context;

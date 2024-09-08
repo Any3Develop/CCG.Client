@@ -1,4 +1,4 @@
-﻿using Services.SceneService;
+﻿using Client.Services.SceneService;
 using Zenject;
 
 namespace Startup.Infrastructure.Project

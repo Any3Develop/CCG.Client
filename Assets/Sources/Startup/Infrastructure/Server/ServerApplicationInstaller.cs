@@ -9,12 +9,7 @@ namespace Startup.Infrastructure.Server
         public override void InstallBindings()
         {
             Container
-                .BindInterfacesTo<ServerMessageHandler>()
-                .AsSingle()
-                .NonLazy();
-            
-            Container
-                .BindInterfacesTo<ServerTcpMessengerService>()
+                .BindInterfacesTo<NetworkHubBase>()
                 .AsSingle()
                 .NonLazy();
             

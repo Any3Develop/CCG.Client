@@ -1,6 +1,5 @@
-﻿using Cysharp.Threading.Tasks;
-using Services.SceneService;
-using Services.SceneService.Abstractions;
+﻿using Client.Services.SceneService;
+using Cysharp.Threading.Tasks;
 using UnityEngine.SceneManagement;
 using Zenject;
 

@@ -1,9 +1,9 @@
 ﻿using System.Collections;
-using CardGame.Attributes;
+using Client.Common.Utils.Attributes;
 using TMPro;
 using UnityEngine;
 
-namespace CardGame.Layouts
+namespace Client.Common.UI.Toolkit
 {
     // 3rdParty , modified ArtemBrilev
     public class WarpTextExample : MonoBehaviour
